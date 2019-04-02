@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "764472657828",
+    "firebase_url": "https://riskmanagementgame-fbb66.firebaseio.com",
+    "project_id": "riskmanagementgame-fbb66",
+    "storage_bucket": "riskmanagementgame-fbb66.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764472657828:android:09e528f963a15d94",
+        "android_client_info": {
+          "package_name": "unity.RiskManagement.Game"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "764472657828-glc9qrnq0aek32slkn11a67jalamob7s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCmHYgW-iXuNDGlDtQePvnG0OTwyEw9ag"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

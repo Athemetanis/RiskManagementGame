@@ -1224,11 +1224,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ee2490aadc914940a1c2c7cb5b87906, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SignPanel: {fileID: 1115764807078770}
-  SignUpPanel: {fileID: 1296517130073608}
-  SignInPanel: {fileID: 1884076069271374}
-  LoggedInPanel: {fileID: 1003815995206166}
-  InfoText: {fileID: 4322050292770421559}
+  signPanel: {fileID: 1115764807078770}
+  signUpPanel: {fileID: 1296517130073608}
+  signInPanel: {fileID: 1884076069271374}
+  loggedInPanel: {fileID: 1003815995206166}
+  infoText: {fileID: 4322050292770421559}
   UserName: {fileID: 114882684462159608}
 --- !u!1 &1296517130073608
 GameObject:
@@ -4093,6 +4093,7 @@ GameObject:
   - component: {fileID: 4319236662205984919}
   - component: {fileID: 5405543588604872188}
   - component: {fileID: 4322050292770421559}
+  - component: {fileID: 2746955248463603922}
   m_Layer: 0
   m_Name: InfoText
   m_TagString: Untagged
@@ -4161,6 +4162,18 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 44
+--- !u!114 &2746955248463603922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 66872876988870128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9404490dc2247546911a8d129bd7860, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1100972556673540274
 GameObject:
   m_ObjectHideFlags: 0

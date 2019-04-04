@@ -10,6 +10,7 @@ public class AuthenticationUIHandler : MonoBehaviour {
     public GameObject SignUpPanel;
     public GameObject SignInPanel;
     public GameObject LoggedInPanel;
+    public Text InfoText;
 
 
     public Text UserName;
@@ -52,13 +53,17 @@ public class AuthenticationUIHandler : MonoBehaviour {
 
     public void DisableAllPAnels()
     {
+        InfoText.text = "666666";
         SignPanel.SetActive(false);
         SignInPanel.SetActive(false);
         SignUpPanel.SetActive(false);
         LoggedInPanel.SetActive(false);
     }
 
-
+    public void ChangeWarningText(string text)
+    {
+        InfoText.text = text;
+    }
 
         
     

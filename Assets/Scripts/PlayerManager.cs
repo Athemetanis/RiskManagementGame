@@ -104,12 +104,20 @@ public class PlayerManager : NetworkBehaviour {
 
     //Hooks 
     public void OnChangeGameID(string gameID)
-    {
+    {   
         playerGameID = gameID;
         if(isLocalPlayer == false)
         {
             return;
         }
+        if(playerGameID == "" || playerGameID.Equals(""))
+        {
+            return;
+        }
+
+
+
+
         CmdGetPlayerObject();
     }
     
@@ -186,7 +194,7 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
-
+    
 
 
 

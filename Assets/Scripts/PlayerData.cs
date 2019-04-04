@@ -16,6 +16,8 @@ public class PlayerData : NetworkBehaviour {
     private string firmName;
 
 
+
+
     //GETTERS & SETTERS
     public void SetGameID(string gameID) { this.gameID = gameID; }
     public string GetGameID() { return gameID; }
@@ -34,7 +36,7 @@ public class PlayerData : NetworkBehaviour {
 
     public override void  OnStartClient()
     {
-        Debug.Log(gameID + "/" + playerID + "/" + this);
+       /* Debug.Log(gameID + "/" + playerID + "/" + this);
 
         if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
         {
@@ -45,12 +47,12 @@ public class PlayerData : NetworkBehaviour {
 
             //game.GetComponent<GameData>().AddPlayerToGame(this.gameObject);
 
-        }
+        }*/
     }
 
     public override void OnStartServer()
     {
-        Debug.Log(gameID + "/" + playerID + "/" + this);
+        /*Debug.Log(gameID + "/" + playerID + "/" + this);
 
         if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
         {
@@ -61,25 +63,26 @@ public class PlayerData : NetworkBehaviour {
 
             //game.GetComponent<GameData>().AddPlayerToGame(this.gameObject);
 
+        }*/
+    }
+
+
+    void Start()
+    {
+        if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
+        {
+            GameHandler.allPlayers[gameID].Add(playerID, this);
         }
+
+        if (GameHandler.allGames[gameID] == true)
+        {
+            GameHandler.allGames[gameID].AddPlayerToGame(this.gameObject);
+        }
+
     }
 
 
 
-    // Use this for initialization - 
-    void Start ()
-    {
-
-        
-    }
-
-    
-
-    // Update is called once per frame
-    void Update ()
-    {
-		
-	}
 
     //METHODS
 

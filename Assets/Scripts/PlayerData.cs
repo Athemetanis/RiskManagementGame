@@ -4,69 +4,29 @@ using UnityEngine;
 using Mirror;
 
 public class PlayerData : NetworkBehaviour {
-    /// <summary>
-    /// This class contains general player data
-    /// </summary>
+
+    /// This class contains general information about player - variables are set during creation and dont change during game
+
     //VARIABLES 
     [SyncVar]
     public string gameID;
     [SyncVar]
-    public string playerID;
+    public string playerID;   //in the end set this to private
     [SyncVar]
-    private string firmName;
+    public string playerRole;
 
 
-
-
+    
     //GETTERS & SETTERS
     public void SetGameID(string gameID) { this.gameID = gameID; }
     public string GetGameID() { return gameID; }
     public void SetPlayerID(string playerID) { this.playerID = playerID; }
     public string GetPlayerID() { return playerID; }
-    public void SetFirmName(string firmName) { this.firmName = firmName; }
-    public string GetFirmName() { return firmName; }
+    public void SetPlayerRole(string playerRole) { this.playerRole = playerRole; }
+    public string GetPlayerRole() { return playerRole; }
 
 
-
-    //Add me when I awake - this is called on both the clients and the host, so everyone will know me
-    protected virtual void Awake()
-    {   
-        
-    }
-
-    public override void  OnStartClient()
-    {
-       /* Debug.Log(gameID + "/" + playerID + "/" + this);
-
-        if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
-        {
-            GameHandler.allPlayers[gameID].Add(playerID, this);
-
-            //GameObject game = GameHandler.allGames[gameID];
-
-
-            //game.GetComponent<GameData>().AddPlayerToGame(this.gameObject);
-
-        }*/
-    }
-
-    public override void OnStartServer()
-    {
-        /*Debug.Log(gameID + "/" + playerID + "/" + this);
-
-        if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
-        {
-            GameHandler.allPlayers[gameID].Add(playerID, this);
-
-            //GameObject game = GameHandler.allGames[gameID];
-
-
-            //game.GetComponent<GameData>().AddPlayerToGame(this.gameObject);
-
-        }*/
-    }
-
-
+    //METHODS
     void Start()
     {
         if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
@@ -82,15 +42,6 @@ public class PlayerData : NetworkBehaviour {
     }
 
 
-
-
-    //METHODS
-
-    [Command]
-    public void CmdChangeFirmName(string firmName)
-    {
-        this.firmName = firmName;
-    }
 
 
 

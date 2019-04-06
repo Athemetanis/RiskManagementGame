@@ -4,25 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AssincTextRewriter : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+{   
+    //VARIABLES
+    private string warningString;
+
+    //GETTERS & SETTERS
+    public void SetWarningString(string warningString) { this.warningString = warningString; }
 
     // Update is called once per frame
     void Update()
     {
-        
+        UpdateWarningText(warningString);
     }
 
-
-    private void OnDisable()
+    //METHODS
+    public void UpdateWarningText(string text)
     {
-        string textChanged = this.gameObject.GetComponent<Text>().text;
-        this.gameObject.GetComponent<Text>().text = textChanged;
-        Debug.Log("setted active");
-        //this.gameObject.SetActive(true);
+        this.gameObject.GetComponent<Text>().text = warningString;
     }
+        
 }

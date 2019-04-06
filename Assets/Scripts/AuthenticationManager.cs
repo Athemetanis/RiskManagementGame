@@ -23,8 +23,8 @@ public class AuthenticationManager : MonoBehaviour {
     private string password;
     private string confirmPassword;
 
-    private string warningText = "";
-    private bool warningTextChange = false; 
+    //private string warningText = "";
+    //private bool warningTextChange = false; 
 
     //GETTERS & SETTERS
     public string GetConfirmPassword() { return confirmPassword; }
@@ -50,16 +50,7 @@ public class AuthenticationManager : MonoBehaviour {
         InitializeFirebase();
     }
 
-    private void Update()
-    {
-
-        if (warningTextChange)
-        {
-            authForm.ChangeWarningText(warningText);
-        }
-            
-    }
-
+    
     //METHODS      
     void InitializeFirebase()
     {
@@ -88,7 +79,7 @@ public class AuthenticationManager : MonoBehaviour {
                 Debug.Log("Signed out " + user.UserId);
                 authForm.ShowSignPanel();
                 playerManager.SetPlayerID("");
-                authForm.ChangeWarningText("");
+                authForm.EnableWarningTextChange("");
             }
             user = auth.CurrentUser;
             if (signedIn)
@@ -97,7 +88,7 @@ public class AuthenticationManager : MonoBehaviour {
                 authForm.ShowLoggedInPanel();
                 ShowUserName();
                 playerManager.SetPlayerID(user.UserId);
-                authForm.ChangeWarningText("");
+                authForm.EnableWarningTextChange("");
                 
 
             }
@@ -107,33 +98,30 @@ public class AuthenticationManager : MonoBehaviour {
     public void TrySingUp()
     {
         if (string.Equals(password, confirmPassword) == false)
-        {   warningText = "Passwords are not equal";
+        {
+            authForm.EnableWarningTextChange("Passwords are not equal");
             return;
-
         }
         auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWith(task => {
             if (task.IsCanceled)
-            {   
-                //Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
-                warningText = "Creating user was cannceled.";
+            {
+                authForm.EnableWarningTextChange("Creating user was cannceled.");
                 return;
             }
             if (task.IsFaulted)
             {
-                string authErrorCode = "";
                 foreach (Exception exception in task.Exception.Flatten().InnerExceptions)
                 {
-                    
+                    string authErrorCode = "";
                     Firebase.FirebaseException firebaseEx = exception as Firebase.FirebaseException;
                     if (firebaseEx != null)
                     {
                         authErrorCode = String.Format("AuthError.{0}: ",
                           ((Firebase.Auth.AuthError)firebaseEx.ErrorCode).ToString());
                     }
-                    Debug.Log(authErrorCode + exception.ToString());
-                    Debug.Log(666);
-                    warningText = ("***" + authErrorCode + exception.ToString());
-
+                    string code = exception.ToString().Substring(28);
+                    Debug.Log(code);
+                    authForm.EnableWarningTextChange(code);
                 }
                 return;
             }
@@ -142,7 +130,7 @@ public class AuthenticationManager : MonoBehaviour {
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("Firebase user created successfully: {0} ({1})",
             newUser.DisplayName, newUser.UserId);
-            warningText = "";
+            authForm.EnableWarningTextChange("");
 
         });
 
@@ -156,7 +144,7 @@ public class AuthenticationManager : MonoBehaviour {
         auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task => {
             if (task.IsCanceled)
             {
-                authForm.ChangeWarningText("Sign in canceled.") ;
+                authForm.EnableWarningTextChange("Sign in canceled.") ;
                 //Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
                 return;
             }
@@ -173,21 +161,21 @@ public class AuthenticationManager : MonoBehaviour {
                     }
                     string code = exception.ToString().Substring(28);
                     Debug.Log(code);
-                    warningText = code;
+                    authForm.EnableWarningTextChange(code);
                 }
                 return;
             }
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})",
                 newUser.DisplayName, newUser.UserId);
-           warningText = "";
+            authForm.EnableWarningTextChange("");
         });
     }
 
 
     public void SignOutUser()
     {
-        authForm.ChangeWarningText("");
+        authForm.EnableWarningTextChange("");
         playerManager.SetPlayerID("");
         playerManager.SetPlayerGameID("");
         auth.SignOut();
@@ -199,8 +187,6 @@ public class AuthenticationManager : MonoBehaviour {
         authForm.UserName.text = user.Email;
     }
 
-
-
     public void SentPasswordRessetEmail()
     {
         if (user != null)
@@ -208,7 +194,7 @@ public class AuthenticationManager : MonoBehaviour {
             auth.SendPasswordResetEmailAsync(email).ContinueWith(task => {
                 if (task.IsCanceled)
                 {
-                warningText = "SendPasswordResetEmailAsync was canceled.";
+                    authForm.EnableWarningTextChange("Sending password reset email was canceled.");
                     return;
                 }
                 if (task.IsFaulted)
@@ -222,13 +208,13 @@ public class AuthenticationManager : MonoBehaviour {
                             authErrorCode = String.Format("AuthError.{0}: ",
                               ((Firebase.Auth.AuthError)firebaseEx.ErrorCode).ToString());
                         }
-                        Debug.Log(authErrorCode + exception.ToString());
-                        warningText = exception.ToString();
-
+                        string code = exception.ToString().Substring(28);
+                        Debug.Log(code);
+                        authForm.EnableWarningTextChange(code);
                     }
                     return;
                 }
-                warningText = "Password reset email sent successfully.";
+                authForm.EnableWarningTextChange("Password reset email sent successfully.");
                 Debug.Log("Password reset email sent successfully.");
             });
         }

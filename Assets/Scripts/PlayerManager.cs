@@ -196,18 +196,13 @@ public class PlayerManager : NetworkBehaviour {
 
     
 
-
-
-
-
-
-
-
-
+         
     /// <summary>
     /// ----------------------------------------------OLD------------------------------------
     /// </summary>
     /// <param name="name"></param>
+   /*
+    
     public void SetPlayerDataFirmName(string name)
     {
         GameHandler.allPlayers[playerGameID][playerID].SetFirmName(name);
@@ -219,6 +214,7 @@ public class PlayerManager : NetworkBehaviour {
     {
         GameHandler.allPlayers[playerGameID][playerID].SetFirmName(name);
     }
+    */
 
 
      /*public void CreatePlayerObject(string playerID)

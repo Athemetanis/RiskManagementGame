@@ -101,7 +101,7 @@ public class GameHandler : NetworkBehaviour {
             GameObject gameUI = Instantiate(GameUIPrefab);
             gameUI.transform.SetParent(GameListUIContent.transform, false);
             gameData.SetGameUIHandler(gameUI.GetComponent<GameUIHandler>());
-            gameData.GameUIUpdate();
+            gameData.GameUIUpdateAll();
         }
     } 
 

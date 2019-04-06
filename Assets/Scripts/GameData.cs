@@ -21,7 +21,7 @@ public class GameData : NetworkBehaviour {
     private GameUIHandler gameUIHandler;
 
 
-    //--------------<playerID, GameObject player>---------------------------------------//   HOW I WILL BE SYNCING THIS??? /// pri každom awaku playerdat - na cliente i na serveri sa zavola add
+    //--------------<playerID, GameObject player>---------------------------------------//   HOW I WILL BE SYNCING THIS??? /// pri každom satrte playerdat - na cliente i na serveri sa zavola add
     private Dictionary<string, GameObject> playerList = new Dictionary<string, GameObject>();
     
     //GETTERS & SETTERS
@@ -107,13 +107,17 @@ public class GameData : NetworkBehaviour {
         }
     }
 
-    public void GameUIUpdate()
-    {   
-        gameUIHandler.ChangeIDText(gameID);
-        gameUIHandler.ChangeNameText(gameName);
-        gameUIHandler.ChangeRoundText(gameRound);
-        gameUIHandler.ChangePlayersCountText(playersCount);
+    public void GameUIUpdateAll()
+    {
+        if (gameUIHandler != null)
+        {
+            gameUIHandler.ChangeIDText(gameID);
+            gameUIHandler.ChangeNameText(gameName);
+            gameUIHandler.ChangeRoundText(gameRound);
+            gameUIHandler.ChangePlayersCountText(playersCount);
+        }
     }
+    
 
     public void AddPlayerToGame(GameObject player)
     {

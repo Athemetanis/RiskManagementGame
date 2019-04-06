@@ -11,6 +11,7 @@ public class AuthenticationUIHandler : MonoBehaviour {
     public GameObject signInPanel;
     public GameObject loggedInPanel;
     public Text infoText;
+    public AssincTextRewriter assincTextRewirter;
 
 
 
@@ -34,12 +35,14 @@ public class AuthenticationUIHandler : MonoBehaviour {
 
     public void ShowSignUpPanel()
     {
+        assincTextRewirter.gameObject.SetActive(true);
         DisableAllPanels();
         signUpPanel.SetActive(true);
     }
 
     public void ShowSignInPanel()
     {
+        assincTextRewirter.gameObject.SetActive(true);
         DisableAllPanels();
         signInPanel.SetActive(true);
     }
@@ -54,19 +57,18 @@ public class AuthenticationUIHandler : MonoBehaviour {
 
     public void DisableAllPanels()
     {
-        infoText.text = "666666";
+        EnableWarningTextChange("");
+        assincTextRewirter.gameObject.SetActive(false);
         signPanel.SetActive(false);
         signInPanel.SetActive(false);
         signUpPanel.SetActive(false);
         loggedInPanel.SetActive(false);
     }
 
-    public void ChangeWarningText(string text)
+    public void EnableWarningTextChange(string text)
     {
+        assincTextRewirter.SetWarningString(text);
         
-        infoText.text = text;
-        infoText.gameObject.SetActive(false);
-
     }
 
         

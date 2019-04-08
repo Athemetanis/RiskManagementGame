@@ -92,8 +92,9 @@ GameObject:
   - component: {fileID: 102771283256936318}
   - component: {fileID: 114313143450428616}
   - component: {fileID: 4757718622698373110}
+  - component: {fileID: 2773905996619748960}
   m_Layer: 0
-  m_Name: PlayerData
+  m_Name: PlayerProvider
   m_TagString: PlayerData
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -186,6 +187,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  gameID: 
+  playerID: 
+  playerRole: 0
 --- !u!114 &4757718622698373110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,8 +204,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
-  m_AssetId: dc8ef4fcb531f434db46603014cd7f72
+  m_AssetId: 513ae00924919c046847cdc82a269bb5
   m_SceneId: 0
+--- !u!114 &2773905996619748960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303548471944098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc127d8dc47c17648b4abf46daa63e35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1318920252224400
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,7 +778,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0.5}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -770,7 +786,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 90f1f939f66fb8f43aa326836422054a, type: 3}
     m_FontSize: 14
     m_FontStyle: 2
     m_BestFit: 0

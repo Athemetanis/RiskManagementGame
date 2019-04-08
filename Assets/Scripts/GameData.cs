@@ -7,23 +7,33 @@ public class GameData : NetworkBehaviour {
 
     //VARIABLES
     [SyncVar(hook = "OnChangeGameID")]
-    public string gameID;
+    private string gameID;
     [SyncVar(hook = "OnChangeGameName")]
-    public string gameName;          //in the end set this to private
+    private string gameName;          
     [SyncVar]
-    public string password;
+    private string password;
     [SyncVar(hook = "OnChangeGameRound")]
     private int gameRound;
     [SyncVar(hook = "OnChangePlayersCount")]
     private int playersCount;
+    [SyncVar]
+    private int developersCount;
+    [SyncVar]
+    private int providersCount;
+    [SyncVar]
+    private int readyPlayersCount;
 
-    //this variable holds reference on script of UI representation of game (if it exists) 
+
+    //this variable holds reference on script of UI representation of game (if it exists) //LOCAL !!!
     private GameUIHandler gameUIHandler;
 
 
-    //--------------<playerID, GameObject player>---------------------------------------//   HOW I WILL BE SYNCING THIS??? /// pri každom satrte playerdat - na cliente i na serveri sa zavola add
+    //--------------<playerID, GameObject player>---------------------------------------//   HOW I WILL BE SYNCING THIS??? /// pri každom starte playerdat - na cliente i na serveri sa zavola add
     private Dictionary<string, GameObject> playerList = new Dictionary<string, GameObject>();
-    
+    private Dictionary<string, GameObject> developerList = new Dictionary<string, GameObject>();
+    private Dictionary<string, GameObject> providerList = new Dictionary<string, GameObject>();
+
+  
     //GETTERS & SETTERS
     public void SetGameID(string gameID) { this.gameID = gameID; }
     public string GetGameID() { return gameID; }
@@ -35,17 +45,18 @@ public class GameData : NetworkBehaviour {
     public int GetGameRound() { return gameRound; }
     public void SetPlayersCount(int playersCount) { this.playersCount = playersCount;  }
     public int GetPlayersCount() { return playersCount; }
+    public void SetDevelopersCount(int developersCount) { this.developersCount = developersCount; }
+    public int GetDevelopersCount() { return developersCount; }
+    public void SetProvidersCount(int providersCount) { this.providersCount = providersCount; }
+    public int GetProvidersCount() { return providersCount; }
 
     public void SetGameUIHandler(GameUIHandler gameUIHandler) { this.gameUIHandler = gameUIHandler; }
-
-
-     
+    
     //Add me when I awake - this is called on both the clients and the host, so everyone will know me
     protected virtual void Awake()
     {       
          //syncvar not initialized...                 
     }
-
 
     // Use this for initialization
     void Start ()
@@ -69,8 +80,6 @@ public class GameData : NetworkBehaviour {
 	}
 
     //METHODS
-
-
     public void OnChangeGameID(string gameID)
     {
         this.gameID = gameID;
@@ -115,28 +124,56 @@ public class GameData : NetworkBehaviour {
             gameUIHandler.ChangeNameText(gameName);
             gameUIHandler.ChangeRoundText(gameRound);
             gameUIHandler.ChangePlayersCountText(playersCount);
+
         }
     }
     
 
     public void AddPlayerToGame(GameObject player)
     {
-        string playerID = player.GetComponent<PlayerData>().playerID;
-        if (playerList.ContainsKey(playerID) == false)
+        PlayerData playerData = player.GetComponent<PlayerData>();
+
+       // string playerID = player.GetComponent<PlayerData>().playerID;
+        if (playerList.ContainsKey(playerData.GetPlayerID()) == false)
         {
-            playerList.Add(playerID, player);
+            playerList.Add(playerData.GetPlayerID(), player);
             playersCount++;
+            if(playerData.GetPlayerRole() == PlayerRoles.Developer)
+            {
+                developerList.Add(playerData.GetPlayerID(), player);
+                developersCount++;
+            }
+            else
+            {
+                providerList.Add(playerData.GetPlayerID(), player);
+                providersCount++;
+            }
         }
+
     }
 
     public void RemovePlayerFromGame(GameObject player)
     {
-        string playerID = player.GetComponent<PlayerData>().playerID;
-        if (playerList.ContainsKey(playerID) == true)
+        PlayerData playerData = player.GetComponent<PlayerData>();
+        //string playerID = player.GetComponent<PlayerData>().playerID;
+       
+
+        if (playerList.ContainsKey(playerData.GetPlayerID()) == true)
         {
-            playerList.Remove(playerID);
+            playerList.Remove(playerData.GetPlayerID());
             playersCount--;
+            if (playerData.GetPlayerRole() == PlayerRoles.Developer)
+            {
+                developerList.Remove(playerData.GetPlayerID());
+                developersCount--;
+            }
+            else
+            {
+                providerList.Remove(playerData.GetPlayerID());
+                providersCount--;
+            }
         }
+
     }
 
     

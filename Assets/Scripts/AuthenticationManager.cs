@@ -78,7 +78,7 @@ public class AuthenticationManager : MonoBehaviour {
             {
                 Debug.Log("Signed out " + user.UserId);
                 authForm.ShowSignPanel();
-                playerManager.SetPlayerID("");
+                playerManager.SetPlayerFirebaseID("");
                 authForm.EnableWarningTextChange("");
             }
             user = auth.CurrentUser;
@@ -87,7 +87,7 @@ public class AuthenticationManager : MonoBehaviour {
                 Debug.Log("Signed in " + user.UserId);
                 authForm.ShowLoggedInPanel();
                 ShowUserName();
-                playerManager.SetPlayerID(user.UserId);
+                playerManager.SetPlayerFirebaseID(user.UserId);
                 authForm.EnableWarningTextChange("");
                 
 
@@ -176,7 +176,7 @@ public class AuthenticationManager : MonoBehaviour {
     public void SignOutUser()
     {
         authForm.EnableWarningTextChange("");
-        playerManager.SetPlayerID("");
+        playerManager.SetPlayerFirebaseID("");
         playerManager.SetPlayerGameID("");
         auth.SignOut();
 

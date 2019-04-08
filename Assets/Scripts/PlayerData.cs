@@ -3,28 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+public enum PlayerRoles { Developer, Provider }
+
 public class PlayerData : NetworkBehaviour {
 
     /// This class contains general information about player - variables are set during creation and dont change during game
 
     //VARIABLES 
     [SyncVar]
-    public string gameID;
+    private string gameID;
     [SyncVar]
-    public string playerID;   //in the end set this to private
+    private string playerID;   //in the end set this to private
     [SyncVar]
-    public string playerRole;
+    private PlayerRoles playerRole;
 
-
-    
+    //LOCAL VARIABLES
+    private GameObject playerUI;
+        
     //GETTERS & SETTERS
     public void SetGameID(string gameID) { this.gameID = gameID; }
     public string GetGameID() { return gameID; }
+
     public void SetPlayerID(string playerID) { this.playerID = playerID; }
     public string GetPlayerID() { return playerID; }
-    public void SetPlayerRole(string playerRole) { this.playerRole = playerRole; }
-    public string GetPlayerRole() { return playerRole; }
 
+    public void SetPlayerRole(PlayerRoles playerRole) { this.playerRole = playerRole; }
+    public PlayerRoles GetPlayerRole() { return playerRole; }
+
+    public void SetPlayerUI(GameObject playerUI) { this.playerUI = playerUI; }
+    public GameObject GetPlayerUI() { return playerUI;  }
 
     //METHODS
     void Start()
@@ -37,8 +44,8 @@ public class PlayerData : NetworkBehaviour {
         if (GameHandler.allGames[gameID] == true)
         {
             GameHandler.allGames[gameID].AddPlayerToGame(this.gameObject);
+            
         }
-
     }
 
 

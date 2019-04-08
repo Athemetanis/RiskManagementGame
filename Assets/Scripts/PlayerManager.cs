@@ -10,11 +10,14 @@ public class PlayerManager : NetworkBehaviour {
 
     //This class manages player objects after player is conncted/disconnected
     //creates objects for player, saves/deletes references of players objects, 
+    //creates local gui for player
 
 
     //VARIABLES
     [SyncVar(hook = "OnChangePlayerID")]
-    private string playerID;
+    private string playerFirebaseID = "";
+    [SyncVar]      //<-remove this, this variable contains playerDataID  == (playerFirebaseID + playerGameID) 
+    private string playerID = "";
     [SyncVar(hook = "OnChangeGameID")]
     private string playerGameID;
 
@@ -23,10 +26,16 @@ public class PlayerManager : NetworkBehaviour {
 
 
     public GameObject playerPrefab;
+    public GameObject playerDeveloperPrefab;
+    public GameObject playerDeveloperUIPrefab;
+    public GameObject playerProviderPrefab;
+    public GameObject playerProviderUIprefab;
+
+
     private GameObject myPlayerObject;
+    private GameObject myPlayerUIObject;
     private PlayerData myPlayerData;
 
-   
 
     // Use this for initialization
     void Start()
@@ -36,9 +45,8 @@ public class PlayerManager : NetworkBehaviour {
             GameHandler.singleton.SetLocalPlayer(this);
         }
 
-
-        Debug.Log("Reseting player connection default variables");
-        playerID = "";
+        //Debug.Log("Reseting player connection default variables");
+        //playerID = "";
         //this.SetPlayerGameID("3");
 
         if (isLocalPlayer == false)
@@ -49,8 +57,6 @@ public class PlayerManager : NetworkBehaviour {
         authentication = Instantiate(authenticationPrefab);
         authentication.GetComponent<AuthenticationManager>().SetPlayerManager(this);
         authentication.SetActive(true);
-
-
     }
 
     // Update is called once per frame
@@ -59,30 +65,71 @@ public class PlayerManager : NetworkBehaviour {
     }
 
 
+    //HOOKS
+    public void OnChangeGameID(string gameID)
+    {
+        playerGameID = gameID;
+        if (isLocalPlayer == false)
+        {
+            return;
+        }
+        if (playerGameID == "" || playerGameID.Equals(""))
+        {
+            return;
+        }
+
+        CmdGetPlayerObject();
+    }
+
+    public void OnChangePlayerID(string playerFirebaseID)  ///This function is called only on client after playerID was changed on server. 
+    {
+
+        this.playerFirebaseID = playerFirebaseID;
+        if (isLocalPlayer == false)  ///if I am not local client I dont care about assigning or removing player object which contains data for player  
+        {
+            return;
+        }
+        if (playerFirebaseID == null || playerFirebaseID.Equals(""))   /// true if I signed out
+        {
+            CmdRemoveAuthority();
+            myPlayerObject = null;
+            myPlayerData = null;
+            return;
+
+        }
+
+        Debug.Log("onChnagePlayerId " + this.playerFirebaseID);
+        //CmdGetPlayerObject();
+        GameHandler.singleton.GenerateGamesListUI();
+    }
+
     //METHODS
-    public void SetPlayerID(string playerID)
+
+    public void SetPlayerFirebaseID(string playerFirebaseID)
     {
         if (!isServer)
         {
-            this.playerID = playerID;
-            CmdSetPlayerID(playerID);
+            this.playerFirebaseID = playerFirebaseID;
+            CmdSetPlayerFirebaseID(playerFirebaseID);
             return;
         }
-        CmdSetPlayerID(playerID);
+        CmdSetPlayerFirebaseID(playerFirebaseID);
     }
 
     [Command]
-    public void CmdSetPlayerID(string playerID)
+    public void CmdSetPlayerFirebaseID(string playerFirebaseID)
     {
-        Debug.Log("playerID " + playerID);
-        this.playerID = playerID;
+        Debug.Log("playerFireBaseID " + playerFirebaseID);
+        this.playerFirebaseID = playerFirebaseID;
     }
 
     public void SetPlayerGameID(string gameID)
     {
-        
+        GameHandler.singleton.DestroyGameListUI();
         if (!isServer)
         {
+            playerID = playerFirebaseID + gameID;
+            Debug.Log("playerID " + playerID);
             this.playerGameID = gameID;
             CmdSetPlayerGameID(gameID);
             Debug.Log("gameID " + playerGameID);
@@ -94,58 +141,31 @@ public class PlayerManager : NetworkBehaviour {
     [Command]
     public void CmdSetPlayerGameID(string gameID)
     {
-        
+        playerID = playerFirebaseID + gameID;
+        Debug.Log("playerID " + playerID);
         this.playerGameID = gameID;
         Debug.Log("CmdgameID " + playerGameID);
+        
     }
 
-
-    
-
-    //Hooks 
-    public void OnChangeGameID(string gameID)
-    {   
-        playerGameID = gameID;
-        if(isLocalPlayer == false)
-        {
-            return;
-        }
-        if(playerGameID == "" || playerGameID.Equals(""))
-        {
-            return;
-        }
-
-
-
-
-        CmdGetPlayerObject();
-    }
-    
-    public void OnChangePlayerID(string playerID)  ///This function is called only on client after playerID was changed on server. 
+    public void CreatePlayerUI()
     {
-
-        this.playerID = playerID;
-        if (isLocalPlayer == false)  ///if I am not local client I dont care about assigning or removing player object which contains data for player  
+        if (myPlayerData.GetPlayerRole() == PlayerRoles.Developer)
         {
-            return;
+            myPlayerUIObject = Instantiate(playerDeveloperUIPrefab);
+            myPlayerData.SetPlayerUI(myPlayerUIObject);
         }
-        if (playerID == null || playerID.Equals(""))   /// true if I signed out
+        else
         {
-            CmdRemoveAuthority();
-            myPlayerObject = null;
-            myPlayerData = null;
-            return;
-
+            myPlayerUIObject = Instantiate(playerProviderUIprefab);
+            myPlayerData.SetPlayerUI(myPlayerUIObject);
         }
-     
-        Debug.Log("onChnagePlayerId " + this.playerID);
 
-        //CmdGetPlayerObject();
-        GameHandler.singleton.GenerateGamesListUI();
     }
 
-    [Command]
-    public void CmdGetAdminObject()
+       
+    [Command]   
+    public void CmdCreateAdminObject()
     {
 
     }  
@@ -173,14 +193,27 @@ public class PlayerManager : NetworkBehaviour {
     [Command]
     public void CmdCreatePlayerData()
     {
-        myPlayerObject = Instantiate(playerPrefab);
-        myPlayerData = myPlayerObject.GetComponent<PlayerData>();
+        GameData myGame = GameHandler.allGames[playerGameID];
+        if (myGame.GetDevelopersCount() > myGame.GetProvidersCount() || myGame.GetProvidersCount() == myGame.GetDevelopersCount())
+        {
+            myPlayerObject = Instantiate(playerProviderPrefab);
+            myPlayerData = myPlayerObject.GetComponent<PlayerData>();
+            myPlayerData.SetPlayerRole(PlayerRoles.Provider);
+        }
+        else
+        {
+            myPlayerObject = Instantiate(playerDeveloperPrefab);
+            myPlayerData = myPlayerObject.GetComponent<PlayerData>();
+            myPlayerData.SetPlayerRole(PlayerRoles.Developer);
+        }
+
+        //myPlayerObject = Instantiate(playerPrefab);
+        //myPlayerData = myPlayerObject.GetComponent<PlayerData>();
         myPlayerData.SetGameID(playerGameID);
         Debug.Log("SERVER: gameID for my new playerdata set to: " + playerGameID);
         myPlayerData.SetPlayerID(playerID);
         Debug.Log("SERVER: playerID for my new playerdata set to: " + playerID);
         myPlayerObject.SetActive(true);
-
         NetworkServer.SpawnWithClientAuthority(myPlayerObject, gameObject);
         Debug.Log("new playerdataobject spawned with gameID:" + myPlayerData.GetGameID() + " & playerID: " + myPlayerData.GetPlayerID()); 
     }

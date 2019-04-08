@@ -10,32 +10,24 @@ public class GameHandler : NetworkBehaviour {
     /// This class creates/deletes games, shows list of games
     /// loads/saves data on server
     /// </summary>
-    public GameObject GamePrefab;
-    public GameObject GameUIPrefab;
-    public GameObject GameListUIPrefab;
-    public GameObject GamePasswordVerificatorPrefab;
+    public GameObject gamePrefab;
+    public GameObject gameUIPrefab;
+    public GameObject gameListUIPrefab;
+    public GameObject gamePasswordVerificatorPrefab;
 
-    private GameObject GameListUIContent;
-    private Text GameNameText;
-    private Text GameIDText;
-    private Text GamePlayersText;
-    private Text GameRoundText;
+    private GameObject gameListUIContent;
+    private PlayerManager localPlayer;
 
-   
-    private PlayerManager localPlayer;    
-
+    private GameObject gameListUIGameObject;
 
     public static GameHandler singleton;
+
 
 
     // This List contains all Game objects
     public static Dictionary<string, GameData> allGames = new Dictionary<string, GameData>();
     // This List contains all GameUI objects
     public static Dictionary<string, GameObject> allGamesUI = new Dictionary<string, GameObject>();
-
-
-
-    public static string test;
 
     // This list holds data about all games and all their players
     //----------------------<gameID           playerID, PlayerData reference>------------------------------------------------------------//
@@ -69,7 +61,7 @@ public class GameHandler : NetworkBehaviour {
         CreateGame("DEMO2", "666");
 
         Debug.Log("Game Instatinated2");
-        GameObject game = Instantiate(GamePrefab);
+        GameObject game = Instantiate(gamePrefab);
         GameData gameData = game.GetComponent<GameData>();
 
         gameData.SetGameID("3");
@@ -92,22 +84,26 @@ public class GameHandler : NetworkBehaviour {
     public void GenerateGamesListUI()
     {   
         //created list of game UI
-        GameObject GameUIList = Instantiate(GameListUIPrefab);
-        GameListUIContent = GameUIList.transform.Find("GameScrolList/GameListViewport/GameListContent").gameObject;
+        gameListUIGameObject = Instantiate(gameListUIPrefab);
+        gameListUIContent = gameListUIGameObject.transform.Find("GameScrolList/GameListViewport/GameListContent").gameObject;
 
         //adding exising games into UI representation
         foreach(GameData gameData in allGames.Values)
         {
-            GameObject gameUI = Instantiate(GameUIPrefab);
-            gameUI.transform.SetParent(GameListUIContent.transform, false);
+            GameObject gameUI = Instantiate(gameUIPrefab);
+            gameUI.transform.SetParent(gameListUIContent.transform, false);
             gameData.SetGameUIHandler(gameUI.GetComponent<GameUIHandler>());
             gameData.GameUIUpdateAll();
         }
     } 
+    public void DestroyGameListUI()
+    {
+        Destroy(gameListUIGameObject);
+    }
 
     public void GenerateGamePasswordVerificator(GameObject gameID)
     {
-        GameObject GamePasswordVerificator = Instantiate(GamePasswordVerificatorPrefab);
+        GameObject GamePasswordVerificator = Instantiate(gamePasswordVerificatorPrefab);
         GamePasswordVerificator.GetComponent<GamePasswordVerification>().SetGameData(GameHandler.allGames[gameID.GetComponent<Text>().text].GetComponent<GameData>());
     }
        
@@ -122,7 +118,7 @@ public class GameHandler : NetworkBehaviour {
     {
         if (isServer)
         {
-            GameObject game = Instantiate(GamePrefab);
+            GameObject game = Instantiate(gamePrefab);
             GameData gameData = game.GetComponent<GameData>();
 
             gameData.SetGameID(GenerateUniqueID());
@@ -130,6 +126,8 @@ public class GameHandler : NetworkBehaviour {
             gameData.SetGameRound(1);
             gameData.SetPassoword(password);
             gameData.SetPlayersCount(0);
+            gameData.SetProvidersCount(0);
+            gameData.SetDevelopersCount(0);
             game.SetActive(true);
         }
     }

@@ -38,7 +38,7 @@ public class PlayerData : NetworkBehaviour {
     {
         if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
         {
-            GameHandler.allPlayers[gameID].Add(playerID, this);
+            GameHandler.allPlayers[gameID].Add(playerID, this.gameObject);
         }
 
         if (GameHandler.allGames[gameID] == true)

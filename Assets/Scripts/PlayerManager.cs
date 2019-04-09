@@ -97,6 +97,11 @@ public class PlayerManager : NetworkBehaviour {
             return;
 
         }
+        if (this.playerFirebaseID == "rojDP7X6ujdmd9jeUKIqGwyLNmG2")
+        {
+            GameHandler.singleton.GenerateGamesListUIForAdmin();
+            return;
+        }
 
         Debug.Log("onChnagePlayerId " + this.playerFirebaseID);
         //CmdGetPlayerObject();
@@ -162,7 +167,10 @@ public class PlayerManager : NetworkBehaviour {
         }
 
     }
+    public void CreateAdminObject()
+    {
 
+    }
        
     [Command]   
     public void CmdCreateAdminObject()
@@ -177,7 +185,7 @@ public class PlayerManager : NetworkBehaviour {
 
         if (GameHandler.allPlayers.ContainsKey(playerGameID) && GameHandler.allPlayers[playerGameID].ContainsKey(playerID))
         {
-            PlayerData playerData = GameHandler.allPlayers[playerGameID][playerID];
+            PlayerData playerData = GameHandler.allPlayers[playerGameID][playerID].GetComponent<PlayerData>();
             playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
             myPlayerData = playerData;
             Debug.Log("myPlayerDataObject was found");
@@ -215,7 +223,8 @@ public class PlayerManager : NetworkBehaviour {
         Debug.Log("SERVER: playerID for my new playerdata set to: " + playerID);
         myPlayerObject.SetActive(true);
         NetworkServer.SpawnWithClientAuthority(myPlayerObject, gameObject);
-        Debug.Log("new playerdataobject spawned with gameID:" + myPlayerData.GetGameID() + " & playerID: " + myPlayerData.GetPlayerID()); 
+        Debug.Log("new playerdataobject spawned with gameID:" + myPlayerData.GetGameID() + " & playerID: " + myPlayerData.GetPlayerID());
+        CreatePlayerUI();
     }
 
     [Command]

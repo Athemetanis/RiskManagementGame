@@ -8,6 +8,9 @@ public class ContractManager : NetworkBehaviour
 
     public GameObject contractPrefab;
 
+    public Dictionary<string, Contract> myContracts = new Dictionary<string, Contract>();
+
+    private int myContractsCount;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,14 +23,35 @@ public class ContractManager : NetworkBehaviour
         
     }
 
-    //METHODS
-    //poriešiť že hráč môže mať viac game dát s rovnakým ID...... FUCK
-    public void CmdCreateContract(string ProviderID, string DeveloperID)
-    {
-        GameObject newContract = Instantiate(contractPrefab);
-       // newContract.set
 
+    public void TryToAddContractToMyContracts(string contractID, Contract contract)
+    {   if (!myContracts.ContainsKey(contractID))
+        {
+            myContracts.Add(contractID, contract);
+            myContractsCount++;
+            Debug.Log(myContractsCount);
+        }
+        
     }
 
+
+    //METHODS
+
+    public void CmdCreateContract(string providerID, string developerID)
+    {
+        GameObject newContractObject = Instantiate(contractPrefab);
+        Contract newContract = newContractObject.GetComponent<Contract>();
+        newContract.SetDeveloperID(developerID);
+        newContract.SetProviderID(providerID);
+        newContract.SetState(ContractState.Proposal);
+        newContract.SetContractId(newContractObject.GetInstanceID().ToString());
+        //myContracts.Add(newContract.GetContractID(), newContract);
+        newContract.gameObject.SetActive(true);
+        NetworkServer.Spawn(newContractObject);
+        // newContract.set
+    }
+
+    
+    
 
 }

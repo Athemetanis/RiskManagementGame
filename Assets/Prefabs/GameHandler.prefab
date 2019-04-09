@@ -125,7 +125,11 @@ MonoBehaviour:
   gamePrefab: {fileID: 1932032783963128, guid: 10fd66cd189bdd64988b987f98b343b8, type: 3}
   gameUIPrefab: {fileID: 5464168536294032748, guid: 27e3fab9be11dc54c9d7cfbcbf2913d1,
     type: 3}
+  gameUIPrefabAdmin: {fileID: 5464168536294032748, guid: fe96b15e5dcb9f744a250ff563b4bb95,
+    type: 3}
   gameListUIPrefab: {fileID: 1685780879408004592, guid: 3a79f684c0d96b24ba35beca5b1557f3,
+    type: 3}
+  gameListUIPrefabAdmin: {fileID: 1685780879408004592, guid: fd46ae5fc1135d5418ea0c01c85ec395,
     type: 3}
   gamePasswordVerificatorPrefab: {fileID: 6260822302130016585, guid: bffaae9c98d44ab4c8833e76b5132f1a,
     type: 3}

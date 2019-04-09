@@ -12,13 +12,19 @@ public class GameHandler : NetworkBehaviour {
     /// </summary>
     public GameObject gamePrefab;
     public GameObject gameUIPrefab;
+    public GameObject gameUIPrefabAdmin;
     public GameObject gameListUIPrefab;
+    public GameObject gameListUIPrefabAdmin;
     public GameObject gamePasswordVerificatorPrefab;
 
-    private GameObject gameListUIContent;
+    private string gameName;
+    private string gamePassword;
+
+
     private PlayerManager localPlayer;
 
     private GameObject gameListUIGameObject;
+    private GameObject gameListUIContent;
 
     public static GameHandler singleton;
 
@@ -31,13 +37,15 @@ public class GameHandler : NetworkBehaviour {
 
     // This list holds data about all games and all their players
     //----------------------<gameID           playerID, PlayerData reference>------------------------------------------------------------//
-    public static Dictionary<string, Dictionary<string, PlayerData>> allPlayers = new Dictionary<string, Dictionary<string, PlayerData>>();
+    public static Dictionary<string, Dictionary<string, GameObject>> allPlayers = new Dictionary<string, Dictionary<string, GameObject>>();
     public static int count;
 
 
     //GETTERS & SETTERS
     public void SetLocalPlayer(PlayerManager localPlayer){ this.localPlayer = localPlayer; }
     public PlayerManager GetLocalPlayer() { return localPlayer; }
+    public void SetGameName(InputField gameName) { this.gameName = gameName.text; }
+    public void SetGamePassword(InputField gamePassword) { this.gamePassword = gamePassword.text; }
 
     private void Awake()
     {
@@ -86,16 +94,58 @@ public class GameHandler : NetworkBehaviour {
         //created list of game UI
         gameListUIGameObject = Instantiate(gameListUIPrefab);
         gameListUIContent = gameListUIGameObject.transform.Find("GameScrolList/GameListViewport/GameListContent").gameObject;
+        GeneratingGamesUIForPlayer();
 
+    }
+
+    public void GenerateGamesListUIForAdmin()
+    {
+        gameListUIGameObject = Instantiate(gameListUIPrefabAdmin);
+        gameListUIContent = gameListUIGameObject.transform.Find("GameScrolList/GameListViewport/GameListContent").gameObject;
+        GeneratingGamesUIForAdmin();
+
+    }
+    
+
+    public void GeneratingGamesUIForPlayer()
+    {
         //adding exising games into UI representation
-        foreach(GameData gameData in allGames.Values)
+        foreach (GameData gameData in allGames.Values)
         {
             GameObject gameUI = Instantiate(gameUIPrefab);
+            allGamesUI.Add(gameUI.GetInstanceID().ToString(), gameUI);
             gameUI.transform.SetParent(gameListUIContent.transform, false);
             gameData.SetGameUIHandler(gameUI.GetComponent<GameUIHandler>());
             gameData.GameUIUpdateAll();
         }
-    } 
+    }
+
+    public void GeneratingGamesUIForAdmin()
+    {
+        //adding exising games into UI representation
+        foreach (GameData gameData in allGames.Values)
+        {
+            GameObject gameUI = Instantiate(gameUIPrefabAdmin);
+            allGamesUI.Add(gameUI.GetInstanceID().ToString(), gameUI);
+            gameUI.transform.SetParent(gameListUIContent.transform, false);
+            gameData.SetGameUIHandler(gameUI.GetComponent<GameUIHandler>());
+            gameData.GameUIUpdateAll();
+        }
+    }
+
+    public void RefreshGamesList()
+    {   
+        foreach(Transform child in gameListUIGameObject.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        allGamesUI.Clear();
+
+        GeneratingGamesUIForPlayer();
+
+
+    }
+
     public void DestroyGameListUI()
     {
         Destroy(gameListUIGameObject);
@@ -116,6 +166,7 @@ public class GameHandler : NetworkBehaviour {
 
     public void CreateGame(string name, string password)
     {
+        Debug.Log("creating game");
         if (isServer)
         {
             GameObject game = Instantiate(gamePrefab);
@@ -130,7 +181,27 @@ public class GameHandler : NetworkBehaviour {
             gameData.SetDevelopersCount(0);
             game.SetActive(true);
         }
+        else { }
     }
+
+    public void CreateGame()
+    {
+        if (isServer)
+        {
+            GameObject game = Instantiate(gamePrefab);
+            GameData gameData = game.GetComponent<GameData>();
+
+            gameData.SetGameID(GenerateUniqueID());
+            gameData.SetGameName(gameName);
+            gameData.SetGameRound(1);
+            gameData.SetPassoword(gamePassword);
+            gameData.SetPlayersCount(0);
+            gameData.SetProvidersCount(0);
+            gameData.SetDevelopersCount(0);
+            game.SetActive(true);
+        }
+    }
+
 
     public void DeleteGame(string name)  ///DO I want this? 
     {

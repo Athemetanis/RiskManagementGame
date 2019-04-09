@@ -69,7 +69,7 @@ public class GameData : NetworkBehaviour {
 
         if (GameHandler.allPlayers.ContainsKey(this.GetGameID()) == false)
         {
-            GameHandler.allPlayers.Add(this.GetGameID(), new Dictionary<string, PlayerData>());
+            GameHandler.allPlayers.Add(this.GetGameID(), new Dictionary<string, GameObject>());
             Debug.Log("Game with ID " + gameID + "was created");
         }
     }

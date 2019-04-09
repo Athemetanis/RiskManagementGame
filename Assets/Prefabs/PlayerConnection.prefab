@@ -128,9 +128,9 @@ MonoBehaviour:
     type: 3}
   playerDeveloperPrefab: {fileID: 1303548471944098, guid: 21aea273c8651df45b278f16eab1fb4f,
     type: 3}
-  developerUIPrefab: {fileID: 2113743339525991649, guid: 77489750e71a332489c6b0c4f985b55d,
+  playerDeveloperUIPrefab: {fileID: 2113743339525991649, guid: 77489750e71a332489c6b0c4f985b55d,
     type: 3}
   playerProviderPrefab: {fileID: 1303548471944098, guid: 513ae00924919c046847cdc82a269bb5,
     type: 3}
-  providerUIprefab: {fileID: 2113743339525991649, guid: efcfb1e9e54ac9c45aa822dc13ad288c,
+  playerProviderUIprefab: {fileID: 2113743339525991649, guid: 125686409bede22479bc1113097c5c96,
     type: 3}

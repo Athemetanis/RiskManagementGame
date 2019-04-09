@@ -35,15 +35,15 @@ public class AuthenticationUIHandler : MonoBehaviour {
 
     public void ShowSignUpPanel()
     {
-        assincTextRewirter.gameObject.SetActive(true);
         DisableAllPanels();
+        assincTextRewirter.gameObject.SetActive(true);
         signUpPanel.SetActive(true);
     }
 
     public void ShowSignInPanel()
     {
-        assincTextRewirter.gameObject.SetActive(true);
         DisableAllPanels();
+        assincTextRewirter.gameObject.SetActive(true);
         signInPanel.SetActive(true);
     }
 

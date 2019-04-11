@@ -7,14 +7,17 @@ public class ContractManager : NetworkBehaviour
 {   //VARIABLES
 
     public GameObject contractPrefab;
+    private Dictionary<string, Contract> myContracts = new Dictionary<string, Contract>();
 
-    public Dictionary<string, Contract> myContracts = new Dictionary<string, Contract>();
+    private PlayerRoles playerRole;
+    private string providerID;
 
     private int myContractsCount;
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerRole = this.gameObject.GetComponent<PlayerData>().GetPlayerRole();
+        providerID = this.gameObject.GetComponent<PlayerData>().GetPlayerID();
     }
 
     // Update is called once per frame
@@ -23,20 +26,19 @@ public class ContractManager : NetworkBehaviour
         
     }
 
-
     public void TryToAddContractToMyContracts(string contractID, Contract contract)
-    {   if (!myContracts.ContainsKey(contractID))
+    {
+        if (!myContracts.ContainsKey(contractID))
         {
             myContracts.Add(contractID, contract);
             myContractsCount++;
             Debug.Log(myContractsCount);
         }
-        
     }
 
 
     //METHODS
-
+    [Command]
     public void CmdCreateContract(string providerID, string developerID)
     {
         GameObject newContractObject = Instantiate(contractPrefab);
@@ -51,7 +53,32 @@ public class ContractManager : NetworkBehaviour
         // newContract.set
     }
 
-    
+    [Command]
+    public void CmdSendModifiedContract(string contractID, int price, int delivery)
+    {
+
+
+
+    }
+
+    public void SetNotice(int turn)
+    {   
+        if ( (turn % 2 == 0) &&   string.Equals(playerRole.ToString(), "provider"))
+        {
+            Debug.Log("Providers turn");
+        }
+        if ((turn % 2 != 0) && string.Equals(playerRole.ToString(), "developer"))
+        {
+            Debug.Log("Developers turn");
+        }
+
+
+
+
+        //ak rola tohoto objektu odpovedá hodnote ťahu
+        //na tabe contracts zobraz vykríčník
+    }
+
     
 
 }

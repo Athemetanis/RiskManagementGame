@@ -296,7 +296,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000038146973
+      value: -0.000022888184
       objectReference: {fileID: 0}
     - target: {fileID: 224856348943071238, guid: 67117722a812a2e46ab8cb8eafbf5f5e,
         type: 3}
@@ -520,7 +520,7 @@ PrefabInstance:
     - target: {fileID: 8182406167012759573, guid: fa94ceeda817c81418cbe1106d946109,
         type: 3}
       propertyPath: spawnPrefabs.Array.size
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8182406167012759573, guid: fa94ceeda817c81418cbe1106d946109,
         type: 3}
@@ -566,6 +566,23 @@ PrefabInstance:
         type: 3}
       propertyPath: maxConnections
       value: 120
+      objectReference: {fileID: 0}
+    - target: {fileID: 8182406167012759573, guid: fa94ceeda817c81418cbe1106d946109,
+        type: 3}
+      propertyPath: spawnPrefabs.Array.data[4]
+      value: 
+      objectReference: {fileID: 1303548471944098, guid: 21aea273c8651df45b278f16eab1fb4f,
+        type: 3}
+    - target: {fileID: 8182406167012759573, guid: fa94ceeda817c81418cbe1106d946109,
+        type: 3}
+      propertyPath: spawnPrefabs.Array.data[5]
+      value: 
+      objectReference: {fileID: 1303548471944098, guid: 513ae00924919c046847cdc82a269bb5,
+        type: 3}
+    - target: {fileID: 8182406167012759573, guid: fa94ceeda817c81418cbe1106d946109,
+        type: 3}
+      propertyPath: autoCreatePlayer
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fa94ceeda817c81418cbe1106d946109, type: 3}

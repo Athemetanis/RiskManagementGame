@@ -10,6 +10,7 @@ public class AuthenticationUIHandler : MonoBehaviour {
     public GameObject signUpPanel;
     public GameObject signInPanel;
     public GameObject loggedInPanel;
+    public GameObject authImage;
     public Text infoText;
     public AssincTextRewriter assincTextRewirter;
 
@@ -49,14 +50,16 @@ public class AuthenticationUIHandler : MonoBehaviour {
 
 
     public void ShowLoggedInPanel()
-    {
+    {        
         DisableAllPanels();
+        authImage.SetActive(false);
         loggedInPanel.SetActive(true);
     }
 
 
     public void DisableAllPanels()
     {
+        authImage.SetActive(true);
         EnableWarningTextChange("");
         assincTextRewirter.gameObject.SetActive(false);
         signPanel.SetActive(false);

@@ -64,10 +64,10 @@ public class PlayerManager : NetworkBehaviour {
 
     }
 
-
     //HOOKS
     public void OnChangeGameID(string gameID)
     {
+        playerID = playerFirebaseID + gameID;
         playerGameID = gameID;
         if (isLocalPlayer == false)
         {
@@ -78,7 +78,7 @@ public class PlayerManager : NetworkBehaviour {
             return;
         }
 
-        CmdGetPlayerObject();
+        GetPlayerObject();
     }
 
     public void OnChangePlayerID(string playerFirebaseID)  ///This function is called only on client after playerID was changed on server. 
@@ -150,38 +150,24 @@ public class PlayerManager : NetworkBehaviour {
         Debug.Log("playerID " + playerID);
         this.playerGameID = gameID;
         Debug.Log("CmdgameID " + playerGameID);
-        
-    }
-
-    public void CreatePlayerUI()
-    {
-        if (myPlayerData.GetPlayerRole() == PlayerRoles.Developer)
-        {
-            myPlayerUIObject = Instantiate(playerDeveloperUIPrefab);
-            myPlayerData.SetPlayerUI(myPlayerUIObject);
-        }
-        else
-        {
-            myPlayerUIObject = Instantiate(playerProviderUIprefab);
-            myPlayerData.SetPlayerUI(myPlayerUIObject);
-        }
 
     }
+
     public void CreateAdminObject()
     {
 
     }
-       
-    [Command]   
+
+    [Command]
     public void CmdCreateAdminObject()
     {
 
-    }  
-    
-    [Command]
-    public void CmdGetPlayerObject()
+    }
+
+
+    public void GetPlayerObject()
     {
-        Debug.Log("trying to find my playerdata object" + playerGameID);
+        Debug.Log("trying to find my playerdata object" + playerID);
 
         if (GameHandler.allPlayers.ContainsKey(playerGameID) && GameHandler.allPlayers[playerGameID].ContainsKey(playerID))
         {
@@ -189,6 +175,7 @@ public class PlayerManager : NetworkBehaviour {
             playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
             myPlayerData = playerData;
             Debug.Log("myPlayerDataObject was found");
+            CreatePlayerUI();
             return;
         }
         else
@@ -196,6 +183,37 @@ public class PlayerManager : NetworkBehaviour {
             Debug.Log("my object was not found, it must be created");
             CmdCreatePlayerData();
         }
+    }
+
+    [ClientRpc]
+    public void RpcGetPlayerObject()
+    { if (isLocalPlayer == false)
+        {
+            return;
+        }
+        Debug.Log("trying to find my playerdata object" + playerID);
+
+        Debug.Log(GameHandler.allPlayers.ContainsKey(playerGameID));
+        Debug.Log(GameHandler.allPlayers[playerGameID].ContainsKey(playerID));
+
+        if (GameHandler.allPlayers.ContainsKey(playerGameID) && GameHandler.allPlayers[playerGameID].ContainsKey(playerID))
+        {
+            PlayerData playerData = GameHandler.allPlayers[playerGameID][playerID].GetComponent<PlayerData>();
+            //playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
+            myPlayerData = playerData;
+            Debug.Log("myPlayerDataObject was found");
+            CreatePlayerUI();
+            return;
+        }
+    }
+
+
+    [Command]
+    public void CmdAssignClientAuthority()
+    {
+        PlayerData playerData = GameHandler.allPlayers[playerGameID][playerID].GetComponent<PlayerData>();
+        playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
+
     }
 
     [Command]
@@ -222,11 +240,54 @@ public class PlayerManager : NetworkBehaviour {
         myPlayerData.SetPlayerID(playerID);
         Debug.Log("SERVER: playerID for my new playerdata set to: " + playerID);
         myPlayerObject.SetActive(true);
-        NetworkServer.SpawnWithClientAuthority(myPlayerObject, gameObject);
+        NetworkServer.Spawn(myPlayerObject);
+        //NetworkServer.SpawnWithClientAuthority(myPlayerObject, gameObject);
         Debug.Log("new playerdataobject spawned with gameID:" + myPlayerData.GetGameID() + " & playerID: " + myPlayerData.GetPlayerID());
-        CreatePlayerUI();
+
+        StartCoroutine(function1());
+    }
+   
+    private IEnumerator function1 ()
+    {
+        yield return new WaitForSeconds(1);
+        RpcGetPlayerObject();
+
     }
 
+    public void CreatePlayerUI()
+    {
+        if (myPlayerData.GetPlayerRole() == PlayerRoles.Developer)
+        {
+            myPlayerUIObject = Instantiate(playerDeveloperUIPrefab);
+            myPlayerData.SetPlayerUI(myPlayerUIObject);
+        }
+        else
+        {
+            myPlayerUIObject = Instantiate(playerProviderUIprefab);
+            myPlayerData.SetPlayerUI(myPlayerUIObject);
+        }
+    }
+
+    /*[ClientRpc]
+    public void RpcCreatePlayerUI()
+    {
+        Debug.Log("RPC");
+        if (isLocalPlayer == false)
+        {
+            return;
+        }
+        if (myPlayerData.GetPlayerRole() == PlayerRoles.Developer)
+        {
+            myPlayerUIObject = Instantiate(playerDeveloperUIPrefab);
+            myPlayerData.SetPlayerUI(myPlayerUIObject);
+        }
+        else
+        {
+            myPlayerUIObject = Instantiate(playerProviderUIprefab);
+            myPlayerData.SetPlayerUI(myPlayerUIObject);
+        }
+    }*/
+    
     [Command]
     public void CmdRemoveAuthority()
     {
@@ -236,38 +297,35 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
-    
-
-         
     /// <summary>
     /// ----------------------------------------------OLD------------------------------------
     /// </summary>
     /// <param name="name"></param>
-   /*
-    
-    public void SetPlayerDataFirmName(string name)
-    {
-        GameHandler.allPlayers[playerGameID][playerID].SetFirmName(name);
-        CmdSetPlayerDataFirmName(name);
-    }
+    /*
 
-    [Command]
-    private void CmdSetPlayerDataFirmName(string name)
-    {
-        GameHandler.allPlayers[playerGameID][playerID].SetFirmName(name);
-    }
-    */
+     public void SetPlayerDataFirmName(string name)
+     {
+         GameHandler.allPlayers[playerGameID][playerID].SetFirmName(name);
+         CmdSetPlayerDataFirmName(name);
+     }
+
+     [Command]
+     private void CmdSetPlayerDataFirmName(string name)
+     {
+         GameHandler.allPlayers[playerGameID][playerID].SetFirmName(name);
+     }
+     */
 
 
-     /*public void CreatePlayerObject(string playerID)
-    {
-        playerObject = Instantiate(playerPrefab);
-        player = playerObject.GetComponent<PlayerData>();
-        playerData.SetPlayerID(playerID);
-        path = Application.persistentDataPath + "/" + player.GetPlayerID() + ".player";
-        Debug.Log(path);
-    
-    }*/
+    /*public void CreatePlayerObject(string playerID)
+   {
+       playerObject = Instantiate(playerPrefab);
+       player = playerObject.GetComponent<PlayerData>();
+       playerData.SetPlayerID(playerID);
+       path = Application.persistentDataPath + "/" + player.GetPlayerID() + ".player";
+       Debug.Log(path);
+
+   }*/
 
     /* void SerializePlayerData()
     {

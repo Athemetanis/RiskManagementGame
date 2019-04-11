@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4757718622698373110}
   - component: {fileID: 114313143450428616}
   - component: {fileID: 112411613920030485}
+  - component: {fileID: 882157777694406940}
   m_Layer: 0
   m_Name: PlayerDeveloper
   m_TagString: PlayerData
@@ -138,3 +139,15 @@ MonoBehaviour:
   syncInterval: 0.1
   contractPrefab: {fileID: 5379819315162921539, guid: 6153a3f725031284ba20bb0e37b48d99,
     type: 3}
+--- !u!114 &882157777694406940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303548471944098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3af3a58e4d2cb40905ad8d37edd0b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

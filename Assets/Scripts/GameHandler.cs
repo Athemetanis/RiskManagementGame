@@ -31,7 +31,7 @@ public class GameHandler : NetworkBehaviour {
 
 
     // This List contains all Game objects
-    public static Dictionary<string, GameData> allGames = new Dictionary<string, GameData>();
+    public static Dictionary<string, GameData> allGames;
     // This List contains all GameUI objects
     public static Dictionary<string, GameObject> allGamesUI = new Dictionary<string, GameObject>();
 
@@ -50,6 +50,7 @@ public class GameHandler : NetworkBehaviour {
     private void Awake()
     {
         singleton = this;
+        allGames = new Dictionary<string, GameData>();
     }
 
     // Use this for initialization
@@ -68,7 +69,7 @@ public class GameHandler : NetworkBehaviour {
     {
         CreateGame("DEMO2", "666");
 
-        Debug.Log("Game Instatinated2");
+        /*Debug.Log("Game Instatinated2");
         GameObject game = Instantiate(gamePrefab);
         GameData gameData = game.GetComponent<GameData>();
 
@@ -83,6 +84,7 @@ public class GameHandler : NetworkBehaviour {
         //allGamesUI.Add("3", null);
         Debug.Log("Game Instatinated2");
         game.SetActive(true);
+        NetworkServer.Spawn(game);*/
 
 
     }
@@ -134,16 +136,14 @@ public class GameHandler : NetworkBehaviour {
     }
 
     public void RefreshGamesList()
-    {   
-        foreach(Transform child in gameListUIGameObject.transform)
+    {
+        foreach (Transform child in gameListUIGameObject.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
         allGamesUI.Clear();
 
         GeneratingGamesUIForPlayer();
-
-
     }
 
     public void DestroyGameListUI()
@@ -180,6 +180,7 @@ public class GameHandler : NetworkBehaviour {
             gameData.SetProvidersCount(0);
             gameData.SetDevelopersCount(0);
             game.SetActive(true);
+            NetworkServer.Spawn(game);
         }
         else { }
     }

@@ -13,7 +13,7 @@ public class PlayerData : NetworkBehaviour {
     [SyncVar]
     private string gameID;
     [SyncVar]
-    private string playerID;   //in the end set this to private
+    private string playerID;
     [SyncVar]
     private PlayerRoles playerRole;
 
@@ -38,11 +38,13 @@ public class PlayerData : NetworkBehaviour {
     {
         if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
         {
+            Debug.Log("player registered to all players: " + playerID);
             GameHandler.allPlayers[gameID].Add(playerID, this.gameObject);
         }
 
         if (GameHandler.allGames[gameID] == true)
         {
+            Debug.Log("player tries to be added into game " + gameID);
             GameHandler.allGames[gameID].AddPlayerToGame(this.gameObject);
             
         }

@@ -16,11 +16,11 @@ public class GameData : NetworkBehaviour {
     private int gameRound;
     [SyncVar(hook = "OnChangePlayersCount")]
     private int playersCount;
-    [SyncVar]
+   
     private int developersCount;
-    [SyncVar]
+    
     private int providersCount;
-    [SyncVar]
+    
     private int readyPlayersCount;
 
 
@@ -29,9 +29,10 @@ public class GameData : NetworkBehaviour {
 
 
     //--------------<playerID, GameObject player>---------------------------------------//   HOW I WILL BE SYNCING THIS??? /// pri každom starte playerdat - na cliente i na serveri sa zavola add
-    private Dictionary<string, GameObject> playerList = new Dictionary<string, GameObject>();
-    private Dictionary<string, GameObject> developerList = new Dictionary<string, GameObject>();
-    private Dictionary<string, GameObject> providerList = new Dictionary<string, GameObject>();
+
+    private Dictionary<string, GameObject> playerList;
+    private Dictionary<string, GameObject> developerList;
+    private Dictionary<string, GameObject> providerList;
 
   
     //GETTERS & SETTERS
@@ -60,8 +61,10 @@ public class GameData : NetworkBehaviour {
 
     // Use this for initialization
     void Start ()
-    {   
-
+    {
+        playerList = new Dictionary<string, GameObject>();
+        developerList = new Dictionary<string, GameObject>();
+        providerList = new Dictionary<string, GameObject>();
         if (GameHandler.allGames.ContainsKey(this.gameID) == false)
         {
             GameHandler.allGames.Add(this.gameID, this);
@@ -76,6 +79,8 @@ public class GameData : NetworkBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        
 		
 	}
 
@@ -114,6 +119,8 @@ public class GameData : NetworkBehaviour {
         {
             gameUIHandler.ChangePlayersCountText(playersCount);
         }
+
+        
     }
 
     public void GameUIUpdateAll()
@@ -137,7 +144,7 @@ public class GameData : NetworkBehaviour {
         if (playerList.ContainsKey(playerData.GetPlayerID()) == false)
         {
             playerList.Add(playerData.GetPlayerID(), player);
-            playersCount++;
+            playersCount = playerList.Keys.Count;
             if(playerData.GetPlayerRole() == PlayerRoles.Developer)
             {
                 developerList.Add(playerData.GetPlayerID(), player);
@@ -150,6 +157,14 @@ public class GameData : NetworkBehaviour {
             }
         }
 
+        foreach (GameObject playerg in playerList.Values)
+        {
+            Debug.Log("values"+ playerg.GetComponent<PlayerData>().GetPlayerID());
+        }
+        foreach (string playerg in playerList.Keys)
+        {
+            Debug.Log("keys"+playerg);
+        }
     }
 
     public void RemovePlayerFromGame(GameObject player)

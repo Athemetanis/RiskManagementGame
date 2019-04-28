@@ -105,8 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 1
+  serverOnly: 0
+  localPlayerAuthority: 1
   m_AssetId: 553ffacd63e2f274ab6a934f4c4ee830
   m_SceneId: 0
 --- !u!114 &114436350302990588
@@ -124,7 +124,7 @@ MonoBehaviour:
   syncInterval: 0.1
   authenticationPrefab: {fileID: 1041454387927078, guid: a0bb6ed37a3ad274fbd812c91aea1f7f,
     type: 3}
-  playerPrefab: {fileID: 1303548471944098, guid: dc8ef4fcb531f434db46603014cd7f72,
+  instructorPrefab: {fileID: 6458552567307691280, guid: bcc211dbadc16f34b81dd9b02488ca4c,
     type: 3}
   playerDeveloperPrefab: {fileID: 1303548471944098, guid: 21aea273c8651df45b278f16eab1fb4f,
     type: 3}

@@ -25,16 +25,22 @@ public class PlayerManager : NetworkBehaviour {
     private GameObject authentication;
 
 
-    public GameObject playerPrefab;
+    public GameObject instructorPrefab;
     public GameObject playerDeveloperPrefab;
     public GameObject playerDeveloperUIPrefab;
     public GameObject playerProviderPrefab;
     public GameObject playerProviderUIprefab;
 
-
+    private GameObject myInstructorObject;
     private GameObject myPlayerObject;
     private GameObject myPlayerUIObject;
     private PlayerData myPlayerData;
+
+    //GETTERS & SETTERS
+    public PlayerData GetMyPlayerData() { return myPlayerData; }
+    public GameObject GetMyPlayerObject() { return myPlayerObject; }
+
+
 
 
     // Use this for initialization
@@ -99,7 +105,8 @@ public class PlayerManager : NetworkBehaviour {
         }
         if (this.playerFirebaseID == "rojDP7X6ujdmd9jeUKIqGwyLNmG2")
         {
-            GameHandler.singleton.GenerateGamesListUIForAdmin();
+            
+            CmdCreateInstructorObject();
             return;
         }
 
@@ -159,9 +166,10 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     [Command]
-    public void CmdCreateAdminObject()
+    public void CmdCreateInstructorObject()
     {
-
+        myInstructorObject = Instantiate(instructorPrefab);
+        NetworkServer.SpawnWithClientAuthority(myInstructorObject, this.gameObject);
     }
 
 

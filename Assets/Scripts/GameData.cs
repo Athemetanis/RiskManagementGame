@@ -75,6 +75,11 @@ public class GameData : NetworkBehaviour {
             GameHandler.allPlayers.Add(this.GetGameID(), new Dictionary<string, GameObject>());
             Debug.Log("Game with ID " + gameID + "was created");
         }
+        if(GameHandler.singleton.GetGeneratedGameList())
+        {
+            GameHandler.singleton.RefreshGamesList();
+        }
+        
     }
 	
 	// Update is called once per frame

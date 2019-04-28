@@ -8,14 +8,14 @@ public class ContractUIHandler : MonoBehaviour
     public GameObject contractListContent;
     public GameObject rejectedContractListContent;
     public GameObject developerListContent;
-    public GameObject featureListContent;
+    //public GameObject featureOutsourcingListContent;
 
     public GameObject contractProposalPrefab;
     public GameObject contractDetailPrefab;
 
-    public GameObject contractUnitPrefab;
-    public GameObject developerUnityPrefab;
-    public GameObject featureUnityPrefab;
+    public GameObject contractUIPrefab;
+    public GameObject developerUIPrefab;
+    //public GameObject featureUIPrefab;
 
     
     // Start is called before the first frame update

@@ -17,14 +17,15 @@ public class GameHandler : NetworkBehaviour {
     public GameObject gameListUIPrefabAdmin;
     public GameObject gamePasswordVerificatorPrefab;
 
-    private string gameName;
-    private string gamePassword;
+    //private string gameName;
+    //private string gamePassword;
 
 
     private PlayerManager localPlayer;
 
     private GameObject gameListUIGameObject;
     private GameObject gameListUIContent;
+    private bool generatedGameList;
 
     public static GameHandler singleton;
 
@@ -33,7 +34,7 @@ public class GameHandler : NetworkBehaviour {
     // This List contains all Game objects
     public static Dictionary<string, GameData> allGames;
     // This List contains all GameUI objects
-    public static Dictionary<string, GameObject> allGamesUI = new Dictionary<string, GameObject>();
+    public static Dictionary<string, GameObject> allGamesUI;
 
     // This list holds data about all games and all their players
     //----------------------<gameID           playerID, PlayerData reference>------------------------------------------------------------//
@@ -44,13 +45,15 @@ public class GameHandler : NetworkBehaviour {
     //GETTERS & SETTERS
     public void SetLocalPlayer(PlayerManager localPlayer){ this.localPlayer = localPlayer; }
     public PlayerManager GetLocalPlayer() { return localPlayer; }
-    public void SetGameName(InputField gameName) { this.gameName = gameName.text; }
-    public void SetGamePassword(InputField gamePassword) { this.gamePassword = gamePassword.text; }
+    //public void SetGameName(InputField gameName) { this.gameName = gameName.text; }
+    //public void SetGamePassword(InputField gamePassword) { this.gamePassword = gamePassword.text; }
+    public bool GetGeneratedGameList() { return generatedGameList; }
 
     private void Awake()
     {
         singleton = this;
         allGames = new Dictionary<string, GameData>();
+        allGamesUI = new Dictionary<string, GameObject>();
     }
 
     // Use this for initialization
@@ -68,25 +71,6 @@ public class GameHandler : NetworkBehaviour {
     public override void OnStartServer()
     {
         CreateGame("DEMO2", "666");
-
-        /*Debug.Log("Game Instatinated2");
-        GameObject game = Instantiate(gamePrefab);
-        GameData gameData = game.GetComponent<GameData>();
-
-        gameData.SetGameID("3");
-        gameData.SetGameName("demo");
-        gameData.SetPassoword("666");
-
-        //GameObject gameUI = Instantiate(GameUIPrefab);
-
-        allGames.Add("3", gameData);
-
-        //allGamesUI.Add("3", null);
-        Debug.Log("Game Instatinated2");
-        game.SetActive(true);
-        NetworkServer.Spawn(game);*/
-
-
     }
 
 
@@ -97,15 +81,17 @@ public class GameHandler : NetworkBehaviour {
         gameListUIGameObject = Instantiate(gameListUIPrefab);
         gameListUIContent = gameListUIGameObject.transform.Find("GameScrolList/GameListViewport/GameListContent").gameObject;
         GeneratingGamesUIForPlayer();
+        generatedGameList = true;
 
     }
 
-    public void GenerateGamesListUIForAdmin()
+    public void GenerateGamesListUIForInstructor(InstructorManager instructor)
     {
         gameListUIGameObject = Instantiate(gameListUIPrefabAdmin);
+        gameListUIGameObject.GetComponent<CreateGameUIHandler>().SetInstructorManager(instructor);
         gameListUIContent = gameListUIGameObject.transform.Find("GameScrolList/GameListViewport/GameListContent").gameObject;
-        GeneratingGamesUIForAdmin();
-
+        GeneratingGamesUIForInstructor();
+        generatedGameList = true;
     }
     
 
@@ -122,7 +108,7 @@ public class GameHandler : NetworkBehaviour {
         }
     }
 
-    public void GeneratingGamesUIForAdmin()
+    public void GeneratingGamesUIForInstructor()
     {
         //adding exising games into UI representation
         foreach (GameData gameData in allGames.Values)
@@ -137,18 +123,24 @@ public class GameHandler : NetworkBehaviour {
 
     public void RefreshGamesList()
     {
-        foreach (Transform child in gameListUIGameObject.transform)
+        if (generatedGameList)
         {
-            GameObject.Destroy(child.gameObject);
-        }
-        allGamesUI.Clear();
+            Debug.Log("refreshing game list");
+            foreach (Transform child in gameListUIContent.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+            allGamesUI.Clear();
 
-        GeneratingGamesUIForPlayer();
+            GeneratingGamesUIForPlayer();
+                                         } 
+       
     }
 
     public void DestroyGameListUI()
     {
         Destroy(gameListUIGameObject);
+        generatedGameList = false;
     }
 
     public void GenerateGamePasswordVerificator(GameObject gameID)
@@ -157,12 +149,6 @@ public class GameHandler : NetworkBehaviour {
         GamePasswordVerificator.GetComponent<GamePasswordVerification>().SetGameData(GameHandler.allGames[gameID.GetComponent<Text>().text].GetComponent<GameData>());
     }
        
-    public void InstructorGenerateGamesListUI()
-    {
-        //to do -  other GameUIPrefab or whole game List??? 
-        //how to create game? 
-
-    }
 
     public void CreateGame(string name, string password)
     {
@@ -182,11 +168,14 @@ public class GameHandler : NetworkBehaviour {
             game.SetActive(true);
             NetworkServer.Spawn(game);
         }
-        else { }
+        
     }
 
-    public void CreateGame()
+    /*public void CreateGame()
     {
+        CreateGame(gameName, gamePassword);
+        //RefreshGamesList();
+
         if (isServer)
         {
             GameObject game = Instantiate(gamePrefab);
@@ -201,8 +190,7 @@ public class GameHandler : NetworkBehaviour {
             gameData.SetDevelopersCount(0);
             game.SetActive(true);
         }
-    }
-
+    }*/
 
     public void DeleteGame(string name)  ///DO I want this? 
     {

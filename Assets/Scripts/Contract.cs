@@ -5,6 +5,63 @@ using Mirror;
 
 public enum ContractState { Proposal, InNegotiations, Final, Accepted, Rejected, Done }
 
+public class Contract
+{
+    private string contractID;
+    private string gameID;
+    private string developerID;
+    private string providerID;
+    private Feature feature;
+
+    private ContractState state;
+    private int delivery;
+    private int price;
+    private int turn;
+    private List<string> historyList;
+
+    //GETTERS & SETTERS
+
+    public void SetDeveloperID(string developerID) { this.developerID = developerID; }
+    public string GetDeveloperID() { return developerID; }
+    public void SetProviderID(string providerID) { this.providerID = providerID; }
+    public string GetProviderID() { return providerID; }
+    public void SetContractId(string contractID) { this.contractID = contractID; }
+    public string GetContractID() { return contractID; }
+    public void SetState(ContractState state) { this.state = state; }
+    public ContractState GetState() { return state; }
+    public void SetDelivery(int delivery) { this.delivery = delivery; }
+    public int GetDelivery() { return delivery; }
+    public void SetPrice(int price) { this.price = price; }
+    public int GetPrice() { return price; }
+    public void SetHistory() { }
+    public List<string> GetHistroy() { return historyList; }
+
+    public Contract(string contractID, string gameID, string developerID, string providerID, Feature feature, ContractState state, int turn)
+    {
+        contractID = GameHandler.singleton.GenerateUniqueID();
+        this.gameID = gameID;
+        this.developerID = developerID;
+        this.providerID = providerID;
+        this.feature = feature;
+        this.state = state;
+        this.turn = turn;
+    }
+
+    //METHODS
+
+
+
+
+}
+
+
+
+
+
+
+
+
+/*
 
 public class Contract : NetworkBehaviour {
 
@@ -91,3 +148,4 @@ public class Contract : NetworkBehaviour {
     //METHODS
     
 }
+*/

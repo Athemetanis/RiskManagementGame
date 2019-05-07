@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+
+
 public class ContractManager : NetworkBehaviour
 {   //VARIABLES
 
@@ -41,7 +43,7 @@ public class ContractManager : NetworkBehaviour
     [Command]
     public void CmdCreateContract(string providerID, string developerID)
     {
-        GameObject newContractObject = Instantiate(contractPrefab);
+        /*GameObject newContractObject = Instantiate(contractPrefab);
         Contract newContract = newContractObject.GetComponent<Contract>();
         newContract.SetDeveloperID(developerID);
         newContract.SetProviderID(providerID);
@@ -50,7 +52,11 @@ public class ContractManager : NetworkBehaviour
         //myContracts.Add(newContract.GetContractID(), newContract);
         newContract.gameObject.SetActive(true);
         NetworkServer.Spawn(newContractObject);
-        // newContract.set
+        // newContract.set*/
+
+
+
+
     }
 
     [Command]

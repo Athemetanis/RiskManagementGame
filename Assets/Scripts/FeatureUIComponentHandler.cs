@@ -16,15 +16,17 @@ public class FeatureUIComponentHandler : MonoBehaviour
     public Toggle checkedForOutsourcing;
 
 
-    //METHODS
+    //GETTERS & SETTERS
     public void SetFeatureUIHandler(FeatureUIHandler featureUIHandler) { this.featureUIHandler = featureUIHandler; }
     public void SetNameIDText(string nameIDtext) { this.nameIDText.text = nameIDtext; }
     public void SetFunctionalityText(string functionalityText) { this.functionalityText.text = functionalityText; }
     public void SetIntegrationText(string integrationText) { this.integrationText.text = integrationText; }
     public void SetUserExperienceText(string userExperienceText) { this.userExperienceText.text = userExperienceText; }
     public void SetTimeCostsText(string timeCosts) { this.timeCostsText.text = timeCosts; }
-    public void SetCheckedForOutsourcing(bool checkOutsourcing) { this.checkedForOutsourcing.isOn = checkOutsourcing; }
+    public void SetCheckedForOutsourcing(bool checkOutsourcing) { this.checkedForOutsourcing.isOn = checkOutsourcing ; }
 
+
+    //METHODS
     public void SetFeatureForOutsourcing(bool setOutsourcing)
     {
         if (setOutsourcing)

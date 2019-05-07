@@ -7,7 +7,8 @@ public class FeatureUIHandler : MonoBehaviour
 {
 
     public GameObject featureUIPrefab;
-    public GameObject allFeatureListContent;
+    //public GameObject allFeatureListContent;
+    public GameObject availableFeatureListContent;
     public GameObject outsourcedFeatureListContent;
     public Dropdown proposalFeatures;
 
@@ -27,14 +28,25 @@ public class FeatureUIHandler : MonoBehaviour
     
     private void Start()
     {
+        GenerateAvailableFeatureUIList();
         GenerateOutSourcedFeatureUIList();
-        GenerateAllFeatureUIList();
+        GenerateDropdownOptions();
 
     }
 
+    public void GenerateDropdownOptions()
+    {
+        List<string> options = new List<string>(featureManager.GetOutsourcedFeatures().Keys);
+        proposalFeatures.AddOptions(options);
+    }
 
+    public void UpdateDropdownOptions()
+    {
+        proposalFeatures.ClearOptions();
+        GenerateDropdownOptions();
+    }
 
-    public void GenerateAllFeatureUIList()
+    /*public void GenerateAllFeatureUIList()
     {
         foreach( KeyValuePair<string, Feature> feature in featureManager.GetAllFeatures())
         {
@@ -50,11 +62,40 @@ public class FeatureUIHandler : MonoBehaviour
             featureUI.SetActive(true);
 
         }
+    }*/
+
+    public void GenerateAvailableFeatureUIList()
+    {
+        foreach (KeyValuePair<string, Feature> feature in featureManager.GetAvailableFeatures())
+        {
+            GameObject featureUI = Instantiate(featureUIPrefab);
+            featureUI.transform.SetParent(availableFeatureListContent.transform, false);
+            FeatureUIComponentHandler featureUIComponent = featureUI.GetComponent<FeatureUIComponentHandler>();
+            featureUIComponent.SetNameIDText(feature.Value.nameID);
+            featureUIComponent.SetFunctionalityText(feature.Value.functionality.ToString());
+            featureUIComponent.SetIntegrationText(feature.Value.integration.ToString());
+            featureUIComponent.SetUserExperienceText(feature.Value.userfriendliness.ToString());
+            featureUIComponent.SetTimeCostsText(feature.Value.timeCost.ToString());
+            featureUIComponent.SetFeatureUIHandler(this);
+            if (featureManager.GetOutsourcedFeatures().Contains(feature) == true)
+            {
+                featureUIComponent.SetCheckedForOutsourcing(true);
+            }
+            else
+            {
+                featureUIComponent.SetCheckedForOutsourcing(false);
+            }
+            featureUI.SetActive(true);
+        }
     }
 
-    public void UpdateAllFeatureUIList()
+    public void UpdateAvailableFeatureUIList()
     {
-
+        foreach (Transform child in availableFeatureListContent.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        GenerateAvailableFeatureUIList();
     }
 
     public void GenerateOutSourcedFeatureUIList()
@@ -72,7 +113,6 @@ public class FeatureUIHandler : MonoBehaviour
             featureUIComponent.SetFeatureUIHandler(this);
             featureUIComponent.SetCheckedForOutsourcing(true);
             featureUI.SetActive(true);
-
         }
     }
 

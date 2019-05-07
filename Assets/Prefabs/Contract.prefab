@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6171795941962495985}
   - component: {fileID: 2348235005520068585}
-  - component: {fileID: 2923762284035608594}
   m_Layer: 0
   m_Name: Contract
   m_TagString: Untagged
@@ -44,20 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
-  m_AssetId: 
-  m_SceneId: 701255161
---- !u!114 &2923762284035608594
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4023863582161946182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3742472da6b7b045b2f83125f2e7460, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncInterval: 0.1
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 2d0f06f3985896e409ed5b1ce20e9551
+  m_SceneId: 0

@@ -25,7 +25,7 @@ public class ContractManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void TryToAddContractToMyContracts(string contractID, Contract contract)
@@ -38,25 +38,42 @@ public class ContractManager : NetworkBehaviour
         }
     }
 
+    public void CreateContract(string developersFirmName, string featureID)
+    {
+        string contractID = GameHandler.singleton.GenerateUniqueID();
+        string gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        string developerID = GameHandler.allGames[gameID].GetDevelopersFirmPlayerID(developersFirmName);
+        Feature selectedFeature = this.gameObject.GetComponent<FeatureManager>().GetOutsourcedFeatures()[featureID];
+        ContractState state = ContractState.Proposal;
+        int turn = 1;
+
+        CmdCreateContract(contractID, gameID, this.providerID, developerID, selectedFeature, state, turn);
+
+    }
+
+
+
+
 
     //METHODS
     [Command]
-    public void CmdCreateContract(string providerID, string developerID)
+    public void CmdCreateContract(string contractID, string gameID, string providerID, string developerID, Feature feature, ContractState state, int turn)
     {
-        /*GameObject newContractObject = Instantiate(contractPrefab);
-        Contract newContract = newContractObject.GetComponent<Contract>();
-        newContract.SetDeveloperID(developerID);
-        newContract.SetProviderID(providerID);
-        newContract.SetState(ContractState.Proposal);
-        newContract.SetContractId(newContractObject.GetInstanceID().ToString());
-        //myContracts.Add(newContract.GetContractID(), newContract);
-        newContract.gameObject.SetActive(true);
-        NetworkServer.Spawn(newContractObject);
-        // newContract.set*/
+        Contract newContract = new Contract(contractID, gameID, providerID, developerID, feature, state, turn);
+        ContractManager developerCM = GameHandler.allGames[gameID].GetDeveloper(developerID).GetComponent<ContractManager>();   
+        ContractManager providerCM = GameHandler.allGames[gameID].GetProvider(providerID).GetComponent<ContractManager>();
+        developerCM.TryToAddContractToMyContracts(contractID, newContract);      //adding contract on server objects
+        providerCM.TryToAddContractToMyContracts(contractID, newContract);       //adding contract on server objects
 
+        developerCM.RpcCreateContract(contractID, gameID, providerID, developerID, feature, state, turn);
+        providerCM.RpcCreateContract(contractID, gameID, providerID, developerID, feature, state, turn);
+    }
 
-
-
+    [ClientRpc]
+    public void RpcCreateContract(string contractID, string gameID, string providerID, string developerID, Feature feature, ContractState state, int turn)
+    {
+        Contract newContract = new Contract(contractID, gameID, providerID, developerID, feature, state, turn);
+        this.TryToAddContractToMyContracts(contractID, newContract);
     }
 
     [Command]
@@ -85,6 +102,19 @@ public class ContractManager : NetworkBehaviour
         //na tabe contracts zobraz vykríčník
     }
 
-    
+   /* [Command]
+    public void CmdCreateContract(string gameID, string providerID, string developerID, Feature feature, ContractState state, int turn)
+    {
+        GameObject newContractObject = Instantiate(contractPrefab);
+        Contract newContract = newContractObject.GetComponent<Contract>();
+        newContract.SetDeveloperID(developerID);
+        newContract.SetProviderID(providerID);
+        newContract.SetState(ContractState.Proposal);
+        newContract.SetContractId(newContractObject.GetInstanceID().ToString());
+        //myContracts.Add(newContract.GetContractID(), newContract);
+        newContract.gameObject.SetActive(true);
+        NetworkServer.Spawn(newContractObject);
+        // newContract.set
+    }*/
 
 }

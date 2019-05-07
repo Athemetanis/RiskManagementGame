@@ -15,9 +15,12 @@ public class ContractUIHandler : MonoBehaviour
 
     public GameObject contractUIPrefab;
     public GameObject developerUIPrefab;
-    //public GameObject featureUIPrefab;
 
-    
+
+    public Dropdown selectedDeveloperDropdown;
+    public Dropdown selectedFeatureDropdown;
+
+        
     // Start is called before the first frame update
     void Start()
     {

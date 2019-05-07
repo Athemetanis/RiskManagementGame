@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class GameData : NetworkBehaviour {
+public class GameData : NetworkBehaviour
+{
+    public class SyncDictionaryStringString : SyncDictionary<string, string> { };
 
     //VARIABLES
     [SyncVar(hook = "OnChangeGameID")]
@@ -16,13 +18,10 @@ public class GameData : NetworkBehaviour {
     private int gameRound;
     [SyncVar(hook = "OnChangePlayersCount")]
     private int playersCount;
-   
-    private int developersCount;
-    
-    private int providersCount;
-    
     private int readyPlayersCount;
 
+    private SyncDictionaryStringString developersFirms;
+    private SyncDictionaryStringString providersFirms;
 
     //this variable holds reference on script of UI representation of game (if it exists) //LOCAL !!!
     private GameUIHandler gameUIHandler;
@@ -34,7 +33,9 @@ public class GameData : NetworkBehaviour {
     private Dictionary<string, GameObject> developerList;
     private Dictionary<string, GameObject> providerList;
 
-  
+    private int developersCount;
+    private int providersCount;
+
     //GETTERS & SETTERS
     public void SetGameID(string gameID) { this.gameID = gameID; }
     public string GetGameID() { return gameID; }
@@ -53,7 +54,7 @@ public class GameData : NetworkBehaviour {
 
     public void SetGameUIHandler(GameUIHandler gameUIHandler) { this.gameUIHandler = gameUIHandler; }
     
-    //Add me when I awake - this is called on both the clients and the host, so everyone will know me
+    //Add me when I awake - this is called on both the clients and the host, so everyone will know me 
     protected virtual void Awake()
     {       
          //syncvar not initialized...                 
@@ -81,13 +82,6 @@ public class GameData : NetworkBehaviour {
         }
         
     }
-	
-	// Update is called once per frame
-	void Update () {
-
-        
-		
-	}
 
     //METHODS
     public void OnChangeGameID(string gameID)
@@ -124,8 +118,6 @@ public class GameData : NetworkBehaviour {
         {
             gameUIHandler.ChangePlayersCountText(playersCount);
         }
-
-        
     }
 
     public void GameUIUpdateAll()
@@ -140,12 +132,9 @@ public class GameData : NetworkBehaviour {
         }
     }
     
-
     public void AddPlayerToGame(GameObject player)
     {
         PlayerData playerData = player.GetComponent<PlayerData>();
-
-       // string playerID = player.GetComponent<PlayerData>().playerID;
         if (playerList.ContainsKey(playerData.GetPlayerID()) == false)
         {
             playerList.Add(playerData.GetPlayerID(), player);
@@ -175,9 +164,6 @@ public class GameData : NetworkBehaviour {
     public void RemovePlayerFromGame(GameObject player)
     {
         PlayerData playerData = player.GetComponent<PlayerData>();
-        //string playerID = player.GetComponent<PlayerData>().playerID;
-       
-
         if (playerList.ContainsKey(playerData.GetPlayerID()) == true)
         {
             playerList.Remove(playerData.GetPlayerID());
@@ -196,8 +182,46 @@ public class GameData : NetworkBehaviour {
 
     }
 
-    
+    public GameObject GetDeveloper(string developerID)
+    {
+        return developerList[developerID];
+    }
+
+    public GameObject GetProvider(string providerID)
+    {
+        return providerList[providerID];
+    }
 
 
+
+    public bool AddDevevelopersFirm(string playerID, string firmsName)
+    {   
+        if (developersFirms.ContainsKey(firmsName))
+        {
+            return false;
+        }
+        developersFirms.Add(firmsName, playerID);
+        return true;
+    }
+
+    public bool AddProvidersFirm(string playersID, string firmsName)
+    {
+        if (providersFirms.ContainsKey(firmsName))
+        {
+            return false;
+        }
+        providersFirms.Add(firmsName, playersID);
+        return true;
+    }
    
+    public string GetDevelopersFirmPlayerID(string firmsName)
+    {
+        return developersFirms[firmsName];
+    }
+
+    public string GetProvidersFirmPlayerID(string firmsName)
+    {
+        return providersFirms[firmsName];
+    }
+
 }

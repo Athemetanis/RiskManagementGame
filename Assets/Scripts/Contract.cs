@@ -6,7 +6,7 @@ using Mirror;
 public enum ContractState { Proposal, InNegotiations, Final, Accepted, Rejected, Done }
 
 public class Contract
-{
+{   //VARIABLES
     private string contractID;
     private string gameID;
     private string developerID;
@@ -16,7 +16,7 @@ public class Contract
     private ContractState state;
     private int delivery;
     private int price;
-    private int turn;
+    private int turn;    //if ODD - developer's turn    if EVEN - provider's turn
     private List<string> historyList;
 
     //GETTERS & SETTERS
@@ -36,9 +36,12 @@ public class Contract
     public void SetHistory() { }
     public List<string> GetHistroy() { return historyList; }
 
-    public Contract(string contractID, string gameID, string developerID, string providerID, Feature feature, ContractState state, int turn)
+    //CONSTRUCTOR
+
+    public Contract(string contractID, string gameID, string providerID, string developerID,  Feature feature, ContractState state, int turn)
     {
-        contractID = GameHandler.singleton.GenerateUniqueID();
+        //contractID = GameHandler.singleton.GenerateUniqueID();
+        this.contractID = contractID;
         this.gameID = gameID;
         this.developerID = developerID;
         this.providerID = providerID;

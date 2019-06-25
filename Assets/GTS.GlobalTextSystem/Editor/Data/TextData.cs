@@ -28,6 +28,7 @@ namespace GTS.GlobalTextSystem.Data
         public string text = "This holds all of your settings for Text Objects!";
 
         [SerializeField]
+       
         public Font font { get; set; }
         public FontStyle fontStyle { get; set; }
         private int _fontSize = 14;
@@ -54,7 +55,7 @@ namespace GTS.GlobalTextSystem.Data
 
         public Dictionary<string, bool> SavedSettings = new Dictionary<string, bool>()
         {
-            { StringLibrary.FONT, true },
+            { StringLibrary.FONT, false },
             { StringLibrary.FONT_STYLE, false },
             { StringLibrary.FONT_SIZE, false },
             { StringLibrary.LINE_SPACING, false },
@@ -66,7 +67,7 @@ namespace GTS.GlobalTextSystem.Data
             { StringLibrary.BEST_FIT, false },
             { StringLibrary.TEXT_MIN, false },
             { StringLibrary.TEXT_MAX, false },
-            { StringLibrary.COLOR, true },
+            { StringLibrary.COLOR, false },
             { StringLibrary.MATERIAL, false },
             { StringLibrary.RAYCAST, false }
         };

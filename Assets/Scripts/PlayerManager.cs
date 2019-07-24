@@ -10,7 +10,7 @@ public class PlayerManager : NetworkBehaviour {
 
     //This class manages player objects after player is conncted/disconnected
     //creates objects for player, saves/deletes references of players objects, 
-    //creates local gui for player
+    //creates/destroys local gui for player
 
 
     //VARIABLES
@@ -39,6 +39,7 @@ public class PlayerManager : NetworkBehaviour {
     //GETTERS & SETTERS
     public PlayerData GetMyPlayerData() { return myPlayerData; }
     public GameObject GetMyPlayerObject() { return myPlayerObject; }
+    public GameObject GetMyPlayerUIObject() { return myPlayerUIObject; }
 
 
 
@@ -49,6 +50,7 @@ public class PlayerManager : NetworkBehaviour {
         if (isLocalPlayer)
         {
             GameHandler.singleton.SetLocalPlayer(this);
+            Debug.Log("Local player was set in PlayerManager");
         }
 
         //Debug.Log("Reseting player connection default variables");
@@ -96,10 +98,19 @@ public class PlayerManager : NetworkBehaviour {
             return;
         }
         if (playerFirebaseID == null || playerFirebaseID.Equals(""))   /// true if I signed out
-        {
-            CmdRemoveAuthority();
+        {   
+            if(myPlayerData != null)
+            {   
+                if(myPlayerData.GetPlayerUI() != null)
+                {
+                    Destroy(myPlayerData.GetPlayerUI());
+                } 
+               
+            }
+            //CmdRemoveAuthority();
             myPlayerObject = null;
             myPlayerData = null;
+            
             return;
 
         }
@@ -160,10 +171,10 @@ public class PlayerManager : NetworkBehaviour {
 
     }
 
-    public void CreateAdminObject()
+    /*public void CreateAdminObject()
     {
 
-    }
+    }*/
 
     [Command]
     public void CmdCreateInstructorObject()
@@ -180,7 +191,9 @@ public class PlayerManager : NetworkBehaviour {
         if (GameHandler.allPlayers.ContainsKey(playerGameID) && GameHandler.allPlayers[playerGameID].ContainsKey(playerID))
         {
             PlayerData playerData = GameHandler.allPlayers[playerGameID][playerID].GetComponent<PlayerData>();
-            playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
+            //playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
+            CmdAssignClientAuthority();
+            myPlayerObject = GameHandler.allPlayers[playerGameID][playerID];
             myPlayerData = playerData;
             Debug.Log("myPlayerDataObject was found");
             CreatePlayerUI();
@@ -208,7 +221,9 @@ public class PlayerManager : NetworkBehaviour {
         {
             PlayerData playerData = GameHandler.allPlayers[playerGameID][playerID].GetComponent<PlayerData>();
             //playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
+            CmdAssignClientAuthority();
             myPlayerData = playerData;
+            myPlayerObject = GameHandler.allPlayers[playerGameID][playerID];
             Debug.Log("myPlayerDataObject was found");
             CreatePlayerUI();
             return;
@@ -219,6 +234,7 @@ public class PlayerManager : NetworkBehaviour {
     [Command]
     public void CmdAssignClientAuthority()
     {
+        Debug.Log("assigning client authority on my player data object");
         PlayerData playerData = GameHandler.allPlayers[playerGameID][playerID].GetComponent<PlayerData>();
         playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
 
@@ -264,6 +280,7 @@ public class PlayerManager : NetworkBehaviour {
 
     public void CreatePlayerUI()
     {
+        Debug.Log("Creating UI");
         if (myPlayerData.GetPlayerRole() == PlayerRoles.Developer)
         {
             myPlayerUIObject = Instantiate(playerDeveloperUIPrefab);
@@ -276,26 +293,16 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
-    /*[ClientRpc]
-    public void RpcCreatePlayerUI()
-    {
-        Debug.Log("RPC");
-        if (isLocalPlayer == false)
+    /*public void DestroyPlayerUI()
+    {   
+        if(myPlayerData.GetPlayerUI() != null)
         {
-            return;
+            Destroy(myPlayerData.GetPlayerUI());
         }
-        if (myPlayerData.GetPlayerRole() == PlayerRoles.Developer)
-        {
-            myPlayerUIObject = Instantiate(playerDeveloperUIPrefab);
-            myPlayerData.SetPlayerUI(myPlayerUIObject);
-        }
-        else
-        {
-            myPlayerUIObject = Instantiate(playerProviderUIprefab);
-            myPlayerData.SetPlayerUI(myPlayerUIObject);
-        }
+  
+        
     }*/
-    
+     
     [Command]
     public void CmdRemoveAuthority()
     {

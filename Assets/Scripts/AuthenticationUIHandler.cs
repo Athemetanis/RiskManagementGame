@@ -12,7 +12,7 @@ public class AuthenticationUIHandler : MonoBehaviour {
     public GameObject loggedInPanel;
     public GameObject authImage;
     public Text infoText;
-    public AssincTextRewriter assincTextRewirter;
+    public AssincTextRewriter assincTextRewriter;
 
 
 
@@ -37,14 +37,14 @@ public class AuthenticationUIHandler : MonoBehaviour {
     public void ShowSignUpPanel()
     {
         DisableAllPanels();
-        assincTextRewirter.gameObject.SetActive(true);
+        assincTextRewriter.gameObject.SetActive(true);
         signUpPanel.SetActive(true);
     }
 
     public void ShowSignInPanel()
     {
         DisableAllPanels();
-        assincTextRewirter.gameObject.SetActive(true);
+        assincTextRewriter.gameObject.SetActive(true);
         signInPanel.SetActive(true);
     }
 
@@ -61,7 +61,7 @@ public class AuthenticationUIHandler : MonoBehaviour {
     {
         authImage.SetActive(true);
         EnableWarningTextChange("");
-        assincTextRewirter.gameObject.SetActive(false);
+        assincTextRewriter.gameObject.SetActive(false);
         signPanel.SetActive(false);
         signInPanel.SetActive(false);
         signUpPanel.SetActive(false);
@@ -70,7 +70,7 @@ public class AuthenticationUIHandler : MonoBehaviour {
 
     public void EnableWarningTextChange(string text)
     {
-        assincTextRewirter.SetWarningString(text);
+        assincTextRewriter.SetWarningString(text);
         
     }
 

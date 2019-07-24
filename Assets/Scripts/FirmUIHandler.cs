@@ -5,35 +5,38 @@ using UnityEngine.UI;
 
 public class FirmUIHandler : MonoBehaviour
 {
-    
     public InputField firmNameIF;
     public InputField firmDescriptionIF;
+    public Text errorMessageText;
+
 
     private FirmManager firmManager;
 
-    private void Awake()
+    // Updating gui according saved data on start
+    void Start()
     {
         firmManager = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject().GetComponent<FirmManager>();
         firmManager.SetFirmUIHandler(this);
-    }
-    // Updating gui according data on start
-    void Start()
-    {
         firmNameIF.text = firmManager.GetFirmName();
         firmDescriptionIF.text = firmManager.GetFirmDescription();
     }
 
-    public void SetFirmName()
+    // If gui changed call this - try to set new firmName/description
+    public void SetFirmName(InputField firmName)
     {
-        firmManager.SetFirmName(firmNameIF.text);
+        firmManager.TryToChangeFirmName(firmName.text);
+        //zavolaj na Firmmanagerovi funkciu ktor8 skusi zmenit firm name
+    }
+
+    public void SetFirmDescription(InputField firmDescription)
+    {
+        Debug.Log(firmDescription.text);
+        firmManager.ChangeFirmDescription(firmDescription.text);
         
+        //firmManager.CmdSetFirmsDescription("bla bla");
     }
-
-    public void SetFirmDescription()
-    {
-        firmManager.SetFirmDescription(firmDescriptionIF.text);
-    }
-
+    
+    //------nastavenie hodnoty do GUI inputfieldov
     public void SetUIFirmName(string firmName)
     {
         firmNameIF.text = firmName;
@@ -42,6 +45,14 @@ public class FirmUIHandler : MonoBehaviour
     public void SetUIFirmDescription(string firmDescription)
     {
         firmDescriptionIF.text = firmDescription;
+        
+    }
+
+    public void SetUIFirmNameOld(string oldFirmName)
+    {
+        Debug.Log("nastavujem stare meno");
+        firmNameIF.text = oldFirmName;
+        errorMessageText.gameObject.SetActive(true);        
     }
 
 

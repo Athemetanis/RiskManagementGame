@@ -10,32 +10,29 @@ public class FeatureUIHandler : MonoBehaviour
     //public GameObject allFeatureListContent;
     public GameObject availableFeatureListContent;
     public GameObject outsourcedFeatureListContent;
-    public Dropdown proposalFeatures;
+    //public Dropdown proposalFeatures;
 
     //public GameObject featurePrefab;
-
-         
-
+    
     private FeatureManager featureManager;
 
-    // Start is called before the first frame update
+    // Awake = syncvar not synced, called before start; dont use - not sutable for networking!
     private void Awake()
+    {  }
+
+    private void Start()
     {
         featureManager = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject().GetComponent<FeatureManager>();
         featureManager.SetFeatureUIHandler(this);
-    }
-
-    
-    private void Start()
-    {
         GenerateAvailableFeatureUIList();
         GenerateOutSourcedFeatureUIList();
-        GenerateDropdownOptions();
+        //GenerateDropdownOptions(); - -NAHRAĎ!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     }
 
-    public void GenerateDropdownOptions()
+    /*public void GenerateDropdownOptions()
     {
+        proposalFeatures.ClearOptions();
         List<string> options = new List<string>(featureManager.GetOutsourcedFeatures().Keys);
         proposalFeatures.AddOptions(options);
     }
@@ -44,7 +41,8 @@ public class FeatureUIHandler : MonoBehaviour
     {
         proposalFeatures.ClearOptions();
         GenerateDropdownOptions();
-    }
+    }*/
+
 
     /*public void GenerateAllFeatureUIList()
     {
@@ -66,8 +64,11 @@ public class FeatureUIHandler : MonoBehaviour
 
     public void GenerateAvailableFeatureUIList()
     {
+        Debug.Log("generating available feature list");
+        Debug.Log("pocet feature na clientovi: " + featureManager.GetAvailableFeatures().Count);
         foreach (KeyValuePair<string, Feature> feature in featureManager.GetAvailableFeatures())
         {
+            Debug.Log("vygenerovana nova featura");
             GameObject featureUI = Instantiate(featureUIPrefab);
             featureUI.transform.SetParent(availableFeatureListContent.transform, false);
             FeatureUIComponentHandler featureUIComponent = featureUI.GetComponent<FeatureUIComponentHandler>();

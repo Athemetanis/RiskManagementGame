@@ -69,7 +69,7 @@ public class GameHandler : NetworkBehaviour {
 
     //creates DEMO game when server starts;
     public override void OnStartServer()
-    {
+    {              //name, password
         CreateGame("DEMO2", "666");
     }
 

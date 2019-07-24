@@ -27,17 +27,20 @@ public class FeatureManager : NetworkBehaviour
     public class SyncDictionaryFeatures : SyncDictionary<string, Feature> { }
 
     private FeatureUIHandler featureUIHandler;
+    private ContractManager contractManager;
+    private ContractUIHandler contractUIHandler;
 
     private SyncDictionaryFeatures allFeatures = new SyncDictionaryFeatures();
-    private SyncDictionaryFeatures availableFeatures = new SyncDictionaryFeatures();
+    private SyncDictionaryFeatures availableFeatures;
     private SyncDictionaryFeatures outsourcedFeatures = new SyncDictionaryFeatures();
     private SyncDictionaryFeatures inDevelopmentFeatures = new SyncDictionaryFeatures();
     private SyncDictionaryFeatures doneFeatures = new SyncDictionaryFeatures();
     private SyncListString featuresForProposal = new SyncListString();
 
     //GETTERS & SETTERS
-
     public void SetFeatureUIHandler(FeatureUIHandler featureUIHandler) { this.featureUIHandler = featureUIHandler; }
+    public void SetContractUIHandler(ContractUIHandler contractUIHandler) { this.contractUIHandler = contractUIHandler; }
+    public void SetContractManager(ContractManager contractManager) { this.contractManager = contractManager; }
     public SyncDictionaryFeatures GetAllFeatures() { return allFeatures; }
     public SyncDictionaryFeatures GetAvailableFeatures() { return availableFeatures; }
     public SyncDictionaryFeatures GetOutsourcedFeatures() { return outsourcedFeatures; }
@@ -55,18 +58,39 @@ public class FeatureManager : NetworkBehaviour
         allFeatures.Add("feature5", new Feature("feature5", 0, 5, 0, 20));
         allFeatures.Add("feature6", new Feature("feature6", 0, 0, 8, 35));
 
-        availableFeatures = allFeatures;
+        
+        foreach(KeyValuePair<string, Feature> feature in allFeatures)
+        {
+            availableFeatures.Add(feature);
+        }
+
+
         Debug.Log(availableFeatures.Count);
         Debug.Log(outsourcedFeatures.Count);
     }
 
     public override void OnStartClient()
     {
-
+        availableFeatures.Callback += OnChangeFeatureAvailable;
         outsourcedFeatures.Callback += OnChangeFeatureOutsourced;
-
+       // Debug.Log("feature manager spusteny na klientovi, pokus o feature list");
+      //  OnChangeFeatureAvailable(SyncDictionary<string, Feature>.Operation.OP_ADD, "nove kluc", new Feature("feature1", 10, 0, 0, 50));
+     
     }
 
+    public void OnChangeFeatureAvailable(SyncDictionaryFeatures.Operation op, string key, Feature feature)
+    {
+        Debug.Log("List dostupnych feature sa zmenil - teraz vygenerovat nove UI");
+        Debug.Log("pocet features teraz je: " + availableFeatures.Count);
+        if (featureUIHandler != null)
+        {
+            featureUIHandler.UpdateAvailableFeatureUIList();
+        }
+        else
+        {
+            Debug.Log("ale featere handler neexistuje!!!!!");
+        }
+    }
 
     public void OnChangeFeatureOutsourced(SyncDictionaryFeatures.Operation op, string key, Feature feature) //here update all gui elements if they exist
     {
@@ -74,7 +98,10 @@ public class FeatureManager : NetworkBehaviour
         {
             featureUIHandler.UpdateOutsourcedFeatureUIList();
             featureUIHandler.UpdateAvailableFeatureUIList();
-            featureUIHandler.UpdateDropdownOptions();
+        }
+        if(contractUIHandler != null)
+        {
+            contractUIHandler.UpdateFeatureDropdownOptions(new List<string>(outsourcedFeatures.Keys));
         }
     }
 

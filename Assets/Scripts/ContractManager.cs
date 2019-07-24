@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-
-
 public class ContractManager : NetworkBehaviour
 {   //VARIABLES
 
@@ -12,14 +10,23 @@ public class ContractManager : NetworkBehaviour
     private Dictionary<string, Contract> myContracts = new Dictionary<string, Contract>();
 
     private PlayerRoles playerRole;
-    private string providerID;
+    private string playerID;
 
     private int myContractsCount;
+
+    private ContractUIHandler contractUIHandler;
+
+    //GETTERS & SETTERS
+
+    public void SetContractUIHandler(ContractUIHandler contractUIHandler) { this.contractUIHandler = contractUIHandler; }
+    public PlayerRoles GetPlayerRole() { return playerRole; }
+    
+
     // Start is called before the first frame update
     void Start()
     {
         playerRole = this.gameObject.GetComponent<PlayerData>().GetPlayerRole();
-        providerID = this.gameObject.GetComponent<PlayerData>().GetPlayerID();
+        playerID = this.gameObject.GetComponent<PlayerData>().GetPlayerID();
     }
 
     // Update is called once per frame
@@ -47,14 +54,11 @@ public class ContractManager : NetworkBehaviour
         ContractState state = ContractState.Proposal;
         int turn = 1;
 
-        CmdCreateContract(contractID, gameID, this.providerID, developerID, selectedFeature, state, turn);
-
+        CmdCreateContract(contractID, gameID, this.playerID, developerID, selectedFeature, state, turn);
+        
     }
 
-
-
-
-
+         
     //METHODS
     [Command]
     public void CmdCreateContract(string contractID, string gameID, string providerID, string developerID, Feature feature, ContractState state, int turn)
@@ -77,12 +81,16 @@ public class ContractManager : NetworkBehaviour
     }
 
     [Command]
-    public void CmdSendModifiedContract(string contractID, int price, int delivery)
+    public void CmdModifyContract(string contractID, int price, int delivery)
     {
 
 
 
     }
+
+
+
+
 
     public void SetNotice(int turn)
     {   
@@ -94,9 +102,6 @@ public class ContractManager : NetworkBehaviour
         {
             Debug.Log("Developers turn");
         }
-
-
-
 
         //ak rola tohoto objektu odpovedá hodnote ťahu
         //na tabe contracts zobraz vykríčník

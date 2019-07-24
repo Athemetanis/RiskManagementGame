@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+/// <summary>
+/// Contains information about one particular game, such as: game name, ID, list of players, round, lists of developers/provieders and their firm names
+/// </summary>
 public class GameData : NetworkBehaviour
 {
     public class SyncDictionaryStringString : SyncDictionary<string, string> { };
@@ -20,9 +23,6 @@ public class GameData : NetworkBehaviour
     private int playersCount;
     private int readyPlayersCount;
 
-    private SyncDictionaryStringString developersFirms;
-    private SyncDictionaryStringString providersFirms;
-
     //this variable holds reference on script of UI representation of game (if it exists) //LOCAL !!!
     private GameUIHandler gameUIHandler;
 
@@ -35,6 +35,16 @@ public class GameData : NetworkBehaviour
 
     private int developersCount;
     private int providersCount;
+
+    //-------------------<firmName, playerID>---------------------------------------//
+    private SyncDictionaryStringString allFirms = new SyncDictionaryStringString();
+    private SyncDictionaryStringString allFirmDescriptions = new SyncDictionaryStringString();
+    private SyncDictionaryStringString developersFirms = new SyncDictionaryStringString();
+    private SyncDictionaryStringString providersFirms = new SyncDictionaryStringString();
+    
+
+    
+
 
     //GETTERS & SETTERS
     public void SetGameID(string gameID) { this.gameID = gameID; }
@@ -58,6 +68,13 @@ public class GameData : NetworkBehaviour
     protected virtual void Awake()
     {       
          //syncvar not initialized...                 
+    }
+
+    public override void OnStartClient()
+    {
+        // Equipment is already populated with anything the server set up
+        // but we can subscribe to the callback in case it is updated later on
+        developersFirms.Callback += OnDevelopersFirmsChange;
     }
 
     // Use this for initialization
@@ -139,13 +156,16 @@ public class GameData : NetworkBehaviour
         {
             playerList.Add(playerData.GetPlayerID(), player);
             playersCount = playerList.Keys.Count;
-            if(playerData.GetPlayerRole() == PlayerRoles.Developer)
+            Debug.Log(playerData.GetPlayerRole());
+            if (playerData.GetPlayerRole() == PlayerRoles.Developer)
             {
+                Debug.Log("Hrac priadny do developerov");
                 developerList.Add(playerData.GetPlayerID(), player);
                 developersCount++;
             }
             else
             {
+                Debug.Log("Hrac priadny do providerov");
                 providerList.Add(playerData.GetPlayerID(), player);
                 providersCount++;
             }
@@ -194,26 +214,95 @@ public class GameData : NetworkBehaviour
 
 
 
-    public bool AddDevevelopersFirm(string playerID, string firmsName)
-    {   
-        if (developersFirms.ContainsKey(firmsName))
+    //---------------------------- FIRM METHODS -----------------------------------///
+    public void AddFirmName(string playerID, string firmName)
+    {
+        allFirms.Add(playerID, firmName);
+        Debug.Log("pocet developerov" + developerList.Count);
+        if (developerList.ContainsKey(playerID))
         {
-            return false;
+           
+            Debug.Log("Novy developer pridany");
+            developersFirms.Add(firmName, playerID);
         }
-        developersFirms.Add(firmsName, playerID);
-        return true;
+        else
+        {
+            Debug.Log("pocet developerov" + developerList.Count);
+            Debug.Log("Novy provider pridany");
+            providersFirms.Add(firmName, playerID);
+        }
+
     }
 
-    public bool AddProvidersFirm(string playersID, string firmsName)
+    public bool TryToChangeFirmName(string playerID, string newFirmName, string oldFirmName)
     {
-        if (providersFirms.ContainsKey(firmsName))
+        if (allFirms.ContainsKey(newFirmName))
         {
+            Debug.Log("Firm name already exists");
             return false;
+
         }
-        providersFirms.Add(firmsName, playersID);
-        return true;
+        else
+        {
+            Debug.Log("FirmNameWillBeSet");
+            allFirms.Remove(oldFirmName);
+            allFirms.Add(newFirmName, playerID);
+            //updating firms name in description dictionary
+            string description = allFirmDescriptions[oldFirmName];
+            allFirmDescriptions.Remove(oldFirmName);
+            allFirmDescriptions.Add(newFirmName, description);
+            Debug.Log(allFirms.Count);
+            if (developerList.ContainsKey(playerID))
+            {
+                AddDevevelopersFirm(playerID, newFirmName, oldFirmName);
+            }
+            else
+            {
+                AddProvidersFirm(playerID, newFirmName, oldFirmName);
+            }
+
+            return true;
+        }
     }
-   
+
+    public void AddDevevelopersFirm(string playerID, string newFirmName, string oldFirmName)
+    {
+        Debug.Log("Developerova firma pridana do dev zoznamu");
+        developersFirms.Remove(oldFirmName);
+        developersFirms.Add(newFirmName, playerID);
+        
+    }
+
+    public void AddProvidersFirm(string playersID, string newFirmName, string oldFirmName)
+    {
+        Debug.Log("Providerova firma pridana do providerovho zoznamu");
+        providersFirms.Remove(oldFirmName);
+        providersFirms.Add(newFirmName, playersID);
+        
+    }
+
+
+    public void UpdateFirmDescription(string firmName, string firmDescription)
+    {
+        Debug.Log("Entering function: UPDATE firm Description");
+        if (allFirmDescriptions.ContainsKey(firmName))
+        {
+            Debug.Log(firmName);
+            allFirmDescriptions[firmName] = firmDescription;
+        }
+        else
+        {
+            allFirmDescriptions.Add(firmName, firmDescription);
+        } 
+    }
+
+    public List<string> GetDevelopersFirms()
+    {
+        return new List<string>(developersFirms.Keys);
+    }
+
+
+    //------------------------------------- GET PLAYER ID FIRM NAME-------------------------------------------
     public string GetDevelopersFirmPlayerID(string firmsName)
     {
         return developersFirms[firmsName];
@@ -223,5 +312,12 @@ public class GameData : NetworkBehaviour
     {
         return providersFirms[firmsName];
     }
+
+    //------------------------------ FIRMS HOOKS
+    public void OnDevelopersFirmsChange(SyncDictionaryStringString.Operation op, string firmName, string playerID)
+    {
+        GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>().UpdateDeveloperDropdownOptions(GetDevelopersFirms());
+    }
+
 
 }

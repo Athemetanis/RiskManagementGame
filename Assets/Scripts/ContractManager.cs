@@ -7,6 +7,8 @@ public class ContractManager : NetworkBehaviour
 {   //VARIABLES
 
     public GameObject contractPrefab;
+
+
     private Dictionary<string, Contract> myContracts = new Dictionary<string, Contract>();
 
     private PlayerRoles playerRole;

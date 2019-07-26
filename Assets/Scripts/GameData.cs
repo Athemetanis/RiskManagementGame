@@ -25,8 +25,7 @@ public class GameData : NetworkBehaviour
 
     //this variable holds reference on script of UI representation of game (if it exists) //LOCAL !!!
     private GameUIHandler gameUIHandler;
-
-
+    
     //--------------<playerID, GameObject player>---------------------------------------//   HOW I WILL BE SYNCING THIS??? /// pri každom starte playerdat - na cliente i na serveri sa zavola add
 
     private Dictionary<string, GameObject> playerList;
@@ -42,10 +41,6 @@ public class GameData : NetworkBehaviour
     private SyncDictionaryStringString developersFirms = new SyncDictionaryStringString();
     private SyncDictionaryStringString providersFirms = new SyncDictionaryStringString();
     
-
-    
-
-
     //GETTERS & SETTERS
     public void SetGameID(string gameID) { this.gameID = gameID; }
     public string GetGameID() { return gameID; }
@@ -302,7 +297,7 @@ public class GameData : NetworkBehaviour
     }
 
 
-    //------------------------------------- GET PLAYER ID FIRM NAME-------------------------------------------
+    //------------------------------------- GET PLAYER ID FROM FIRM NAME-------------------------------------------
     public string GetDevelopersFirmPlayerID(string firmsName)
     {
         return developersFirms[firmsName];

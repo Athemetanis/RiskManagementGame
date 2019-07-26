@@ -31,7 +31,7 @@ public class FeatureManager : NetworkBehaviour
     private ContractUIHandler contractUIHandler;
 
     private SyncDictionaryFeatures allFeatures = new SyncDictionaryFeatures();
-    private SyncDictionaryFeatures availableFeatures;
+    private SyncDictionaryFeatures availableFeatures = new SyncDictionaryFeatures();
     private SyncDictionaryFeatures outsourcedFeatures = new SyncDictionaryFeatures();
     private SyncDictionaryFeatures inDevelopmentFeatures = new SyncDictionaryFeatures();
     private SyncDictionaryFeatures doneFeatures = new SyncDictionaryFeatures();
@@ -49,7 +49,7 @@ public class FeatureManager : NetworkBehaviour
 
 
     //METHODS  
-    public override void OnStartServer() //list is then synchronized on clients
+    public override void OnStartServer() //lists are then synchronized on clients
     {
         allFeatures.Add("feature1", new Feature("feature1", 10, 0, 0, 50));
         allFeatures.Add("feature2", new Feature("feature2", 0, 5, 0, 20));
@@ -57,38 +57,25 @@ public class FeatureManager : NetworkBehaviour
         allFeatures.Add("feature4", new Feature("feature4", 10, 0, 0, 50));
         allFeatures.Add("feature5", new Feature("feature5", 0, 5, 0, 20));
         allFeatures.Add("feature6", new Feature("feature6", 0, 0, 8, 35));
-
-        
+      
         foreach(KeyValuePair<string, Feature> feature in allFeatures)
         {
             availableFeatures.Add(feature);
         }
-
-
-        Debug.Log(availableFeatures.Count);
-        Debug.Log(outsourcedFeatures.Count);
     }
 
     public override void OnStartClient()
     {
         availableFeatures.Callback += OnChangeFeatureAvailable;
         outsourcedFeatures.Callback += OnChangeFeatureOutsourced;
-       // Debug.Log("feature manager spusteny na klientovi, pokus o feature list");
-      //  OnChangeFeatureAvailable(SyncDictionary<string, Feature>.Operation.OP_ADD, "nove kluc", new Feature("feature1", 10, 0, 0, 50));
-     
+           
     }
 
     public void OnChangeFeatureAvailable(SyncDictionaryFeatures.Operation op, string key, Feature feature)
     {
-        Debug.Log("List dostupnych feature sa zmenil - teraz vygenerovat nove UI");
-        Debug.Log("pocet features teraz je: " + availableFeatures.Count);
         if (featureUIHandler != null)
         {
             featureUIHandler.UpdateAvailableFeatureUIList();
-        }
-        else
-        {
-            Debug.Log("ale featere handler neexistuje!!!!!");
         }
     }
 
@@ -139,7 +126,6 @@ public class FeatureManager : NetworkBehaviour
         {
             featuresForProposal.Remove(name);
         }
-           
     }
 
 

@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ContractUIHandler : MonoBehaviour
-{
+{   
+    //VARIABLES
+
     public GameObject contractListContent;
     public GameObject rejectedContractListContent;
     public GameObject developerListContent;
@@ -16,9 +18,10 @@ public class ContractUIHandler : MonoBehaviour
     public GameObject contractUIPrefab;
     public GameObject developerUIPrefab;
 
-    //DROPDOWN MENU
+    //UI elements
     public Dropdown selectedDeveloperDropdown;
     public Dropdown selectedFeatureDropdown;
+    public Button createContractButton;
 
     //REFERENCES FOR OTHER MANAGERS
     private GameObject myPlayerDataObject;
@@ -40,15 +43,15 @@ public class ContractUIHandler : MonoBehaviour
 
         if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
         {
-            Debug.Log(contractManager.GetPlayerRole());
-            Debug.Log("Vygeneruj List Developerov");
+            //Debug.Log(contractManager.GetPlayerRole());
+            //Debug.Log("Vygeneruj List Developerov");
             GenerateFeatureDropdownOptions(new List<string>(featureManager.GetOutsourcedFeatures().Keys));
             GenerateDeveloperDropdownOptions();
         }
         else
         {
-            Debug.Log(contractManager.GetPlayerRole());
-            Debug.Log("Som developer - negenerujem nic");
+           // Debug.Log(contractManager.GetPlayerRole());
+           // Debug.Log("Som developer - negenerujem nic");
         }
 
 
@@ -86,6 +89,24 @@ public class ContractUIHandler : MonoBehaviour
     {
         GenerateFeatureDropdownOptions(FeatureOptions);
     }
+
+    public void CreateContract()
+    {
+        contractManager.CreateContract(selectedDeveloperDropdown.options[selectedDeveloperDropdown.value].text, selectedFeatureDropdown.options[selectedFeatureDropdown.value].text);
+    }
+
+    public void EnableContractCreation()
+    {
+        if(selectedFeatureDropdown.options.Count != 0 &&  selectedFeatureDropdown.options.Count != 0)
+        {
+            createContractButton.interactable = true;
+        }
+        else
+        {
+            createContractButton.interactable = false;
+        }
+    } 
+
 
 
 

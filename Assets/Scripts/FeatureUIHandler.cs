@@ -20,7 +20,7 @@ public class FeatureUIHandler : MonoBehaviour
         featureManager = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject().GetComponent<FeatureManager>();
         featureManager.SetFeatureUIHandler(this);
         GenerateAvailableFeatureUIList();
-        GenerateOutSourcedFeatureUIList();
+        UpdateOutsourcedFeatureUIList();
         //GenerateDropdownOptions(); - -NAHRAĎ!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     }
@@ -29,24 +29,24 @@ public class FeatureUIHandler : MonoBehaviour
     {
         foreach (KeyValuePair<string, Feature> feature in featureManager.GetAvailableFeatures())
         {
-            GameObject featureUI = Instantiate(featureUIPrefab);
-            featureUI.transform.SetParent(availableFeatureListContent.transform, false);
-            FeatureUIComponentHandler featureUIComponent = featureUI.GetComponent<FeatureUIComponentHandler>();
-            featureUIComponent.SetNameIDText(feature.Value.nameID);
-            featureUIComponent.SetFunctionalityText(feature.Value.functionality.ToString());
-            featureUIComponent.SetIntegrationText(feature.Value.integration.ToString());
-            featureUIComponent.SetUserExperienceText(feature.Value.userfriendliness.ToString());
-            featureUIComponent.SetTimeCostsText(feature.Value.timeCost.ToString());
-            featureUIComponent.SetFeatureUIHandler(this);
+            GameObject featureUIComponent = Instantiate(featureUIPrefab);
+            featureUIComponent.transform.SetParent(availableFeatureListContent.transform, false);
+            FeatureUIComponentHandler featureUIComponentHandler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
+            featureUIComponentHandler.SetNameIDText(feature.Value.nameID);
+            featureUIComponentHandler.SetFunctionalityText(feature.Value.functionality.ToString());
+            featureUIComponentHandler.SetIntegrationText(feature.Value.integration.ToString());
+            featureUIComponentHandler.SetUserExperienceText(feature.Value.userfriendliness.ToString());
+            featureUIComponentHandler.SetTimeCostsText(feature.Value.timeCost.ToString());
+            featureUIComponentHandler.SetFeatureUIHandler(this);
             if (featureManager.GetOutsourcedFeatures().Contains(feature) == true)
             {
-                featureUIComponent.SetCheckedForOutsourcing(true);
+                featureUIComponentHandler.SetCheckedForOutsourcing(true);
             }
             else
             {
-                featureUIComponent.SetCheckedForOutsourcing(false);
+                featureUIComponentHandler.SetCheckedForOutsourcing(false);
             }
-            featureUI.SetActive(true);
+            featureUIComponent.SetActive(true);
         }
     }
 
@@ -63,17 +63,17 @@ public class FeatureUIHandler : MonoBehaviour
     {
         foreach (KeyValuePair<string, Feature> feature in featureManager.GetOutsourcedFeatures())
         {
-            GameObject featureUI = Instantiate(featureUIPrefab);
-            featureUI.transform.SetParent(outsourcedFeatureListContent.transform, false);
-            FeatureUIComponentHandler featureUIComponent = featureUI.GetComponent<FeatureUIComponentHandler>();
-            featureUIComponent.SetNameIDText(feature.Value.nameID);
-            featureUIComponent.SetFunctionalityText(feature.Value.functionality.ToString());
-            featureUIComponent.SetIntegrationText(feature.Value.integration.ToString());
-            featureUIComponent.SetUserExperienceText(feature.Value.userfriendliness.ToString());
-            featureUIComponent.SetTimeCostsText(feature.Value.timeCost.ToString());
-            featureUIComponent.SetFeatureUIHandler(this);
-            featureUIComponent.SetCheckedForOutsourcing(true);
-            featureUI.SetActive(true);
+            GameObject featureUIComponent = Instantiate(featureUIPrefab);
+            featureUIComponent.transform.SetParent(outsourcedFeatureListContent.transform, false);
+            FeatureUIComponentHandler featureUIComponentHnadler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
+            featureUIComponentHnadler.SetNameIDText(feature.Value.nameID);
+            featureUIComponentHnadler.SetFunctionalityText(feature.Value.functionality.ToString());
+            featureUIComponentHnadler.SetIntegrationText(feature.Value.integration.ToString());
+            featureUIComponentHnadler.SetUserExperienceText(feature.Value.userfriendliness.ToString());
+            featureUIComponentHnadler.SetTimeCostsText(feature.Value.timeCost.ToString());
+            featureUIComponentHnadler.SetFeatureUIHandler(this);
+            featureUIComponentHnadler.SetCheckedForOutsourcing(true);
+            featureUIComponent.SetActive(true);
         }
     }
 

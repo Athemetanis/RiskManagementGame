@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+
 /// <summary>
 /// Contains information about one particular game, such as: game name, ID, list of players, round, lists of developers/provieders and their firm names
 /// </summary>
@@ -37,10 +38,16 @@ public class GameData : NetworkBehaviour
 
     //-------------------<firmName, playerID>---------------------------------------//
     private SyncDictionaryStringString allFirms = new SyncDictionaryStringString();
-    private SyncDictionaryStringString allFirmDescriptions = new SyncDictionaryStringString();
+    
     private SyncDictionaryStringString developersFirms = new SyncDictionaryStringString();
     private SyncDictionaryStringString providersFirms = new SyncDictionaryStringString();
-    
+
+    //-------------------<firmName, description>---------------------------------------//
+    private SyncDictionaryStringString allFirmDescriptions = new SyncDictionaryStringString();
+
+    //-------------------<playerID, firmName>
+    private Dictionary<string, string> allFirmsRevers = new Dictionary<string, string>();
+
     //GETTERS & SETTERS
     public void SetGameID(string gameID) { this.gameID = gameID; }
     public string GetGameID() { return gameID; }
@@ -56,6 +63,7 @@ public class GameData : NetworkBehaviour
     public int GetDevelopersCount() { return developersCount; }
     public void SetProvidersCount(int providersCount) { this.providersCount = providersCount; }
     public int GetProvidersCount() { return providersCount; }
+    public Dictionary<string, GameObject> GetPlayerList() { return playerList; }
 
     public void SetGameUIHandler(GameUIHandler gameUIHandler) { this.gameUIHandler = gameUIHandler; }
     
@@ -70,6 +78,8 @@ public class GameData : NetworkBehaviour
         // Equipment is already populated with anything the server set up
         // but we can subscribe to the callback in case it is updated later on
         developersFirms.Callback += OnDevelopersFirmsChange;
+        allFirmDescriptions.Callback += OnFirmDescriptionChange;
+        allFirms.Callback += OnAllFirmsChange;
     }
 
     // Use this for initialization
@@ -166,14 +176,14 @@ public class GameData : NetworkBehaviour
             }
         }
 
-        foreach (GameObject playerg in playerList.Values)
+        /*foreach (GameObject playerg in playerList.Values)
         {
             Debug.Log("values"+ playerg.GetComponent<PlayerData>().GetPlayerID());
         }
         foreach (string playerg in playerList.Keys)
         {
             Debug.Log("keys"+playerg);
-        }
+        }*/
     }
 
     public void RemovePlayerFromGame(GameObject player)
@@ -213,6 +223,7 @@ public class GameData : NetworkBehaviour
     public void AddFirmName(string playerID, string firmName)
     {
         allFirms.Add(playerID, firmName);
+        
         Debug.Log("pocet developerov" + developerList.Count);
         if (developerList.ContainsKey(playerID))
         {
@@ -288,7 +299,9 @@ public class GameData : NetworkBehaviour
         else
         {
             allFirmDescriptions.Add(firmName, firmDescription);
-        } 
+        }
+        
+
     }
 
     public List<string> GetDevelopersFirms()
@@ -311,8 +324,88 @@ public class GameData : NetworkBehaviour
     //------------------------------ FIRMS HOOKS
     public void OnDevelopersFirmsChange(SyncDictionaryStringString.Operation op, string firmName, string playerID)
     {
-        GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>().UpdateDeveloperDropdownOptions(GetDevelopersFirms());
+        Debug.Log("Zmenilo sa meno firmy");
+        if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerData() != null)
+        {
+           
+            if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerData().GetPlayerRole() == PlayerRoles.Provider)
+            {
+                ContractUIHandler contractUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>();
+                contractUIHandler.UpdateDeveloperDropdownOptions(GetDevelopersFirms());
+                contractUIHandler.UpdateUIContractListsContents();
+            }
+
+        }
+        
+    }
+    public void OnFirmDescriptionChange(SyncDictionaryStringString.Operation op, string firmName, string description)
+    {
+        Debug.Log(op);
+        Debug.Log(firmName);
+       Debug.Log("Zmenili sa popisky firiem");
+        if (true)
+        {
+            Debug.Log("existuje nejaky developer");
+            if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerData() != null)
+            {
+                Debug.Log("Mam playerData");
+                if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerData().GetPlayerRole() == PlayerRoles.Provider)
+                {   
+                    Debug.Log("idem updatnut UI zoznam developerov");
+                    ContractUIHandler contractUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>();
+
+                    contractUIHandler.UpdateDeveloperFirmList(GetListDeveloperFirmNameDescription());
+                }
+            }
+
+        }
     }
 
+    public void OnAllFirmsChange(SyncDictionaryStringString.Operation op, string firmName, string description)
+    {
+        Debug.Log("allfirmsChanged");
+        Debug.Log(op);
+        Debug.Log(hasAuthority);
+        RecreateAllFirmsReverse();
+        
+    }
 
+    
+    public void RecreateAllFirmsReverse()
+    {   
+        allFirmsRevers.Clear();
+        foreach (KeyValuePair<string, string> pair in allFirms)
+        {
+            allFirmsRevers.Add(pair.Value, pair.Key);
+        }
+        Debug.Log(allFirmsRevers.Count);
+
+    }
+
+   
+
+
+    public Dictionary<string, string> GetListDeveloperFirmNameDescription()
+    {
+        Dictionary<string, string> developerFirmNameDescritpion = new Dictionary<string, string>();
+
+        foreach (string firmName in developersFirms.Keys)
+        {
+            Debug.Log("Je tu firma a s menom: " + firmName);
+            if (allFirmDescriptions.ContainsKey(firmName))
+            {
+                developerFirmNameDescritpion.Add(firmName, allFirmDescriptions[firmName]);
+            }
+
+            
+            
+        }
+        return developerFirmNameDescritpion;
+    }
+
+    public string GetFirmName(string playerID)
+    {
+        //Debug.Log(allFirmsRevers.Count);
+        return allFirmsRevers[playerID];
+    }
 }

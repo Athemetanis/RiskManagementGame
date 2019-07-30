@@ -79,10 +79,14 @@ public class FirmManager : NetworkBehaviour
     {
         if (GameHandler.allGames[gameID].TryToChangeFirmName(playerID, newFirmName, oldFirmName))
         {
+            Debug.Log("developerovo meno uspesne zmenene");
             CmdSetFirmsName(newFirmName);
         }
         else
+        {
             RpcRevertFirmName(oldFirmName);
+        }
+          
 
     }
 

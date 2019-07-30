@@ -247,6 +247,7 @@ public class PlayerManager : NetworkBehaviour {
         if (myGame.GetDevelopersCount() > myGame.GetProvidersCount() || myGame.GetProvidersCount() == myGame.GetDevelopersCount())
         {
             myPlayerObject = Instantiate(playerProviderPrefab);
+
             myPlayerData = myPlayerObject.GetComponent<PlayerData>();
             myPlayerData.SetPlayerRole(PlayerRoles.Provider);
         }

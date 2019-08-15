@@ -53,10 +53,9 @@ public class ContractUIHandler : MonoBehaviour
             UpdateUIContractListsContents();
 
         }
-        else
+        else  //som developer
         {
-           // Debug.Log(contractManager.GetPlayerRole());
-           // Debug.Log("Som developer - negenerujem nic");
+            UpdateUIContractListsContents();
         }
 
     }

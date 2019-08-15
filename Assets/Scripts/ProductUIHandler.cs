@@ -1,18 +1,45 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ProductUIHandler : MonoBehaviour
-{   
+{
+    //VARIABLES
+    public Text functionalityText;
+    public Text userFriendlinessText;
+    public Text integrabilityText;
+
+
+    private GameObject myPlayerDataObject;
+    private ProductManager productManager;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
+        productManager = myPlayerDataObject.GetComponent<ProductManager>();
+        productManager.SetProductUIHandler(this);
     }
 
-    // Update is called once per frame
-    void Update()
+    //METHODS
+
+    public void UpdateUIFunctionalityText(int functionality)
     {
-        
+        this.functionalityText.text = functionality.ToString();
     }
+
+    public void UpdateUIUserFrienlinessText(int userFriendliness)
+    {
+        this.userFriendlinessText.text = userFriendliness.ToString();
+    }
+
+    public void UpdateUIIntegrabilityText(int integrability)
+    {
+        this.integrabilityText.text = integrability.ToString();
+    }
+
+    
 }

@@ -5,22 +5,17 @@ using Mirror;
 
 public class ContractManager : NetworkBehaviour
 {   //VARIABLES
-
-    public GameObject contractPrefab;
-
-
     private Dictionary<string, Contract> myContracts = new Dictionary<string, Contract>();
+    private int myContractsCount;
 
     private PlayerRoles playerRole;
     private string playerID;
     private string gameID;
 
-    private int myContractsCount;
-
     private ContractUIHandler contractUIHandler;
     private FirmManager firmManager;
-    //GETTERS & SETTERS
 
+    //GETTERS & SETTERS
     public void SetContractUIHandler(ContractUIHandler contractUIHandler) { this.contractUIHandler = contractUIHandler; }
     public PlayerRoles GetPlayerRole() { return playerRole; }
     public string GetGameID() { return gameID; }

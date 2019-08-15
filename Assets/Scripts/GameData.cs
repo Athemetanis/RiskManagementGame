@@ -114,7 +114,6 @@ public class GameData : NetworkBehaviour
             gameUIHandler.ChangeIDText(gameID);
         }
     }
-
     public void OnChangeGameName(string gameName)
     {
         this.gameName = gameName;
@@ -123,7 +122,6 @@ public class GameData : NetworkBehaviour
             gameUIHandler.ChangeNameText(gameName);
         }
     }
-
     public void OnChangeGameRound(int gameRound)
     {
         this.gameRound = gameRound;

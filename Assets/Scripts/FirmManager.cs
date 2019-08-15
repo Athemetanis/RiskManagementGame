@@ -15,12 +15,10 @@ public class FirmManager : NetworkBehaviour
     [SyncVar(hook = "OnChangeFirmDescription")]
     private string firmDescription;
 
-
     private string playerID;
     private string gameID;
 
     private FirmUIHandler firmUIHandler;
-
 
     //GETTERS & SETTERS
     public string GetFirmName() { return firmName; }
@@ -39,7 +37,6 @@ public class FirmManager : NetworkBehaviour
 
             GameHandler.allGames[gameID].AddFirmName(playerID, firmName);
             GameHandler.allGames[gameID].UpdateFirmDescription(firmName, firmDescription);
-
         }
         else
         {
@@ -49,18 +46,12 @@ public class FirmManager : NetworkBehaviour
     
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    //METHODS
 
     [Command]  //this command updates Local Gui 
     public void CmdSetFirmsName(string newFirmName)
     {
         this.firmName = newFirmName;
-
     }
     [Command]
     public void CmdSetFirmsDescription(string firmDescription)
@@ -86,8 +77,6 @@ public class FirmManager : NetworkBehaviour
         {
             RpcRevertFirmName(oldFirmName);
         }
-          
-
     }
 
     [ClientRpc]
@@ -99,14 +88,12 @@ public class FirmManager : NetworkBehaviour
         }
     }
 
-
     public void ChangeFirmDescription(string firmDescription)
     {
         Debug.Log(firmName + " a " + firmDescription);
 
         CmdChangeFirmDescription(firmDescription);
         CmdSetFirmsDescription(firmDescription);
-
     }
 
     [Command]
@@ -132,11 +119,8 @@ public class FirmManager : NetworkBehaviour
             {
                 firmUIHandler.errorMessageText.gameObject.SetActive(false);
             }
-
         }
-
     }
-
     public void OnChangeFirmDescription(string firmDescription)
     {
         Debug.Log("nastavujem popis firmy na klientovi");
@@ -145,8 +129,8 @@ public class FirmManager : NetworkBehaviour
         {
             firmUIHandler.SetUIFirmDescription(firmDescription);
         }
-
     }
+
 
 
     public List<string> GetDeveloperList()

@@ -15,7 +15,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - line renderer
   - 
   - 
   - 
@@ -40,6 +40,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: line render
+    uniqueID: 2987967803
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

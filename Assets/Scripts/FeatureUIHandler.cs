@@ -34,7 +34,7 @@ public class FeatureUIHandler : MonoBehaviour
             FeatureUIComponentHandler featureUIComponentHandler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
             featureUIComponentHandler.SetNameIDText(feature.Value.nameID);
             featureUIComponentHandler.SetFunctionalityText(feature.Value.functionality.ToString());
-            featureUIComponentHandler.SetIntegrationText(feature.Value.integration.ToString());
+            featureUIComponentHandler.SetIntegrationText(feature.Value.integrability.ToString());
             featureUIComponentHandler.SetUserExperienceText(feature.Value.userfriendliness.ToString());
             featureUIComponentHandler.SetTimeCostsText(feature.Value.timeCost.ToString());
             featureUIComponentHandler.SetFeatureUIHandler(this);
@@ -68,7 +68,7 @@ public class FeatureUIHandler : MonoBehaviour
             FeatureUIComponentHandler featureUIComponentHnadler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
             featureUIComponentHnadler.SetNameIDText(feature.Value.nameID);
             featureUIComponentHnadler.SetFunctionalityText(feature.Value.functionality.ToString());
-            featureUIComponentHnadler.SetIntegrationText(feature.Value.integration.ToString());
+            featureUIComponentHnadler.SetIntegrationText(feature.Value.integrability.ToString());
             featureUIComponentHnadler.SetUserExperienceText(feature.Value.userfriendliness.ToString());
             featureUIComponentHnadler.SetTimeCostsText(feature.Value.timeCost.ToString());
             featureUIComponentHnadler.SetFeatureUIHandler(this);

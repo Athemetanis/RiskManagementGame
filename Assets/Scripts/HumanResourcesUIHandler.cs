@@ -51,14 +51,10 @@ public class HumanResourcesUIHandler : MonoBehaviour
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         humanResourcesManager = myPlayerDataObject.GetComponent<HumanResourcesManager>();
         humanResourcesManager.SetHumanResourcesUIHandler(this);
+        UpdateAllElements();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    
     public void AdditonOfOne(InputField inputfield)
     {
         int value = int.Parse(inputfield.text) + 1;
@@ -103,6 +99,19 @@ public class HumanResourcesUIHandler : MonoBehaviour
     public void ChangeIntegrabilitySpecialistSalary(Slider integrabilitySpecialistSalary) { humanResourcesManager.ChangeIntegrabilitySpecialistSalary((int) integrabilitySpecialistSalary.value); }
 
     //METHODS FOR UPDATING UI ELEMENTS
+    public void UpdateAllElements()
+    {
+        programersCurrentCountText.text = humanResourcesManager.GetProgrammersCount().ToString();
+        userInterfaceSpecialistsCurrentCountText.text = humanResourcesManager.GetUISPecialistsCount().ToString();
+        integrabilitySpecialistsCurrentCountText.text = humanResourcesManager.GetIntegrabilitySpecialistsCount().ToString();
+        programersAvailableCountText.text = humanResourcesManager.GetProgrammersAvailableCount().ToString();
+        specialistsAvailableCountText.text = humanResourcesManager.GetSpecialistsAvailableCount().ToString();
+        programmerSalarySlider.value = humanResourcesManager.GetProgrammerSalary();
+        uiSpecialistSalarySlider.value = humanResourcesManager.GetUISpecialistSalary();
+        integrabilitySpecialistSalarySlider.value = humanResourcesManager.GetIntegrabilitySpecialistSalary();
+
+    }
+
     public void UpdateProgramersCurrentCountText(int programmersCurrentCount)
     {
         programersCurrentCountText.text = programmersCurrentCount.ToString();
@@ -167,9 +176,12 @@ public class HumanResourcesUIHandler : MonoBehaviour
         addUIpecialistButton.interactable = true;
         addIntegrabilitySpecialistButton.interactable = true;
     }
-    public void EnableSubstractSpecialistButton()
+    public void EnableSubstractUISpecialistButton()
     {
-        substractUISpecialistButton.interactable = true;
+        substractIntegrabilityButton.interactable = true;
+    }
+    public void EnableSubstractIntegrabilitySpecialistButton()
+    {
         substractIntegrabilityButton.interactable = true;
     }
 

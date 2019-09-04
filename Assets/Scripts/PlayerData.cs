@@ -7,7 +7,7 @@ public enum PlayerRoles { Developer, Provider }
 
 public class PlayerData : NetworkBehaviour {
 
-    /// This class contains general information about player - variables are set during creation and dont change during game
+    /// This class contains general information about player - variables are set during creation and do not change during game
 
     //VARIABLES 
     [SyncVar]

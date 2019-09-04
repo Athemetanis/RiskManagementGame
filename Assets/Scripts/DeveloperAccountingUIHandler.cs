@@ -24,9 +24,20 @@ public class DeveloperAccountingUIHandler : MonoBehaviour
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         developerAccountingManager = myPlayerDataObject.GetComponent<DeveloperAccountingManager>();
         developerAccountingManager.SetDeveloperAccountingUIHandler(this);
+        UpdateAllElements();
 
     }
-
+    //METHODS FOR UPDATING UI ELEMENTS
+    public void UpdateAllElements()
+    {
+        beginningCashBalanceText.text = developerAccountingManager.GetBeginningCashBalance().ToString();
+        revenueText.text = developerAccountingManager.GetRevenue().ToString();
+        salariesText.text = developerAccountingManager.GetSalaries().ToString();
+        programmersSalariesText.text = developerAccountingManager.GetProgrammersSalaries().ToString();
+        uiSpecialistsSalariesText.text = developerAccountingManager.GetUISpecialistsSalaries().ToString();
+        integrabilitySpecialistsSalariesText.text = developerAccountingManager.GetIntegrabilitySpecialistsSalaries().ToString();
+        endCashBalanceText.text = developerAccountingManager.GetEndCashBalance().ToString();
+    }
     public void UpdateBeginingCashBalanceText(int beginingCashBalance)
     {
         beginningCashBalanceText.text = beginingCashBalance.ToString();
@@ -35,9 +46,13 @@ public class DeveloperAccountingUIHandler : MonoBehaviour
     {
         revenueText.text = revenue.ToString();  
     }
-    public void UpdateSalariesText(int salaries)
+    public void UpdateEndCashBalanceText(int endCashBalance)
     {
-        salariesText.text = salaries.ToString();
+        endCashBalanceText.text = endCashBalance.ToString();
+    }
+    public void UpdateSalariesText(int programmersSalaries)
+    {
+        programmersSalariesText.text = programmersSalaries.ToString();
     }
     public void UpdateProgrammersSalariesText(int programmersSalaries)
     {
@@ -51,8 +66,5 @@ public class DeveloperAccountingUIHandler : MonoBehaviour
     {
         integrabilitySpecialistsSalariesText.text = integrabilitySpecialistsSalaries.ToString();
     }
-    public void UpdateEndCashBalanceText(int endCashBalance)
-    {
-        endCashBalanceText.text = endCashBalance.ToString();
-    }
+   
 }

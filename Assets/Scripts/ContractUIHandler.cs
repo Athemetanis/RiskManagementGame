@@ -51,7 +51,6 @@ public class ContractUIHandler : MonoBehaviour
             GenerateDeveloperDropdownOptions();
             UpdateDeveloperFirmList(GameHandler.allGames[contractManager.GetGameID()].GetListDeveloperFirmNameDescription());
             UpdateUIContractListsContents();
-
         }
         else  //som developer
         {
@@ -59,15 +58,6 @@ public class ContractUIHandler : MonoBehaviour
         }
 
     }
-
-    
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
     public void GenerateDeveloperDropdownOptions()
     {
@@ -195,16 +185,11 @@ public class ContractUIHandler : MonoBehaviour
 
             }
         }
-           
-
-
-
     }
 
     public void GenerateContractPreview(string contractID)
     {
         Contract contract = contractManager.GetMyContracts()[contractID];
-
         GameObject contractPreviewUI = Instantiate(contractPreviewUIPrefab);
         contractPreviewUI.transform.SetParent(contractContentUI.transform, false);
         ContractPreviewUIHandler contractPreviewUIHandler = contractPreviewUI.GetComponent<ContractPreviewUIHandler>();
@@ -215,16 +200,14 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.SetFeatureText(contract.GetContractFeature().nameID);
         contractPreviewUIHandler.SetDelivery(contract.GetContractDelivery());
         contractPreviewUIHandler.SetPrice(contract.GetContractPrice());
-        contractPreviewUIHandler.DisableButtons();
+        contractPreviewUIHandler.SetState(contract.GetContractState());
         contractPreviewUIHandler.GenerateHistoryRecord(contract.GetContractHistory());
-
-       
+        contractPreviewUIHandler.PreviewContract();
     }
 
     public void GenerateContractEditPreview(string contractID)
     {
         Contract contract = contractManager.GetMyContracts()[contractID];
-
         GameObject contractPreviewUI = Instantiate(contractPreviewUIPrefab);
         contractPreviewUI.transform.SetParent(contractContentUI.transform, false);
         ContractPreviewUIHandler contractPreviewUIHandler = contractPreviewUI.GetComponent<ContractPreviewUIHandler>();
@@ -235,7 +218,21 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.SetFeatureText(contract.GetContractFeature().nameID);
         contractPreviewUIHandler.SetDelivery(contract.GetContractDelivery());
         contractPreviewUIHandler.SetPrice(contract.GetContractPrice());
+        contractPreviewUIHandler.SetState(contract.GetContractState());
         contractPreviewUIHandler.GenerateHistoryRecord(contract.GetContractHistory());
+
+        if(contract.GetContractState() == ContractState.Proposal)
+        {
+            contractPreviewUIHandler.ProposalContract();
+        }
+        else if (contract.GetContractState() == ContractState.InNegotiations)
+        {
+            contractPreviewUIHandler.InNegotiationContract();
+        }
+        else if (contract.GetContractState() == ContractState.Final)
+        {
+            contractPreviewUIHandler.FinalContract();
+        }
     }
 
     public void SendBackContract(string contractID, string price, string delivery)
@@ -246,7 +243,16 @@ public class ContractUIHandler : MonoBehaviour
 
     public void AcceptContract(string contractID)
     {
-        contractManager.AcceptContract(contractID);
+        Contract contract = contractManager.GetMyContracts()[contractID];
+        if(contract.GetContractState() == ContractState.InNegotiations)
+        {
+            contractManager.FinalContract(contractID);
+        }
+        else
+        {
+            contractManager.AcceptContract(contractID);
+        }
+        
     }
 
     public void RefuseContract(string contractID)

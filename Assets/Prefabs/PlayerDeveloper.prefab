@@ -19,7 +19,8 @@ GameObject:
   - component: {fileID: 5842927158227656364}
   - component: {fileID: 7870289457867886557}
   - component: {fileID: 1338247782067743645}
-  - component: {fileID: 2416640363099641185}
+  - component: {fileID: -2751556709724012370}
+  - component: {fileID: 1952269595843594784}
   m_Layer: 0
   m_Name: PlayerDeveloper
   m_TagString: PlayerData
@@ -114,7 +115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 1
-  m_AssetId: 21aea273c8651df45b278f16eab1fb4f
+  m_AssetId: 089535ba975058940a0ebf87228b6e0b
   m_SceneId: 0
 --- !u!114 &114313143450428616
 MonoBehaviour:
@@ -207,7 +208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
---- !u!114 &2416640363099641185
+--- !u!114 &-2751556709724012370
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -220,3 +221,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+--- !u!114 &1952269595843594784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1303548471944098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40c11affa5628194994a4aa03b88156b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

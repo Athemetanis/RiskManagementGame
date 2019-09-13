@@ -30,6 +30,7 @@ public class ContractUIHandler : MonoBehaviour
     private ContractManager contractManager;
     private FeatureManager featureManager;
     private FirmManager firmManager;
+    private ScheduleManager scheduleManager;
         
 
     // Start is called before the first frame update
@@ -42,6 +43,7 @@ public class ContractUIHandler : MonoBehaviour
         featureManager.SetContractUIHandler(this);
         featureManager.SetContractManager(contractManager);
         firmManager = myPlayerDataObject.GetComponent<FirmManager>();
+        scheduleManager = myPlayerDataObject.GetComponent<ScheduleManager>();
 
         if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
         {
@@ -53,7 +55,7 @@ public class ContractUIHandler : MonoBehaviour
             UpdateUIContractListsContents();
         }
         else  //som developer
-        {
+        {   
             UpdateUIContractListsContents();
         }
 
@@ -140,7 +142,6 @@ public class ContractUIHandler : MonoBehaviour
             contractUIComponentHandler.SetContractIDText(contract.GetContractID());
             contractUIComponentHandler.SetStatus(contract.GetContractState().ToString());
 
-           
             //PROVIDER
             if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
             {
@@ -164,6 +165,7 @@ public class ContractUIHandler : MonoBehaviour
             {
                 Debug.Log(contractManager.GetPlayerRole());
                 Debug.Log(contract.GetContractTrun());
+                Debug.Log(contract.GetProviderID());
                 contractUIComponentHandler.SetPartnersNameText(contractManager.GetFirmName(contract.GetProviderID()));
                
                 if (contract.GetContractTrun() % 2 == 0) //providers turn
@@ -203,6 +205,23 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.SetState(contract.GetContractState());
         contractPreviewUIHandler.GenerateHistoryRecord(contract.GetContractHistory());
         contractPreviewUIHandler.PreviewContract();
+        if(scheduleManager != null) //Developer
+        {
+            if (scheduleManager.GetScheduleDevelopmentEndDay().ContainsKey(contractID))
+            {
+                int developmentEndDay = scheduleManager.GetScheduleDevelopmentEndDay()[contractID];
+                if (developmentEndDay > 60)
+                {
+                    contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Feature can not be completed in one quarter.");
+                }
+                contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Contract's end day of developmet: " + developmentEndDay);
+            }
+            else
+            {
+                contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Contract was not scheduled for development. ");
+            }
+        }
+        else { contractPreviewUIHandler.DisableScheduleInfoText(); }
     }
 
     public void GenerateContractEditPreview(string contractID)
@@ -233,6 +252,23 @@ public class ContractUIHandler : MonoBehaviour
         {
             contractPreviewUIHandler.FinalContract();
         }
+        if (scheduleManager != null) //Developer
+        {
+            if (scheduleManager.GetScheduleDevelopmentEndDay().ContainsKey(contractID))
+            {
+                int developmentEndDay = scheduleManager.GetScheduleDevelopmentEndDay()[contractID];
+                if (developmentEndDay > 60)
+                {
+                    contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Feature can not be completed in one quarter.");
+                }else
+                contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Contract's end day of developmet: " + developmentEndDay);
+            }
+            else
+            {
+                contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Contract was not scheduled for development. ");
+            }
+        }
+        else { contractPreviewUIHandler.DisableScheduleInfoText(); }
     }
 
     public void SendBackContract(string contractID, string price, string delivery)

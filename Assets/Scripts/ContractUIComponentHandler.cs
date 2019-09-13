@@ -21,39 +21,33 @@ public class ContractUIComponentHandler : MonoBehaviour
     public void SetPlayerTurnText(string playerTurn) { playersTurnText.text = playerTurn; }
     public void SetStatus(string status) { statusText.text = status; }
     public void SetContractUIHandler(ContractUIHandler contractUIHandler){ this.contractUIHandler = contractUIHandler; }
+    
     //Methods
-
     public void ChangeEditButtonText(string newText)
     {
         editButton.GetComponentInChildren<Text>().text = newText;
     }
-
     public void DisableEditButton() 
     {
         editButton.gameObject.SetActive(false);
     }
-
     public void DisableDetailButton()
     {
         detailButton.gameObject.SetActive(false);
     }
-
     public void EnableDetailButtton()
     {
         detailButton.gameObject.SetActive(true);
     }
-
     public void EnableEditButtton()
     {
         editButton.gameObject.SetActive(true);
     }
 
-
     public void GenerateContractPreview()
     {
         contractUIHandler.GenerateContractPreview(contractIDText.text);
     }
-
     public void GenerateContractEditPreview()
     {
         contractUIHandler.GenerateContractEditPreview(contractIDText.text);

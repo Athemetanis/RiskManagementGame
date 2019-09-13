@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+public class SyncDictionaryStringString : SyncDictionary<string, string> { };
 
 /// <summary>
 /// Contains information about one particular game, such as: game name, ID, list of players, round, lists of developers/provieders and their firm names
 /// </summary>
 public class GameData : NetworkBehaviour
 {
-    public class SyncDictionaryStringString : SyncDictionary<string, string> { };
+
 
     //VARIABLES
     [SyncVar(hook = "OnChangeGameID")]
@@ -46,6 +47,7 @@ public class GameData : NetworkBehaviour
     private SyncDictionaryStringString allFirmDescriptions = new SyncDictionaryStringString();
 
     //-------------------<playerID, firmName>
+    //private SyncDictionaryStringString allFirmsRevers = new SyncDictionaryStringString();
     private Dictionary<string, string> allFirmsRevers = new Dictionary<string, string>();
 
     //GETTERS & SETTERS
@@ -80,6 +82,7 @@ public class GameData : NetworkBehaviour
         developersFirms.Callback += OnDevelopersFirmsChange;
         allFirmDescriptions.Callback += OnFirmDescriptionChange;
         allFirms.Callback += OnAllFirmsChange;
+        RecreateAllFirmsReverse();
     }
 
     // Use this for initialization
@@ -330,6 +333,12 @@ public class GameData : NetworkBehaviour
             {
                 ContractUIHandler contractUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>();
                 contractUIHandler.UpdateDeveloperDropdownOptions(GetDevelopersFirms());
+                contractUIHandler.UpdateDeveloperFirmList(GetListDeveloperFirmNameDescription());
+                contractUIHandler.UpdateUIContractListsContents();
+            }
+            else
+            {
+                ContractUIHandler contractUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>();
                 contractUIHandler.UpdateUIContractListsContents();
             }
 
@@ -376,7 +385,7 @@ public class GameData : NetworkBehaviour
         {
             allFirmsRevers.Add(pair.Value, pair.Key);
         }
-        Debug.Log(allFirmsRevers.Count);
+       Debug.LogWarning("firm reverse count: " + allFirmsRevers.Count);
 
     }
 

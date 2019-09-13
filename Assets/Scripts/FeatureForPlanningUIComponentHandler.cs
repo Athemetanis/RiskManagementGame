@@ -27,6 +27,8 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
     public Text point9Text;
     public Text point10Text;
     public Text point11Text;
+
+    private bool initialized;
     
        
     private  ScheduleUIHandler scheduleUIHandler;
@@ -45,6 +47,7 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
 
     public void SetUpFeatureForPlanning(int dropdownOptionsCount, string order, string contractID, string partnersName, ContractState contractState, string featureID, int functionality, int userfriendliness, int integrability, List<Vector3> graphPoints, int[] graphDays, int developmentTime)
     {
+        initialized = false;
         GenerateDropdownOptions(dropdownOptionsCount);
         SetUIOrderDropdown(order);
         SetContracIDText(contractID);
@@ -57,6 +60,7 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
         GenerateGraph(graphPoints);
         SetGraphTexts(graphDays);
         SetDevelopmentTimeIF(developmentTime);
+        initialized = true;
     }
 
     public void GenerateDropdownOptions(int dropdownOptionsCount)
@@ -73,12 +77,13 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
 
     public void UpdateDropdownOptions(int count)
     {
+        Debug.Log("updating dropdown options");
         orderDropdown.ClearOptions();
         GenerateDropdownOptions(count);
     }
     
     public void SetUIOrderDropdown(string order)
-    {
+    {   
         if(order == "none")
         {
             orderDropdown.value = 0;
@@ -87,6 +92,7 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
         {
             orderDropdown.value = int.Parse(order);
         }
+
     }
     
     public void GenerateGraph(List<Vector3> graphPoints)
@@ -113,21 +119,31 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
     }
 
     public void UpdateDevelopmentTime() //trigered when InputFieldChanged
-    {
+    {   
+        if(int.Parse(developmentTimeIF.text) > 60)
+        {
+            developmentTimeIF.text = "60";
+        }
         scheduleUIHandler.UpdateDevelopmentTime(contractIDText.text, int.Parse(developmentTimeIF.text));
     }
 
     public void UpdateOrder()
     {
-        if (orderDropdown.value == 0)
+        if (initialized)
         {
-            scheduleUIHandler.UpdateFeatureOrder(contractIDText.text, "none");
+            Debug.LogError("updating order on: " + orderDropdown.value);
+            Debug.LogError(contractIDText.text);
+            if (orderDropdown.value == 0)
+            {
+                scheduleUIHandler.UpdateFeatureOrder(contractIDText.text, "none");
 
+            }
+            else
+            {
+                scheduleUIHandler.UpdateFeatureOrder(contractIDText.text, orderDropdown.value.ToString());
+            }
         }
-        else
-        {
-            scheduleUIHandler.UpdateFeatureOrder(contractIDText.text, orderDropdown.value.ToString());
-        }
+        
     }
 
 

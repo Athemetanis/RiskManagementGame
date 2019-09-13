@@ -97,6 +97,7 @@ public class ContractManager : NetworkBehaviour
         //Schedule
         if (developerCM.GetScheduleManager() != null)
         {
+            Debug.Log("creating scheduled feature on server developer");
             developerCM.GetScheduleManager().CreateScheduledFeature(contractID, providerID, contractState, feature);
         }
     }
@@ -132,6 +133,7 @@ public class ContractManager : NetworkBehaviour
     [Command]
     public void CmdModifyContract(string contractID, int price, int delivery)
     {
+        Debug.LogWarning(contractID);
         ContractManager developerCM = GameHandler.allGames[gameID].GetDeveloper(myContracts[contractID].GetDeveloperID()).GetComponent<ContractManager>();
         ContractManager providerCM = GameHandler.allGames[gameID].GetProvider(myContracts[contractID].GetProviderID()).GetComponent<ContractManager>();
         if (myContracts[contractID].GetContractState() == ContractState.Proposal)
@@ -169,7 +171,13 @@ public class ContractManager : NetworkBehaviour
 
     [ClientRpc]
     public void RpcModifyContractPrice(string contractID, int price, string message)
-    {   if(myContracts[contractID].GetContractState() == ContractState.Proposal)
+    {
+        Debug.LogWarning("contractID: " + contractID);
+        foreach(Contract contract in myContracts.Values)
+        {
+            Debug.Log(contract.GetContractID());
+        }
+        if (myContracts[contractID].GetContractState() == ContractState.Proposal)
         {
             myContracts[contractID].SetContractState(ContractState.InNegotiations);
             //SCHEDULE
@@ -193,6 +201,7 @@ public class ContractManager : NetworkBehaviour
     [ClientRpc]
     public void RpcModifyContractDelivery(string contractID, int delivery, string message)
     {
+        Debug.LogWarning(contractID);
         if (myContracts[contractID].GetContractState() == ContractState.Proposal)
         {
             myContracts[contractID].SetContractState(ContractState.InNegotiations);

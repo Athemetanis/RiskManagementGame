@@ -122,6 +122,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         if (developerAccountingUIHandler != null)
         {
             developerAccountingUIHandler.UpdateProgrammersSalariesText(this.programmersSalaries);
+            developerAccountingUIHandler.UpdateSalariesText(this.salaries);
         }
     }
 
@@ -131,6 +132,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         if (developerAccountingUIHandler != null)
         {
             developerAccountingUIHandler.UpdateUISpecialistsSalariesText(this.uiSpecialistsSalaries);
+            developerAccountingUIHandler.UpdateSalariesText(this.salaries);
         }
     }
 
@@ -140,6 +142,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         if (developerAccountingUIHandler != null)
         {
             developerAccountingUIHandler.UpdateIntegrabilitySpecialistsSalariesText(this.integrabilitySpecialistsSalaries);
+            developerAccountingUIHandler.UpdateSalariesText(this.salaries);
         }
     }
 

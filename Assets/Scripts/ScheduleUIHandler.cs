@@ -45,11 +45,10 @@ public class ScheduleUIHandler : MonoBehaviour
 
     public void UpdateSchedeleListContent()
     {
-        Debug.LogWarning("generating schedule");
         foreach (Transform child in scheduleListContent.transform)
         { GameObject.Destroy(child.gameObject); }
 
-        Debug.LogWarning("schedule contains " + scheduleManager.GetSchedule().Count + " features");
+        Debug.Log("schedule contains " + scheduleManager.GetSchedule().Count + " features");
         int previousFeatureEnd = 0;
         for(int i = 1; i <= scheduleManager.GetScheduledFeatures().Count; i++)
         { 
@@ -57,21 +56,51 @@ public class ScheduleUIHandler : MonoBehaviour
             {
                 ScheduledFeature scheduledFeature = scheduleManager.GetScheduledFeatures()[scheduleManager.GetSchedule()[i]];
                 int developmentTimeOfFeature = scheduledFeature.GetDevelopmentTime();
-                if(developmentTimeOfFeature == 0)
+                int endDevelopmentTimeOfFeature = previousFeatureEnd + developmentTimeOfFeature;
+                if (developmentTimeOfFeature == 0)
                 {
                     return;
                 }
-                GameObject scheduledFeatureUIComponent = Instantiate(scheduledFeatureUIComponentPrefab);
-                scheduledFeatureUIComponent.transform.SetParent(scheduleListContent.transform, false);
-                RectTransform developmentTimeVisualRepresenatation = scheduledFeatureUIComponent.GetComponent<ScheduluedFeatureUIComponentHandler>().GetDevelopmentTimeRectangleRT();
-                developmentTimeVisualRepresenatation.position.Set(previousFeatureEnd, 0, 0);
-                developmentTimeVisualRepresenatation.sizeDelta = new Vector2(developmentTimeOfFeature * 10, 0);
+                if(developmentTimeOfFeature > 60)
+                {
+                    return;
+                }
+                if(previousFeatureEnd > 60)
+                {
+                    return;
+                }
+                if (endDevelopmentTimeOfFeature > 60)
+                {
+                    GameObject scheduledFeatureUIComponent = Instantiate(scheduledFeatureUIComponentPrefab);
+                    scheduledFeatureUIComponent.transform.SetParent(scheduleListContent.transform, false);
+                    ScheduluedFeatureUIComponentHandler scheduledFeatureUIComponentHandler = scheduledFeatureUIComponent.GetComponent<ScheduluedFeatureUIComponentHandler>();
+                    RectTransform developmentTimeVisualRepresenatation = scheduledFeatureUIComponentHandler.GetDevelopmentTimeRectangleRT();
+                    scheduledFeatureUIComponentHandler.GetFeatureImage().color = Color.red;
+                    scheduledFeatureUIComponentHandler.GetFeatureLabel().text = scheduledFeature.GetContractID() + '\n' + scheduledFeature.GetFeature().nameID; 
+                    developmentTimeVisualRepresenatation.position.Set(previousFeatureEnd * 10, 0, 0);
+                    developmentTimeVisualRepresenatation.sizeDelta = new Vector2(600 - (previousFeatureEnd * 10), 0);
+                    previousFeatureEnd = endDevelopmentTimeOfFeature;
+
+                }
+                else
+                {
+                    GameObject scheduledFeatureUIComponent = Instantiate(scheduledFeatureUIComponentPrefab);
+                    scheduledFeatureUIComponent.transform.SetParent(scheduleListContent.transform, false);
+                    ScheduluedFeatureUIComponentHandler scheduledFeatureUIComponentHandler = scheduledFeatureUIComponent.GetComponent<ScheduluedFeatureUIComponentHandler>();
+                    RectTransform developmentTimeVisualRepresenatation = scheduledFeatureUIComponentHandler.GetDevelopmentTimeRectangleRT();
+                    scheduledFeatureUIComponentHandler.GetFeatureImage().color = Color.green;
+                    scheduledFeatureUIComponentHandler.GetFeatureLabel().text = scheduledFeature.GetContractID() + '\n' + scheduledFeature.GetFeature().nameID;
+                    developmentTimeVisualRepresenatation.position.Set(previousFeatureEnd * 10, 0, 0);
+                    developmentTimeVisualRepresenatation.sizeDelta = new Vector2(developmentTimeOfFeature * 10, 0);
+                    previousFeatureEnd = endDevelopmentTimeOfFeature;
+                }
+                
             }
         }
     }
 
     public void UpdateDevelopmentTime(string contractID, int developmentTime)
-    {
+    {   
         scheduleManager.UpdateScheduledFeatureDevelopmentTime(contractID, developmentTime);
     }
 

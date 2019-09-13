@@ -11,11 +11,7 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public Text providerFirmText;
     public Text featureText;
     public Text stateText;
-    //public Text PriceText;          //just text 
-    //public Text DeliveryText;
-    //public Text priceValueText;     //values
-    //public Text deliveryValueText;
-    public InputField priceIF;      //inputfields
+    public InputField priceIF;      
     public InputField deliveryIF;
     public GameObject historyContent;
 
@@ -26,6 +22,8 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public Button modifyButton;
     public Button cancelChangesButton;
     public Button cancelProposingButton;
+    public Text scheduleInfoText;
+    public Text warningText;
 
     public GameObject historyTextUIComponentPrefab;
 
@@ -33,8 +31,6 @@ public class ContractPreviewUIHandler : MonoBehaviour
 
     private string price;
     private string delivery;
-
-
 
     //GETTERS & SETTERS
 
@@ -46,15 +42,13 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public void SetDelivery(int delivery) { this.delivery = delivery.ToString(); }
     public void SetContractUIHandler(ContractUIHandler contractUIHandler) { this.contractUIHandler = contractUIHandler; }
     public void SetState(ContractState state) { stateText.text = state.ToString(); }
-
-  
+    public void SetScheduleInfoText(string scheduleInfo) { scheduleInfoText.text = scheduleInfo; }
 
     //METHODS
     public void DestroyGameObject()
     {
         Destroy(this.gameObject);
     }
-
 
     public void ProposalContract()
     {
@@ -68,7 +62,6 @@ public class ContractPreviewUIHandler : MonoBehaviour
         priceIF.gameObject.SetActive(false);
         deliveryIF.gameObject.SetActive(false);
     }
-
     public void InNegotiationContract()
     {
         acceptButton.gameObject.SetActive(true);
@@ -85,7 +78,6 @@ public class ContractPreviewUIHandler : MonoBehaviour
         priceIF.interactable = false;
         deliveryIF.interactable = false;
     }
-
     public void FinalContract()
     {
         rejectButton.gameObject.SetActive(true);
@@ -103,7 +95,6 @@ public class ContractPreviewUIHandler : MonoBehaviour
         deliveryIF.interactable = false;
 
     }
-
     public void ModifyProposePriceDelivery() //when modify/propose button clicked. Dont forget to set active coresponding CANCEL button in inspector - button OnClick!!!
     {   //setting up inputfields
         priceIF.gameObject.SetActive(true);
@@ -138,7 +129,6 @@ public class ContractPreviewUIHandler : MonoBehaviour
         sendBackButton.gameObject.SetActive(false);
     }
      
-
     public void GenerateHistoryRecord(List<string> historyList)
     {
         foreach (Transform child in historyContent.transform)
@@ -169,26 +159,36 @@ public class ContractPreviewUIHandler : MonoBehaviour
         priceIF.interactable = false;
         deliveryIF.interactable = false;
     }
-
     public void SendBackContract()
     {
         Debug.Log("sending changes");
         contractUIHandler.SendBackContract(contractIDText.text, priceIF.text, deliveryIF.text);
         DestroyGameObject();
     }
-
     public void AcceptContract()
     {
         contractUIHandler.AcceptContract(contractIDText.text);
         DestroyGameObject();
     }
-
     public void RejectContract()
     {
         contractUIHandler.RefuseContract(contractIDText.text);
         DestroyGameObject();
     }
 
-    
+    public void DisableScheduleInfoText() { scheduleInfoText.gameObject.SetActive(false); }
 
+    public void CheckDeliveryInput()
+    {
+        if(int.Parse(deliveryIF.text) > 60)
+        {
+            deliveryIF.text = "60";
+            warningText.gameObject.SetActive(true);
+
+        }
+        else
+        {
+            warningText.gameObject.SetActive(false);
+        }
+    }
 }

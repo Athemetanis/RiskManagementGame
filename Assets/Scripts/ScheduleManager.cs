@@ -11,7 +11,9 @@ public class ScheduleManager : NetworkBehaviour
     //--------------<contractID, scheduledFeature>-------------
     private Dictionary<string, ScheduledFeature> scheduledFeatures = new Dictionary<string, ScheduledFeature>();
     //--------------<order, contractID>
-    private Dictionary<int, string> schedule = new Dictionary<int, string>();
+    private Dictionary<int, string> scheduleOrder = new Dictionary<int, string>();
+    ///--------------contractID, developmentEndDay
+    private Dictionary<string, int> scheduleDevelopmentEndDay = new Dictionary<string, int>();
     
     private ContractManager contractManager;
     private ScheduleUIHandler scheduleUIHandler;
@@ -19,8 +21,9 @@ public class ScheduleManager : NetworkBehaviour
     
     //GETTERS & SETTERS
     public Dictionary<string, ScheduledFeature> GetScheduledFeatures() { return scheduledFeatures; }
-    public Dictionary<int, string> GetSchedule() { return schedule; }
+    public Dictionary<int, string> GetSchedule() { return scheduleOrder; }
     public void SetScheduleUIHandler(ScheduleUIHandler scheduleUIHandler) { this.scheduleUIHandler = scheduleUIHandler; }
+    public Dictionary<string,int> GetScheduleDevelopmentEndDay() { return scheduleDevelopmentEndDay; }
 
     // Start is called before the first frame update
     void Start()
@@ -34,7 +37,6 @@ public class ScheduleManager : NetworkBehaviour
     {   
        CmdSyncScheduledFeaturesOnClient();
     }
-
 
     [Command]
     public void CmdSyncScheduledFeaturesOnClient() //copying features form server to clients
@@ -50,17 +52,19 @@ public class ScheduleManager : NetworkBehaviour
     public void RpcCreateScheduledFeatureFromFeature(string order, string contractID, string providerFirmID, ContractState contractState, Feature feature, Vector3[] graphPointsArray, int[] graphDays, int developmentTime, int deliveryTime)
     {
         scheduledFeatures.Clear();
-        schedule.Clear();
+        scheduleOrder.Clear();
         scheduledFeatures.Add(contractID, new ScheduledFeature(order, contractID, providerFirmID, contractState, feature, graphPointsArray, graphDays, developmentTime, deliveryTime));
         if (order != "none")
         {
-            schedule.Add(int.Parse(order), contractID);
+            scheduleOrder.Add(int.Parse(order), contractID);
         }
         if(scheduleUIHandler != null)
         {
             scheduleUIHandler.UpdateSchedeleListContent();
         }
-       
+        UpdateScheduleEndDevelopmentDay();
+
+
 
     }
 
@@ -83,7 +87,8 @@ public class ScheduleManager : NetworkBehaviour
         {
             scheduleUIHandler.UpdateFeatureListContent();
         }
-  
+        UpdateScheduleEndDevelopmentDay();
+
     }
 
     public void DeleteScheduledFeature(string contractID)
@@ -91,6 +96,7 @@ public class ScheduleManager : NetworkBehaviour
         if (scheduledFeatures.ContainsKey(contractID) == true)
         {
             string deletedOrder = scheduledFeatures[contractID].GetOrder();
+
             if (deletedOrder == "none")
             {
                 scheduledFeatures.Remove(contractID);
@@ -99,14 +105,14 @@ public class ScheduleManager : NetworkBehaviour
             {
                 scheduledFeatures[contractID].SetOrder("none");
                 int count = scheduledFeatures.Count;
-                schedule.Remove(int.Parse(deletedOrder));
-                
+                scheduleOrder.Remove(int.Parse(deletedOrder));
+                scheduledFeatures.Remove(contractID);
                 for (int i = int.Parse(deletedOrder) + 1; i <= scheduledFeatures.Count; i++)
                 {
-                    if (schedule.ContainsKey(i))
+                    if (scheduleOrder.ContainsKey(i))
                     {
-                        schedule.Add(i - 1, schedule[i]);
-                        schedule.Remove(i);
+                        
+                        UpdateScheduledFeatureOrder(scheduleOrder[i], (i - 1).ToString());
                     }
                     
                 }
@@ -115,6 +121,7 @@ public class ScheduleManager : NetworkBehaviour
             {
                 scheduleUIHandler.UpdateFeatureListContent();
             }
+            UpdateScheduleEndDevelopmentDay();
         }
     }
 
@@ -131,40 +138,6 @@ public class ScheduleManager : NetworkBehaviour
 
     }
 
-    public void GenerateScheduledFeatures() //NOT IN USE
-    {
-        if (hasAuthority)
-        {
-            CmdGenerateScheduledFeatures();
-        }
-    }
-    [Command]
-    public void CmdGenerateScheduledFeatures() //NOT IN USE
-    {
-        foreach (Contract contract in contractManager.GetMyContracts().Values)
-        {   
-            if(contract.GetContractState() != ContractState.Rejected)
-            {
-                ScheduledFeature scheduledFeature = new ScheduledFeature(contract.GetContractID(), contractManager.GetFirmName(contract.GetProviderID()), contract.GetContractState(), contract.GetContractFeature());
-                scheduledFeatures.Add(contract.GetContractID(), scheduledFeature);
-            }
-        }
-    }
-    [ClientRpc]
-    public void RpcGenerateScheduledFeatures() //NOT IN USE
-    {
-        foreach (Contract contract in contractManager.GetMyContracts().Values)
-        {
-            if (contract.GetContractState() != ContractState.Rejected)
-            {
-                ScheduledFeature scheduledFeature = new ScheduledFeature(contract.GetContractID(), contractManager.GetFirmName(contract.GetProviderID()), contract.GetContractState(), contract.GetContractFeature());
-                scheduledFeatures.Add(contract.GetContractID(), scheduledFeature);
-            }
-        }
-    }
-
-
-
     public void UpdateAllFeatureGraphs()
     {
         foreach(KeyValuePair<string, ScheduledFeature> scheduledFeature in scheduledFeatures)
@@ -176,8 +149,6 @@ public class ScheduleManager : NetworkBehaviour
             scheduleUIHandler.UpdateFeatureListContent();
         }
     }
-
-
 
     public void GenerateGraph2DPoints(string contractID, ScheduledFeature scheduledFeature, int programmers, int uiSpecialists, int integrabilitySpecialists)
     {
@@ -191,7 +162,7 @@ public class ScheduleManager : NetworkBehaviour
         float functionComplexity = unitComplexity * functionality;
         float uiComplexity = unitComplexity * userfriendliness;
         float integrationComplexity = unitComplexity * integrability;
-        int functionDevelopmentTime = (int)System.Math.Round(uiComplexity / (programmers + uiSpecialists + integrabilitySpecialists), System.MidpointRounding.AwayFromZero);
+        int functionDevelopmentTime = (int)System.Math.Round(functionComplexity / (programmers + uiSpecialists + integrabilitySpecialists), System.MidpointRounding.AwayFromZero);
         int uiDevelopmetTime = (int)System.Math.Round(uiComplexity / (programmers + uiSpecialists * 2 + integrabilitySpecialists), System.MidpointRounding.AwayFromZero);
         int integrabilityDevelopmentTime = (int)System.Math.Round(integrationComplexity / (programmers + uiSpecialists + integrabilitySpecialists * 2), System.MidpointRounding.AwayFromZero);
 
@@ -200,13 +171,14 @@ public class ScheduleManager : NetworkBehaviour
         int xAxisScale = 20;
         int minDevelopmentDays;
         int maxDevelopmentDays;
-
         List<Vector3> graphPoints = new List<Vector3>();
         int[] graphDays = new int[11] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-        minDevelopmentDays = (int)System.Math.Round(((float)overallDevelopmentTime * 80) / 100, System.MidpointRounding.AwayFromZero);
-        maxDevelopmentDays = (int)System.Math.Round(((float)overallDevelopmentTime * 120) / 100, System.MidpointRounding.AwayFromZero);
-
+        minDevelopmentDays = (int)System.Math.Round(((float)overallDevelopmentTime * 0.8), System.MidpointRounding.AwayFromZero);
+        maxDevelopmentDays = (int)System.Math.Round(((float)overallDevelopmentTime * 1.2), System.MidpointRounding.AwayFromZero);
+        //Debug.LogWarning(programmers + " , " + uiSpecialists + " , " + integrabilitySpecialists);
+        //Debug.LogWarning(functionDevelopmentTime + " , " + uiDevelopmetTime + " , " + integrabilityDevelopmentTime);
+        //Debug.LogError( " overall: " + overallDevelopmentTime + " min: " + minDevelopmentDays  + "max: " + maxDevelopmentDays);
         if (feature.difficulty == 1)   // y = ax+ b; a=  100/ dayrange; b = -1 * a * minimumdays;   y = percentage; x = day 
         {
             if (overallDevelopmentTime > 48)
@@ -293,7 +265,6 @@ public class ScheduleManager : NetworkBehaviour
                     }
                 }
             }
-            
         }
         scheduledFeature.SetGraphDays(graphDays);
         scheduledFeature.SetGraphPoints(graphPoints.ToArray());
@@ -321,12 +292,12 @@ public class ScheduleManager : NetworkBehaviour
         //potom iba pridam do planu moju novu featuru a aktualizujem jej cislo
         if (oldOrder == "none")
         {
-            if (schedule.ContainsKey(int.Parse(newOrder)))
+            if (scheduleOrder.ContainsKey(int.Parse(newOrder)))
             {
-                scheduledFeatures[schedule[int.Parse(newOrder)]].SetOrder("none");
-                schedule.Remove(int.Parse(newOrder));
+                scheduledFeatures[scheduleOrder[int.Parse(newOrder)]].SetOrder("none");
+                scheduleOrder.Remove(int.Parse(newOrder));
             }
-            schedule.Add(int.Parse(newOrder), contractID);
+            scheduleOrder.Add(int.Parse(newOrder), contractID);
             scheduledFeatures[contractID].SetOrder((newOrder));
         }
 
@@ -337,21 +308,24 @@ public class ScheduleManager : NetworkBehaviour
         {
             if (newOrder == "none") //odstanim z planu a aktualizujem hodnotu featury
             {
-                schedule.Remove(int.Parse(oldOrder));
+                scheduleOrder.Remove(int.Parse(oldOrder));
                 scheduledFeatures[contractID].SetOrder((newOrder));
             }
             else
             {
-                if (schedule.ContainsKey(int.Parse(newOrder)))
+                if (scheduleOrder.ContainsKey(int.Parse(newOrder)))
                 {
-                    scheduledFeatures[schedule[int.Parse(newOrder)]].SetOrder("none");
-                    schedule.Remove(int.Parse(newOrder));
+                    scheduledFeatures[scheduleOrder[int.Parse(newOrder)]].SetOrder("none");
+                    scheduleOrder.Remove(int.Parse(newOrder));
                 }
-                schedule.Remove(int.Parse(oldOrder));
+                scheduleOrder.Remove(int.Parse(oldOrder));
                 scheduledFeatures[contractID].SetOrder((newOrder));
-                schedule.Add(int.Parse(newOrder), contractID);
+                scheduleOrder.Add(int.Parse(newOrder), contractID);
             }
         }
+        RpcUpdateScheduledFeatureOrder(contractID, newOrder);
+        UpdateScheduleEndDevelopmentDay();
+
     }
     [ClientRpc]
     public void RpcUpdateScheduledFeatureOrder(string contractID, string newOrder)
@@ -365,12 +339,12 @@ public class ScheduleManager : NetworkBehaviour
         //potom iba pridam do planu moju novu featuru a aktualizujem jej cislo
         if (oldOrder == "none")
         {
-            if (schedule.ContainsKey(int.Parse(newOrder)))
+            if (scheduleOrder.ContainsKey(int.Parse(newOrder)))
             {
-                scheduledFeatures[schedule[int.Parse(newOrder)]].SetOrder("none");
-                schedule.Remove(int.Parse(newOrder));
+                scheduledFeatures[scheduleOrder[int.Parse(newOrder)]].SetOrder("none");
+                scheduleOrder.Remove(int.Parse(newOrder));
             }
-            schedule.Add(int.Parse(newOrder), contractID);
+            scheduleOrder.Add(int.Parse(newOrder), contractID);
             scheduledFeatures[contractID].SetOrder((newOrder));
         }
 
@@ -381,19 +355,19 @@ public class ScheduleManager : NetworkBehaviour
         {
             if (newOrder == "none") //odstanim z planu a aktualizujem hodnotu featury
             {
-                schedule.Remove(int.Parse(oldOrder));
+                scheduleOrder.Remove(int.Parse(oldOrder));
                 scheduledFeatures[contractID].SetOrder((newOrder));
             }
             else
             {
-                if (schedule.ContainsKey(int.Parse(newOrder)))
+                if (scheduleOrder.ContainsKey(int.Parse(newOrder)))
                 {
-                    scheduledFeatures[schedule[int.Parse(newOrder)]].SetOrder("none");
-                    schedule.Remove(int.Parse(newOrder));
+                    scheduledFeatures[scheduleOrder[int.Parse(newOrder)]].SetOrder("none");
+                    scheduleOrder.Remove(int.Parse(newOrder));
                 }
-                schedule.Remove(int.Parse(oldOrder));
+                scheduleOrder.Remove(int.Parse(oldOrder));
                 scheduledFeatures[contractID].SetOrder((newOrder));
-                schedule.Add(int.Parse(newOrder), contractID);
+                scheduleOrder.Add(int.Parse(newOrder), contractID);
             }
         }
         if (scheduleUIHandler != null)
@@ -401,18 +375,22 @@ public class ScheduleManager : NetworkBehaviour
             scheduleUIHandler.UpdateFeatureListContent(); //changing input fields
             //scheduleUIHandler.UpdateSchedeleListContent();
         }
+        UpdateScheduleEndDevelopmentDay();
     }
 
     public void UpdateScheduledFeatureDevelopmentTime(string contractID, int developmentTime)  
     {
         CmdUpdateScheduledFeatureDevelopmentTime(contractID, developmentTime);
     }
+
     [Command]
     public void CmdUpdateScheduledFeatureDevelopmentTime(string contractID, int developmentTime)
     {
         scheduledFeatures[contractID].SetDevelopmentTime(developmentTime);
         RpcUpdateScheduledFeatureDevelopmentTime(contractID, developmentTime);
+        UpdateScheduleEndDevelopmentDay();
     }
+
     [ClientRpc]
     public void RpcUpdateScheduledFeatureDevelopmentTime(string contractID, int developmentTime)
     {
@@ -421,6 +399,30 @@ public class ScheduleManager : NetworkBehaviour
         {
             scheduleUIHandler.UpdateSchedeleListContent();
         }
+        UpdateScheduleEndDevelopmentDay();
     }
 
+    public void UpdateScheduleEndDevelopmentDay()
+    {
+        scheduleDevelopmentEndDay.Clear();
+        int previousFeatureEnd = 0;
+        for (int i = 1; i <= scheduledFeatures.Count; i++)
+        {
+            if (scheduleOrder.ContainsKey(i))
+            {
+                ScheduledFeature scheduledFeature =scheduledFeatures[scheduleOrder[i]];
+                int developmentTimeOfFeature = scheduledFeature.GetDevelopmentTime();
+                if (developmentTimeOfFeature == 0)
+                {
+                    return;
+                }
+                else
+                {
+                    scheduleDevelopmentEndDay.Add(scheduledFeature.GetContractID(), previousFeatureEnd + scheduledFeature.GetDevelopmentTime());
+                    previousFeatureEnd = previousFeatureEnd + scheduledFeature.GetDevelopmentTime();
+                }
+               
+            }
+        }
+    }
 }

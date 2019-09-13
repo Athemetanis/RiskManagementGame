@@ -52,7 +52,7 @@ public class DeveloperAccountingUIHandler : MonoBehaviour
     }
     public void UpdateSalariesText(int programmersSalaries)
     {
-        programmersSalariesText.text = programmersSalaries.ToString();
+        salariesText.text = programmersSalaries.ToString();
     }
     public void UpdateProgrammersSalariesText(int programmersSalaries)
     {

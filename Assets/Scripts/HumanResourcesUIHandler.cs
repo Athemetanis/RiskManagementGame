@@ -34,6 +34,11 @@ public class HumanResourcesUIHandler : MonoBehaviour
     public Slider integrabilitySpecialistSalarySlider;
     public Slider qaSpecilistSalarySlider;
 
+    public Text programmerSalaryText;
+    public Text uiSPecialistSalaryText;
+    public Text integrabilitySpecialistsSalaryText;
+
+    private bool initialized;
     private GameObject myPlayerDataObject;
     private HumanResourcesManager humanResourcesManager;
 
@@ -94,52 +99,129 @@ public class HumanResourcesUIHandler : MonoBehaviour
         humanResourcesManager.HireIntegrabilitySpecialistsNextQuarter(Int32.Parse(hireIntegrabilitySpecialists.text));
     }
 
-    public void ChangeProgrammmerSalary(Slider programmerSalary) { humanResourcesManager.ChangeProgrammmerSalary((int)programmerSalary.value); }
-    public void ChangeUISpecialistSalary(Slider uiSpecilistSalary) { humanResourcesManager.ChangeUISpecialistSalary((int)uiSpecialistSalarySlider.value); }
-    public void ChangeIntegrabilitySpecialistSalary(Slider integrabilitySpecialistSalary) { humanResourcesManager.ChangeIntegrabilitySpecialistSalary((int) integrabilitySpecialistSalary.value); }
+    public void ChangeProgrammmerSalary()
+    {
+        if (initialized)
+        {
+            humanResourcesManager.ChangeProgrammmerSalary((int)programmerSalarySlider.value);
+            programmerSalaryText.text = programmerSalarySlider.value.ToString();
+        }
+    }
+    public void ChangeUISpecialistSalary()
+    {
+        if (initialized)
+        {
+            humanResourcesManager.ChangeUISpecialistSalary((int)uiSpecialistSalarySlider.value);
+            uiSPecialistSalaryText.text = uiSpecialistSalarySlider.value.ToString();
+        }
+    }
+    public void ChangeIntegrabilitySpecialistSalary()
+    {
+        if (initialized)
+        {
+            humanResourcesManager.ChangeIntegrabilitySpecialistSalary((int)integrabilitySpecialistSalarySlider.value);
+            integrabilitySpecialistsSalaryText.text = integrabilitySpecialistSalarySlider.value.ToString();
+        }
+    }
 
     //METHODS FOR UPDATING UI ELEMENTS
     public void UpdateAllElements()
     {
-        programersCurrentCountText.text = humanResourcesManager.GetProgrammersCount().ToString();
-        userInterfaceSpecialistsCurrentCountText.text = humanResourcesManager.GetUISPecialistsCount().ToString();
-        integrabilitySpecialistsCurrentCountText.text = humanResourcesManager.GetIntegrabilitySpecialistsCount().ToString();
-        programersAvailableCountText.text = humanResourcesManager.GetProgrammersAvailableCount().ToString();
-        specialistsAvailableCountText.text = humanResourcesManager.GetSpecialistsAvailableCount().ToString();
+        initialized = false;
         programmerSalarySlider.value = humanResourcesManager.GetProgrammerSalary();
         uiSpecialistSalarySlider.value = humanResourcesManager.GetUISpecialistSalary();
         integrabilitySpecialistSalarySlider.value = humanResourcesManager.GetIntegrabilitySpecialistSalary();
+        
+        UpdateProgramersCurrentCountText(humanResourcesManager.GetProgrammersCount());
+        UpdateUserInterfaceSpecialistsCurrentCountText(humanResourcesManager.GetUISPecialistsCount());
+        UpdateIntegrabilitySpecialistsCurrentCountText(humanResourcesManager.GetIntegrabilitySpecialistsCount());
+        UpdateProgramersAvailableCountText(humanResourcesManager.GetProgrammersAvailableCount());
+        UpdateSpecialistsAvailableCountText(humanResourcesManager.GetSpecialistsAvailableCount());
 
+        initialized = true;
     }
 
     public void UpdateProgramersCurrentCountText(int programmersCurrentCount)
     {
         programersCurrentCountText.text = programmersCurrentCount.ToString();
+        if (programmersCurrentCount == 0)
+        {
+            DisableSubstractProgrammerButton();
+        }
+        else
+        {
+            EnableSubstractProgrammerButton();
+        }
     }
-    public void UpdateUserInterfaceSpecialistsCurrentCountText(int userInterfaceCurrentCount)
+    public void UpdateUserInterfaceSpecialistsCurrentCountText(int userInterfaceSpecialistsCurrentCount)
     {
-        userInterfaceSpecialistsCurrentCountText.text = userInterfaceCurrentCount.ToString();
+        userInterfaceSpecialistsCurrentCountText.text = userInterfaceSpecialistsCurrentCount.ToString();
+        if (userInterfaceSpecialistsCurrentCount == 0)
+        {
+            DisableSubstractUISpecialistButton();
+        }
+        else 
+        {
+            EnableSubstractUISpecialistButton();
+        }
     }
     public void UpdateIntegrabilitySpecialistsCurrentCountText(int integrabilitySpecialistsCurrentCount)
     {
         integrabilitySpecialistsCurrentCountText.text = integrabilitySpecialistsCurrentCount.ToString();
+        if (integrabilitySpecialistsCurrentCount == 0)
+        {
+            DisableSubstractIntegrabilitySpecialistButton();
+        }
+        else 
+        {
+            EnableSubstractIntegrabilitySpecialistButton();
+        }
     }
-    public void UpdateProgramersAvailableCountText(int programmsersAvailableCount)
+    public void UpdateProgramersAvailableCountText(int programmersAvailableCount)
     {
-        programersAvailableCountText.text = programmsersAvailableCount.ToString();
+        programersAvailableCountText.text = programmersAvailableCount.ToString();
+        if (programmersAvailableCount == 0)
+        {
+            DisableAddProgrammerButton();
+        }
+        else
+        {
+            EnableAddProgrammerButton();
+        }
     }
     public void UpdateSpecialistsAvailableCountText(int specialistsAvailableCount)
     {
         specialistsAvailableCountText.text = specialistsAvailableCount.ToString();
+        if (specialistsAvailableCount == 0)
+        {
+            DiasbleAddSpecialistButtons();
+        }
+        else
+        {
+            EnasbleAddSpecialistButtons();
+        }
     }
 
     public void UpdateHireProgrammersCount(int hireProgrammersCount) { this.hireProgrammersCountIF.text = hireProgrammersCount.ToString(); }
     public void UpdateHireUISpecialistsCount(int hireUISPecialistsCount) { this.hireUISpecialistsCountIF.text = hireUISpecialistsCountIF.ToString(); }
     public void UpdateHireIntegrabilitySpecialistsCount(int hireIntegrabilitySpecialistsCount) { this.hireIntegrabilitySpecialistsCountIF.text = hireIntegrabilitySpecialistsCount.ToString(); }
 
-    public void UpdateProgrammerSalarySlider(int programmerSalary) { this.programmerSalarySlider.value = programmerSalary; }
-    public void UpdateUISpecialistSalarySlider(int uiSpecialistSalary) { this.uiSpecialistSalarySlider.value = uiSpecialistSalary;  }
-    public void UpdateIntegrabilitySpecialistSalarySlider(int integrabilitySpecialistSalary) { this.integrabilitySpecialistSalarySlider.value = integrabilitySpecialistSalary; }
+    public void UpdateProgrammerSalarySlider(int programmerSalary)
+    {
+        this.programmerSalarySlider.value = programmerSalary;
+        programmerSalaryText.text = programmerSalary.ToString();
+
+    }
+    public void UpdateUISpecialistSalarySlider(int uiSpecialistSalary)
+    {
+        this.uiSpecialistSalarySlider.value = uiSpecialistSalary;
+        uiSPecialistSalaryText.text = uiSpecialistSalary.ToString();
+    }
+    public void UpdateIntegrabilitySpecialistSalarySlider(int integrabilitySpecialistSalary)
+    {
+        this.integrabilitySpecialistSalarySlider.value = integrabilitySpecialistSalary;
+        integrabilitySpecialistsSalaryText.text = integrabilitySpecialistSalary.ToString();
+    }
 
     public void DisableAddProgrammerButton()
     {
@@ -178,7 +260,7 @@ public class HumanResourcesUIHandler : MonoBehaviour
     }
     public void EnableSubstractUISpecialistButton()
     {
-        substractIntegrabilityButton.interactable = true;
+        substractUISpecialistButton.interactable = true;
     }
     public void EnableSubstractIntegrabilitySpecialistButton()
     {

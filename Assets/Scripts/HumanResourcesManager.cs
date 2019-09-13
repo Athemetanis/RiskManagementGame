@@ -158,7 +158,7 @@ public class HumanResourcesManager : NetworkBehaviour
     [Command]
     public void CmdSubstractIntegrabilitySpecialist()
     {
-        if (userInterfaceSpecialistsCurrentCount > 0)
+        if (integrabilitySpecialistsCurrentCount > 0)
         {
             integrabilitySpecialistsCurrentCount--;
             specialistsAvailableCount++;
@@ -195,26 +195,15 @@ public class HumanResourcesManager : NetworkBehaviour
     {
         this.programmersCurrentCount = programmersCount;
         developerAccountingManager.ComputeSalaries();
-        //Debug.Log(humanResourcesUIHandler);
         if (this.humanResourcesUIHandler != null)
         {
-            Debug.Log("Updating ui human resources manager");
             humanResourcesUIHandler.UpdateProgramersCurrentCountText(this.programmersCurrentCount);
-            if (this.programmersCurrentCount == 0 )
-            {
-                humanResourcesUIHandler.DisableSubstractProgrammerButton();
-            }
-            else
-            {
-                humanResourcesUIHandler.EnableSubstractProgrammerButton();
-            }
         }
         if(this.scheduleManager != null)
         {
             scheduleManager.UpdateAllFeatureGraphs();
         }
     }
-    
     public void OnChangeUISpecialistsCount(int UISpecialistsCount)
     {
         this.userInterfaceSpecialistsCurrentCount = UISpecialistsCount;
@@ -222,14 +211,6 @@ public class HumanResourcesManager : NetworkBehaviour
         if (this.humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateUserInterfaceSpecialistsCurrentCountText(this.userInterfaceSpecialistsCurrentCount);
-            if (this.userInterfaceSpecialistsCurrentCount == 0 )
-            {
-                humanResourcesUIHandler.DisableSubstractUISpecialistButton();
-            }
-            else if(this.userInterfaceSpecialistsCurrentCount > 0 )
-            {
-                humanResourcesUIHandler.EnableSubstractUISpecialistButton();
-            }
         }
         if (this.scheduleManager != null)
         {
@@ -243,14 +224,6 @@ public class HumanResourcesManager : NetworkBehaviour
         if (this.humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateIntegrabilitySpecialistsCurrentCountText(this.integrabilitySpecialistsCurrentCount);
-            if (this.integrabilitySpecialistsCurrentCount == 0)
-            {
-                humanResourcesUIHandler.DisableSubstractIntegrabilitySpecialistButton();
-            }
-            else if (this.userInterfaceSpecialistsCurrentCount > 0 && humanResourcesUIHandler != null)
-            {
-                humanResourcesUIHandler.EnableSubstractIntegrabilitySpecialistButton();
-            }
         }
         if (this.scheduleManager != null)
         {
@@ -263,14 +236,6 @@ public class HumanResourcesManager : NetworkBehaviour
         if (this.humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateProgramersAvailableCountText(this.programmersAvailableCount);
-            if (this.programmersAvailableCount == 0)
-            {
-                humanResourcesUIHandler.DisableAddProgrammerButton();
-            }
-            else
-            {
-                humanResourcesUIHandler.EnableAddProgrammerButton();
-            }
         }
     }
     public void OnChangeSpecialistsAvailableCount(int specialistsAvailableCount)
@@ -279,14 +244,6 @@ public class HumanResourcesManager : NetworkBehaviour
         if (this.humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateSpecialistsAvailableCountText(this.specialistsAvailableCount);
-            if (this.specialistsAvailableCount == 0)
-            {
-                humanResourcesUIHandler.DiasbleAddSpecialistButtons();
-            }
-            else
-            {
-                humanResourcesUIHandler.EnasbleAddSpecialistButtons();
-            }
         }
     }
     public void OnChangeQASpecialistsCount(int qualityAssuranceSpecialistsCount)
@@ -301,8 +258,6 @@ public class HumanResourcesManager : NetworkBehaviour
             }
         }
     }
-
-
     public void OnChangeHireProgrammersCount(int hireProgrammersCount)
     {
         this.hireProgrammersCount = hireProgrammersCount;
@@ -327,7 +282,6 @@ public class HumanResourcesManager : NetworkBehaviour
             humanResourcesUIHandler.UpdateHireIntegrabilitySpecialistsCount(this.hireIntegrabilitySpecialistsCount);
         }
     }
-
     public void OnChangeProgrammerSalary (int programmerSalary)
     {
         this.programmerSalary = programmerSalary;
@@ -346,7 +300,6 @@ public class HumanResourcesManager : NetworkBehaviour
             humanResourcesUIHandler.UpdateUISpecialistSalarySlider(this.uiSpecialistSalary);
         }
     }
-
     public void OnChangeIntegrabilitySpecialistSalary(int integrabilitySpecialistSalary)
     {
         this.integrabilitySpecialistSalary = integrabilitySpecialistSalary;

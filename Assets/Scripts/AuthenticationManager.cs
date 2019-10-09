@@ -50,7 +50,12 @@ public class AuthenticationManager : MonoBehaviour {
         InitializeFirebase();
     }
 
-    
+
+    private void OnApplicationQuit()
+    {
+        auth.SignOut();
+    }
+
     //METHODS      
     void InitializeFirebase()
     {

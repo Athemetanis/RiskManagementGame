@@ -1,68 +1,298 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Mirror;
+﻿using Mirror;
 
 public class ProviderAccountingManager : NetworkBehaviour
 {
+    //VARIABLES
+    //STORED VALUES FOR Q0, Q1, Q2, Q3, Q4, on corresponding indexes  // Q0 are default values when the game begins. 
+    private SyncListInt beginningCashBalanceQuarters = new SyncListInt() { };
+    private SyncListInt revenueQuarters = new SyncListInt() { };
+    private SyncListInt individualRevenueQuarters = new SyncListInt() { };
+    private SyncListInt enterpriseRevenueQarters = new SyncListInt() { };
+    private SyncListInt businessRevenueQuarters = new SyncListInt() { };
+    private SyncListInt advertisementCostQuarters = new SyncListInt() { };
+    private SyncListInt contractPaymentsQuarters = new SyncListInt() { };
+    private SyncListInt riskSharingFeesReceivedQuarters = new SyncListInt() { };
+    private SyncListInt marketingResearchQuarters = new SyncListInt() { };
+    private SyncListInt borrowEmergencyLoanQuarters = new SyncListInt(){};
+    private SyncListInt repayEmergencyLoanQuarters = new SyncListInt() { };
+    private SyncListInt endCashBalanceQuarters = new SyncListInt() { };
+
+    //CURRENT VALUES
     [SyncVar(hook = "OnChangeBeginningCashBalance")]
     private int beginningCashBalance;
     [SyncVar(hook = "OnChangeRevenue")]
     private int revenue;
-    [SyncVar(hook = "OnChangeAdvertisement")]
-    private int advertisement;
+    [SyncVar(hook = "OnChangeIndividualCustomersRevenue")]
+    private int individualCustomersRevenue;
+    [SyncVar(hook = "OnChangeBusinessCustomersRevenue")]
+    private int businessCustomersRevenue;
+    [SyncVar(hook = "OnChangeEnterpriseCustomersRevenue")]
+    private int enterpriseCustomersRevenue;
+    [SyncVar(hook = "OnChangeAdvertisementCost")]
+    private int advertisementCost;
+    [SyncVar(hook = "OnChangeContractPayments")]
+    private int contractPayments;
+    [SyncVar(hook = "OnChangeRiskSharingFeesReceived")]
+    private int riskSharingFeesReceived;
+    [SyncVar(hook = "OnChangeMarketingResearch")]
+    private int marketingResearch;
+    [SyncVar(hook = "OnChangeBorrowEmergencyLoan")]
+    private int borrowEmergencyLoan;
+    [SyncVar(hook = "OnChangeRepayEmergencyLoan")]
+    private int repayEmergencyLoan;
     [SyncVar(hook = "OnChangeEndCashBalance")]
     private int endCashBalance;
 
+
+    //RERERENCES
+    private string gameID;
+    private int currentQuarter;
+
     private ProductManager productManager;
     private ContractManager contractManager;
-    private ProviderAccountingUIHandler providerAccountingUIHandler;
-    
-    public void SetProviderAccountingUIHandler(ProviderAccountingUIHandler providerAccountingUIHandler) { this.providerAccountingUIHandler = providerAccountingUIHandler; }
+    private CustomersManager customersManager;
+    private MarketingManager marketingManager;
+
+    private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ1;
+    private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ2;
+    private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ3;
+    private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ4;
+
+    private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerCurrent;
+
+    //GETTERS & SETTERS
+    public int GetBeginnigCashBalance() { return beginningCashBalance; }
+    public int GetRevenue() { return revenue; }
+    public int GetIndividualCustomersRevenue() { return individualCustomersRevenue; }
+    public int GetBusinessCustomersRevenue() { return businessCustomersRevenue; }
+    public int GetEnterpriseCustomersRevenue() { return enterpriseCustomersRevenue; }
+    public int GetAdvertisementCost() { return advertisementCost; }
+    public int GetContractPayments() { return contractPayments; }
+    public int GetRishSharingFeesReceived() { return riskSharingFeesReceived; }
+    public int GetMarketingResearch() { return marketingResearch; }
+    public int GetBorrowEmergencyLoan() { return borrowEmergencyLoan; }
+    public int GetRepayEmergencyLoan() { return repayEmergencyLoan; }
+    public int GetEndCashBalance() { return endCashBalance; }
+
+    public void SetProviderAccountingUIComponentHandlerQ1(ProviderAccountingUIComponentHandler providerAccountingUIComponentHandler) { this.providerAccountingUIComponentHandlerQ1 = providerAccountingUIComponentHandler; }
+    public void SetProviderAccountingUIComponentHandlerQ2(ProviderAccountingUIComponentHandler providerAccountingUIComponentHandler) { this.providerAccountingUIComponentHandlerQ2 = providerAccountingUIComponentHandler; }
+    public void SetProviderAccountingUIComponentHandlerQ3(ProviderAccountingUIComponentHandler providerAccountingUIComponentHandler) { this.providerAccountingUIComponentHandlerQ3 = providerAccountingUIComponentHandler; }
+    public void SetProviderAccountingUIComponentHandlerQ4(ProviderAccountingUIComponentHandler providerAccountingUIComponentHandler) { this.providerAccountingUIComponentHandlerQ4 = providerAccountingUIComponentHandler; }
+
+    public void SetCurrentProviderAccountingUIHandler(ProviderAccountingUIComponentHandler providerAccountingUIHandler) { this.providerAccountingUIComponentHandlerCurrent = providerAccountingUIHandler; }
 
     // Start is called before the first frame update
+    public override void OnStartServer()
+    {
+        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+        productManager = this.gameObject.GetComponent<ProductManager>();
+        contractManager = this.gameObject.GetComponent<ContractManager>();
+        customersManager = this.gameObject.GetComponent<CustomersManager>();
+        marketingManager = this.gameObject.GetComponent<MarketingManager>();
+        if(beginningCashBalanceQuarters.Count == 0)
+        {
+            SetupDefaultValues();
+        }
+        LoagQuarterData(currentQuarter);
+    }
     void Start()
     {
         productManager = this.gameObject.GetComponent<ProductManager>();
         contractManager = this.gameObject.GetComponent<ContractManager>();
+        customersManager = this.gameObject.GetComponent<CustomersManager>();
+        marketingManager = this.gameObject.GetComponent<MarketingManager>();
     }
 
-    // Update is called once per frame
-    void Update()
+    //METHODS
+    [Server]
+    public void SetupDefaultValues()
     {
-        
+        beginningCashBalanceQuarters[0] = 0;
+        revenueQuarters[0] = 0;
+        individualRevenueQuarters[0] = 0;
+        businessRevenueQuarters[0] = 0;
+        enterpriseRevenueQarters[0] = 0;
+        advertisementCostQuarters[0] = 0;
+        contractPaymentsQuarters[0] = 0;
+        riskSharingFeesReceivedQuarters[0] = 0;
+        marketingResearchQuarters[0] = 0;
+        borrowEmergencyLoanQuarters[0] = 0;
+        repayEmergencyLoanQuarters[0] = 0;
+        endCashBalanceQuarters[0] = 2000000;
+    }
+    [Server]
+    public void LoagQuarterData(int quarter)
+    {
+        if (endCashBalanceQuarters.Count != quarter)
+        {
+            for (int i = endCashBalanceQuarters.Count + 1; i < quarter; i++)
+            {
+                beginningCashBalanceQuarters[i] = endCashBalanceQuarters[i - 1];
+                advertisementCostQuarters[i] = advertisementCostQuarters[i - 1];
+                contractPaymentsQuarters[i] = 0;
+                riskSharingFeesReceivedQuarters[i] = 0;
+                marketingResearchQuarters[i] = 0;
+                borrowEmergencyLoanQuarters[i] = 0;
+                repayEmergencyLoanQuarters[i] = 0;
+                int individualCustomers = customersManager.GetEndIndividualCustomers();
+                int businessCustomers = customersManager.GetEndBusinessCustomers();
+                int enterpriseCustomers = customersManager.GetEndEnterpriseCustomers();
+                int individualPrice = marketingManager.GetIndividualsPrice();
+                int businessPrice = marketingManager.GetBusinessPrice();
+                int enterprisePrice = marketingManager.GetEnterprisePrice();
+                individualRevenueQuarters[i] = individualCustomers * individualPrice;
+                businessRevenueQuarters[i] = businessCustomers * businessPrice;
+                enterpriseRevenueQarters[i] = enterpriseCustomers * enterprisePrice;
+                revenueQuarters[i] = individualCustomersRevenue + businessCustomersRevenue + enterpriseCustomersRevenue;
+                endCashBalanceQuarters[i] = beginningCashBalanceQuarters[i] + revenueQuarters[i] - advertisementCostQuarters[i];
+            }
+        }
+        beginningCashBalance = endCashBalanceQuarters[quarter - 1];
+    }
+    
+    public (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue,int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) GetCorrespondingQuarterData(int correspondingQuarter)
+    {
+        return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], enterpriseRevenueQarters[correspondingQuarter], businessRevenueQuarters[correspondingQuarter], individualRevenueQuarters[correspondingQuarter], advertisementCostQuarters[correspondingQuarter], contractPaymentsQuarters[correspondingQuarter], riskSharingFeesReceivedQuarters[correspondingQuarter], marketingResearchQuarters[correspondingQuarter], borrowEmergencyLoanQuarters[correspondingQuarter], repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter]);
     }
 
+
+    public void UpdateRevenue()
+    {
+        CmdUpdateRevenue();
+    }
+    [Command]
+    public void CmdUpdateRevenue() ////zleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+    {
+        int individualCustomers = customersManager.GetEndIndividualCustomers(); //zisk je len zo zakaznikov na zaciatku Q a v priebehu Q nie z konecneho poctu na konci 
+        int businessCustomers = customersManager.GetEndBusinessCustomers();
+        int enterpriseCustomers = customersManager.GetEndEnterpriseCustomers();
+        int individualPrice = marketingManager.GetIndividualsPrice();
+        int businessPrice = marketingManager.GetBusinessPrice();
+        int enterprisePrice = marketingManager.GetEnterprisePrice();
+        individualCustomersRevenue = individualCustomers * individualPrice;
+        businessCustomersRevenue = businessCustomers * businessPrice;
+        enterpriseCustomers = enterpriseCustomers * enterprisePrice;
+        revenue = individualCustomersRevenue + businessCustomersRevenue + enterpriseCustomersRevenue;
+        endCashBalance = ComputeEndCashBalance();
+    }
+    public void UpdateAdvertisementCost()
+    {
+        CmdUpdateAdvertisementCost();
+    }
+    [Command]
+    public void CmdUpdateAdvertisementCost()
+    {
+        switch (marketingManager.GetAdvertisementCoverage())
+        {
+            case 0:
+                advertisementCost = marketingManager.GetAdvertisement0Price();
+                break;
+            case 25:
+                advertisementCost = marketingManager.GetAdvertisement25Price();
+                break;
+            case 50:
+                advertisementCost = marketingManager.GetAdvertisement50Price();
+                break;
+            case 75:
+                advertisementCost = marketingManager.GetAdvertisement75Price();
+                break;
+            case 100:
+                advertisementCost = marketingManager.GetAdvertisement100Price();
+                break;
+        }
+        endCashBalance = ComputeEndCashBalance();
+    }
+
+    public void UpdateContractPayments()
+    {
+        CmdUpdateContractPayments();
+    }
+    [Command]
+    public void CmdUpdateContractPayments()
+    {
+        contractPayments = 0;
+        foreach (Contract contract in contractManager.GetMyContracts().Values)
+        {
+            if (contract.GetContractState() == ContractState.Accepted)
+            {
+                contractPayments += contract.GetContractPrice();
+            }
+        }
+    }
+
+    public int ComputeEndCashBalance()
+    {
+        int endCash = 0;
+        endCash = beginningCashBalance - contractPayments - advertisementCost - marketingResearch + revenue + riskSharingFeesReceived;
+        return endCash;
+    }
+
+    //HOOKS
     public void OnChangeBeginningCashBalance(int beginningCashBalance)
     {
         this.beginningCashBalance = beginningCashBalance;
-        if( providerAccountingUIHandler != null)
+        if(providerAccountingUIComponentHandlerCurrent != null)
         {
-            providerAccountingUIHandler.UpdateBeginingCashBalanceText(this.beginningCashBalance);
+            providerAccountingUIComponentHandlerCurrent.UpdateBeginingCashBalanceText(this.beginningCashBalance);
         }
     }
     public void OnChangeRevenue(int revenue)
     {
         this.revenue = revenue;
-        if (providerAccountingUIHandler != null)
+        if (providerAccountingUIComponentHandlerCurrent != null)
         {
-            providerAccountingUIHandler.UpdateRevenueText(this.revenue);
+            providerAccountingUIComponentHandlerCurrent.UpdateRevenueText(this.revenue);
         }
     }
-    public void OnChangeAdvertisement(int advertisement)
+    public void OnChangeAdvertisementCost(int advertisementCost)
     {
-        this.advertisement = advertisement;
-        if (providerAccountingUIHandler != null)
+        this.advertisementCost = advertisementCost;
+        if (providerAccountingUIComponentHandlerCurrent != null)
         {
-            providerAccountingUIHandler.UpdateAdvertisementText(this.advertisement);
+            providerAccountingUIComponentHandlerCurrent.UpdateAdvertisementText(this.advertisementCost);
         }
     }
     public void OnChangeEndCashBalance(int endCashBalance)
     {
         this.endCashBalance = endCashBalance;
-        if (providerAccountingUIHandler != null)
+        if (providerAccountingUIComponentHandlerCurrent != null)
         {
-            providerAccountingUIHandler.UpdateEndCashBalanceText(this.endCashBalance);
+            providerAccountingUIComponentHandlerCurrent.UpdateEndCashBalanceText(this.endCashBalance);
         }
+    }
+
+    public void OnChangeIndividualCustomersRevenue(int individualCustomersRevenue)
+    {
+        this.individualCustomersRevenue = individualCustomersRevenue;
+    }
+    public void OnChangeBusinessCustomersRevenue(int businessCustomersRevenue)
+    {
+        this.businessCustomersRevenue = businessCustomersRevenue;
+    }
+    public void OnChangeEnterpriseCustomersRevenue(int enterpriseCustomersRevenue)
+    {
+        this.enterpriseCustomersRevenue = enterpriseCustomersRevenue;
+    }
+    public void OnChangeContractPayments(int contractPayments)
+    {
+        this.contractPayments = contractPayments;
+    }
+    public void OnChangeRiskSharingFeesReceived (int riskSharingFeesReceived)
+    {
+        this.riskSharingFeesReceived = riskSharingFeesReceived;
+
+    }
+    public void OnChangeMarketingResearch(int marketingResearch)
+    {
+        this.marketingResearch = marketingResearch;
+    }
+    public void OnChangeBorrowEmergencyLoan(int borrowEmergencyLoan)
+    {
+        this.borrowEmergencyLoan = borrowEmergencyLoan;
+    }
+    public void OnChangeRepayEmergencyLoan(int repayEmergencyLoan)
+    {
+        this.repayEmergencyLoan = repayEmergencyLoan;
     }
 }

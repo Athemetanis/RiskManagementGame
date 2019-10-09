@@ -6,8 +6,14 @@ using UnityEngine.UI;
 public class FeatureUIHandler : MonoBehaviour
 {
     public GameObject featureUIPrefab;
-    public GameObject availableFeatureListContent;
+    public GameObject FeatureListContent;
     public GameObject outsourcedFeatureListContent;
+    public GameObject doneFeatureListContent;
+
+    public Toggle allFeaturesToggle;
+    public Toggle availableFeaturesToggle;
+    public Toggle inDevelopmentFeaturesToggle;
+    public Toggle doneFeaturesToggle;
     
     private FeatureManager featureManager;
 
@@ -19,18 +25,124 @@ public class FeatureUIHandler : MonoBehaviour
     {
         featureManager = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject().GetComponent<FeatureManager>();
         featureManager.SetFeatureUIHandler(this);
-        GenerateAvailableFeatureUIList();
+        GenerateFeatureUIList();
         UpdateOutsourcedFeatureUIList();
         //GenerateDropdownOptions(); - -NAHRAĎ!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     }
 
-    public void GenerateAvailableFeatureUIList()
+    //METHODS
+    public void AddFeatureForOutsourcing(string name)
     {
-        foreach (KeyValuePair<string, Feature> feature in featureManager.GetAvailableFeatures())
+        featureManager.AddFeatureForOutsourcing(name);
+    }
+    public void RemoveFeatureForOutsourcing(string name)
+    {
+        featureManager.RemoveFeatureForOutsourcing(name);
+    }
+
+    //METHODS FOR GENERATING UI ELEMENT
+    public void GenerateFeatureUIList()
+    {
+        if (allFeaturesToggle.isOn == true)
+        {
+            foreach (Feature feature in featureManager.GetAllFeatures().Values)
+            {
+                GameObject featureUIComponent = Instantiate(featureUIPrefab);
+                featureUIComponent.transform.SetParent(FeatureListContent.transform, false);
+                FeatureUIComponentHandler featureUIComponentHandler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
+                featureUIComponentHandler.SetupFeature(feature.nameID, feature.functionality, feature.integrability, feature.userfriendliness, feature.timeCost, feature.enterpriseCustomers, feature.businessCustomers, feature.individualCustomers);
+                featureUIComponentHandler.SetFeatureUIHandler(this);
+                if (featureManager.GetAvailableFeatures().ContainsKey(feature.nameID) == true)
+                {
+                    featureUIComponentHandler.SetStateText("Available For Outsourcing");
+                    featureUIComponentHandler.SetStateColor(Color.green);
+                    if (featureManager.GetOutsourcedFeatures().ContainsKey(feature.nameID) == true)
+                    {
+                        featureUIComponentHandler.SetCheckedForOutsourcing(true);
+                    }
+                    else
+                    {
+                        featureUIComponentHandler.SetCheckedForOutsourcing(false);
+                    }
+                }
+                else if (featureManager.GetInDevelopmentFeatures().ContainsKey(feature.nameID) == true)
+                {
+                    featureUIComponentHandler.HideToggle();
+                    featureUIComponentHandler.SetStateText("In Development");
+                    featureUIComponentHandler.SetStateColor(Color.yellow);
+                }
+                else if (featureManager.GetDoneFeatures().ContainsKey(feature.nameID) == true)
+                {
+                    featureUIComponentHandler.HideToggle();
+                    featureUIComponentHandler.SetStateText("Done");
+                    featureUIComponentHandler.SetStateColor(Color.red);
+                }
+                featureUIComponent.SetActive(true);
+            }
+        }
+        else if (availableFeaturesToggle.isOn == true)
+        {
+            foreach (Feature feature in featureManager.GetAvailableFeatures().Values)
+            {
+                GameObject featureUIComponent = Instantiate(featureUIPrefab);
+                featureUIComponent.transform.SetParent(FeatureListContent.transform, false);
+                FeatureUIComponentHandler featureUIComponentHandler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
+                featureUIComponentHandler.SetupFeature(feature.nameID, feature.functionality, feature.integrability, feature.userfriendliness, feature.timeCost, feature.enterpriseCustomers, feature.businessCustomers, feature.individualCustomers);
+                featureUIComponentHandler.SetFeatureUIHandler(this);
+                featureUIComponentHandler.SetStateText("Available For Outsourcing");
+                featureUIComponentHandler.SetStateColor(Color.green);
+                if (featureManager.GetOutsourcedFeatures().ContainsKey(feature.nameID) == true)
+                {
+                    featureUIComponentHandler.SetCheckedForOutsourcing(true);
+                }
+                else
+                {
+                    featureUIComponentHandler.SetCheckedForOutsourcing(false);
+                }
+                featureUIComponent.SetActive(true);
+            }
+        }
+        else if(inDevelopmentFeaturesToggle.isOn == true)
+        {
+            foreach (Feature feature in featureManager.GetInDevelopmentFeatures().Values)
+            {
+                GameObject featureUIComponent = Instantiate(featureUIPrefab);
+                featureUIComponent.transform.SetParent(FeatureListContent.transform, false);
+                FeatureUIComponentHandler featureUIComponentHandler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
+                featureUIComponentHandler.SetupFeature(feature.nameID, feature.functionality, feature.integrability, feature.userfriendliness, feature.timeCost, feature.enterpriseCustomers, feature.businessCustomers, feature.individualCustomers);
+                featureUIComponentHandler.SetFeatureUIHandler(this);
+                featureUIComponentHandler.HideToggle();
+                featureUIComponentHandler.SetStateText("In Development");
+                featureUIComponentHandler.SetStateColor(Color.yellow);
+                featureUIComponent.SetActive(true);
+            }
+
+        }
+        else if(doneFeaturesToggle.isOn == true)
+        {
+            foreach (Feature feature in featureManager.GetDoneFeatures().Values)
+            {
+                GameObject featureUIComponent = Instantiate(featureUIPrefab);
+                featureUIComponent.transform.SetParent(FeatureListContent.transform, false);
+                FeatureUIComponentHandler featureUIComponentHandler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
+                featureUIComponentHandler.SetupFeature(feature.nameID, feature.functionality, feature.integrability, feature.userfriendliness, feature.timeCost, feature.enterpriseCustomers, feature.businessCustomers, feature.individualCustomers);
+                featureUIComponentHandler.SetFeatureUIHandler(this);
+                featureUIComponentHandler.HideToggle();
+                featureUIComponentHandler.HideToggle();
+                featureUIComponentHandler.SetStateText("Done");
+                featureUIComponentHandler.SetStateColor(Color.red);
+                featureUIComponent.SetActive(true);
+            }
+        }
+
+    }
+    public void GenerateOutSourcedFeatureUIList()
+    {
+        foreach (KeyValuePair<string, Feature> feature in featureManager.GetOutsourcedFeatures())
         {
             GameObject featureUIComponent = Instantiate(featureUIPrefab);
-            featureUIComponent.transform.SetParent(availableFeatureListContent.transform, false);
+            featureUIComponent.transform.SetParent(outsourcedFeatureListContent.transform, false);
             FeatureUIComponentHandler featureUIComponentHandler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
             featureUIComponentHandler.SetNameIDText(feature.Value.nameID);
             featureUIComponentHandler.SetFunctionalityText(feature.Value.functionality.ToString());
@@ -38,45 +150,39 @@ public class FeatureUIHandler : MonoBehaviour
             featureUIComponentHandler.SetUserExperienceText(feature.Value.userfriendliness.ToString());
             featureUIComponentHandler.SetTimeCostsText(feature.Value.timeCost.ToString());
             featureUIComponentHandler.SetFeatureUIHandler(this);
-            if (featureManager.GetOutsourcedFeatures().Contains(feature) == true)
-            {
-                featureUIComponentHandler.SetCheckedForOutsourcing(true);
-            }
-            else
-            {
-                featureUIComponentHandler.SetCheckedForOutsourcing(false);
-            }
+            featureUIComponentHandler.SetCheckedForOutsourcing(true);
+            featureUIComponent.SetActive(true);
+        }
+    }
+    public void GenerateDoneFeatureUIList()
+    {
+        foreach (KeyValuePair<string, Feature> feature in featureManager.GetDoneFeatures())
+        {
+            GameObject featureUIComponent = Instantiate(featureUIPrefab);
+            featureUIComponent.transform.SetParent(doneFeatureListContent.transform, false);
+            FeatureUIComponentHandler featureUIComponentHandler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
+            featureUIComponentHandler.SetNameIDText(feature.Value.nameID);
+            featureUIComponentHandler.SetFunctionalityText(feature.Value.functionality.ToString());
+            featureUIComponentHandler.SetIntegrationText(feature.Value.integrability.ToString());
+            featureUIComponentHandler.SetUserExperienceText(feature.Value.userfriendliness.ToString());
+            featureUIComponentHandler.SetTimeCostsText(feature.Value.timeCost.ToString());
+            featureUIComponentHandler.SetFeatureUIHandler(this);
+            featureUIComponentHandler.HideToggle();
             featureUIComponent.SetActive(true);
         }
     }
 
-    public void UpdateAvailableFeatureUIList()
+    //METHODS FOR UPDATING UI ELEMENTS
+    public void UpdateFeatureUIList()
     {
-        foreach (Transform child in availableFeatureListContent.transform)
+        foreach (Transform child in FeatureListContent.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
-        GenerateAvailableFeatureUIList();
+        GenerateFeatureUIList();
     }
 
-    public void GenerateOutSourcedFeatureUIList()
-    {
-        foreach (KeyValuePair<string, Feature> feature in featureManager.GetOutsourcedFeatures())
-        {
-            GameObject featureUIComponent = Instantiate(featureUIPrefab);
-            featureUIComponent.transform.SetParent(outsourcedFeatureListContent.transform, false);
-            FeatureUIComponentHandler featureUIComponentHnadler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
-            featureUIComponentHnadler.SetNameIDText(feature.Value.nameID);
-            featureUIComponentHnadler.SetFunctionalityText(feature.Value.functionality.ToString());
-            featureUIComponentHnadler.SetIntegrationText(feature.Value.integrability.ToString());
-            featureUIComponentHnadler.SetUserExperienceText(feature.Value.userfriendliness.ToString());
-            featureUIComponentHnadler.SetTimeCostsText(feature.Value.timeCost.ToString());
-            featureUIComponentHnadler.SetFeatureUIHandler(this);
-            featureUIComponentHnadler.SetCheckedForOutsourcing(true);
-            featureUIComponent.SetActive(true);
-        }
-    }
-
+  
     public void UpdateOutsourcedFeatureUIList()
     {
         foreach (Transform child in outsourcedFeatureListContent.transform)
@@ -86,13 +192,13 @@ public class FeatureUIHandler : MonoBehaviour
         GenerateOutSourcedFeatureUIList();
     }
 
-    public void AddFeatureForOutsourcing(string name)
+    public void UpdateDoneFeatureUIList()
     {
-        featureManager.AddFeatureForOutsourcing(name);
+        foreach (Transform child in doneFeatureListContent.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        GenerateDoneFeatureUIList();
     }
 
-    public void RemoveFeatureForOutsourcing(string name)
-    {
-        featureManager.RemoveFeatureForOutsourcing(name);
-    }
 }

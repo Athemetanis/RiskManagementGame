@@ -19,6 +19,8 @@ public class Contract
     private int price;
     private int turn;    // if ODD - developer's turn    if EVEN - provider's turn
     private List<string> history;
+    private int riskSharingFee;
+    private int trueDevelopmentTime;
   
 
     //GETTERS & SETTERS
@@ -39,13 +41,17 @@ public class Contract
     public void SetContractPrice(int price){ this.price = price; }
     public int GetContractPrice() { return price; }
     public void SetContractTurn(int turn) { this.turn = turn; }
-    public int GetContractTrun() { return turn; }
+    public int GetContractTurn() { return turn; }
     public void SetContractHistory(List<string> history) { this.history = history; }
     public List<string> GetContractHistory () { return history; }
+    public void SetContractRiskSharingFee(int riskSharingFee) { this.riskSharingFee = riskSharingFee; }
+    public int GetContractRiskSharingFee() { return riskSharingFee; }
+    public void SetTrueDevelopmentTime(int trueDevelopmentTime) { this.trueDevelopmentTime = trueDevelopmentTime; }
+    public int GetTrueDevelopmentTime() { return trueDevelopmentTime; }
 
 
     //CONSTRUCTOR
-    public Contract(string contractID, string gameID, string providerID, string developerID, Feature feature, ContractState state, int turn, int delivery, int price, string[] history)
+    public Contract(string contractID, string gameID, string providerID, string developerID, Feature feature, ContractState state, int turn, int delivery, int price, string[] history, int riskSharingFee, int trueDevelopmentTime)
     {
         this.contractID = contractID;
         this.gameID = gameID;
@@ -57,15 +63,14 @@ public class Contract
         this.delivery = delivery;
         this.price = price;
         this.history = new List<string> (history);
-       
+        this.riskSharingFee = riskSharingFee;
+        this.trueDevelopmentTime = trueDevelopmentTime;                             
     }
-
     //METHODS
     public void AddHistoryRecord(string record)
     {
         history.Add(record);
     }
-
     public void MoveTurn()
     {
         turn = turn + 1;

@@ -6,31 +6,72 @@ using System.Linq;
 
 public class RiskUIHandler : MonoBehaviour
 {
+    //REFERENCES
+    public GameObject riskQ1Container;
+    public GameObject riskQ2Container;
+    public GameObject riskQ3Container;
+    public GameObject riskQ4Container;
+
+    public GameObject riskGraphContentQ3;
+    public GameObject riskGraphContentQ4;
     public GameObject riskGraphImagePrefab;
-    public GameObject riskGraphContent;
 
     //VARIABLES
+    private GameObject riskGraphContent;
+
     private Dictionary<string, RectTransform> graphImagePoints = new Dictionary<string, RectTransform>();
     private Dictionary<string, Image> allGraphImages = new Dictionary<string, Image>();
     
-
     private int xAxisScaler = 50;
     private int yAxisScaler = 30;
+
+    private string gameID;
+    private int currentQuarter;
 
     //REFERENCES
     private GameObject myPlayerDataObject;
     private RiskManager riskManager;
 
-    
     private void Start()
-    {
+    {        
+        
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
+        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         riskManager = myPlayerDataObject.GetComponent<RiskManager>();
         riskManager.SetRiskUIHandler(this);
+
+        EnableCorrespondingUI(currentQuarter);
         //UpdateGraphPoints();
     }
-    
+
     //UPDATING UI ELEMENTS
+    public void EnableCorrespondingUI(int currentQuarter)
+    {
+        riskQ1Container.SetActive(false);
+        riskQ2Container.SetActive(false);
+        riskQ3Container.SetActive(false);
+        riskQ4Container.SetActive(false);
+        if(currentQuarter == 1)
+        {
+           riskQ1Container.SetActive(true);
+        }
+        if (currentQuarter == 2)
+        {
+           riskQ2Container.SetActive(true);
+        }
+        if (currentQuarter == 3)
+        {
+            riskGraphContent = riskGraphContentQ3;
+            riskQ3Container.SetActive(true);
+        }
+        if (currentQuarter == 4)
+        {
+            riskGraphContent = riskGraphContentQ4;
+            riskQ4Container.SetActive(true);
+        }
+    }
+
     public void UpdateGraphPoints()
     {
         Debug.Log("updating graph points");
@@ -52,11 +93,9 @@ public class RiskUIHandler : MonoBehaviour
             allGraphImages.Add(riskID, pointI);
             Debug.Log("L" + riskManager.GetLikelihood(riskID));
             Debug.Log(riskManager.GetImpact(riskID));
-            riskGraphImage.GetComponent<RectTransform>().position.Set(riskManager.GetLikelihood(riskID) * xAxisScaler, riskManager.GetImpact(riskID) * yAxisScaler, 0);
+            riskGraphImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(riskManager.GetLikelihood(riskID) * xAxisScaler, riskManager.GetImpact(riskID) * yAxisScaler);
             pointI.color = riskManager.GetColor(riskID);
         }
-
-
     }
 
     public void UpdateLikelihood(string riskID, int likelihood )
@@ -71,13 +110,21 @@ public class RiskUIHandler : MonoBehaviour
 
     public void HighlightRisk(string riskID)
     {
-
+        foreach(Image image in allGraphImages.Values)
+        {
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0.4f);
+        }
+        Image highlightedImage = allGraphImages[riskID];
+        highlightedImage.color = new Color(highlightedImage.color.r, highlightedImage.color.g, highlightedImage.color.b, 1f);
+        graphImagePoints[riskID].SetAsLastSibling();
     }
 
-    public void CreateRiskPoint(Color color)
+    public void EndHighlightRisk()
     {
-
+        foreach (Image image in allGraphImages.Values)
+        {
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);
+        }
     }
-
 
 }

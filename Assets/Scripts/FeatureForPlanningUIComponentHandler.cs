@@ -15,6 +15,7 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
     public Text integrabilityValueText;
     public LineRenderer graphLineRenderer;
     public InputField developmentTimeIF;
+    public GameObject graphContainer;
 
     public Text point1Text;
     public Text point2Text;
@@ -95,12 +96,42 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
 
     }
     
-    public void GenerateGraph(List<Vector3> graphPoints)
+   /* public void GenerateGraph(List<Vector3> graphPoints)
     {
         graphLineRenderer.positionCount = graphPoints.Count;
         
         graphLineRenderer.SetPositions(graphPoints.ToArray());
+    }*/
+
+    public void GenerateGraph(List<Vector3> graphpoints)
+    {
+        Vector2 lastPoint = new Vector2(0,0);
+        for(int i = 0; i < graphpoints.Count; i++)
+        {   
+            Vector2 currentPoint = graphpoints[i];
+            if (lastPoint != new Vector2(0, 0))
+            {
+                
+                GameObject connectingLine = new GameObject("line", typeof(Image));
+                connectingLine.transform.SetParent(graphContainer.transform, false);
+                RectTransform connectingLineRT = connectingLine.gameObject.GetComponent<RectTransform>();
+                Vector2 direction = (currentPoint - lastPoint).normalized;
+                float distance = Vector2.Distance(lastPoint, currentPoint);
+
+                connectingLineRT.anchorMin = new Vector2(0, 0);
+                connectingLineRT.anchorMax = new Vector2(0, 0);
+                connectingLineRT.sizeDelta = new Vector2(distance, 3f);
+                connectingLineRT.anchoredPosition = lastPoint + direction * distance * 0.5f;
+                connectingLineRT.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+
+            }
+            lastPoint = currentPoint;
+        }
     }
+
+
+
+
 
     public void SetGraphTexts(int[] graphDays)
     {
@@ -131,8 +162,8 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
     {
         if (initialized)
         {
-            Debug.LogError("updating order on: " + orderDropdown.value);
-            Debug.LogError(contractIDText.text);
+            //Debug.LogError("updating order on: " + orderDropdown.value);
+           // Debug.LogError(contractIDText.text);
             if (orderDropdown.value == 0)
             {
                 scheduleUIHandler.UpdateFeatureOrder(contractIDText.text, "none");

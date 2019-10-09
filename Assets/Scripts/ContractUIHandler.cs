@@ -15,9 +15,16 @@ public class ContractUIHandler : MonoBehaviour
 
     public GameObject developerListContent;
     public GameObject developerUIComponentPrefab;
+
+    public GameObject contractOverviewUIComponentPrefab;
+    public GameObject overviewContractListContent;
+
+    public GameObject NotificationImage;
+
+    public Toggle ContractTabToggle;
     //public GameObject featureOutsourcingListContent;
 
-    public GameObject contractProposalPrefab; //zatiaľ nepoužívaš - budeš vôbec??? áno!!!
+    //public GameObject contractProposalPrefab; //zatiaľ nepoužívaš - budeš vôbec??? áno!!!
     
     
     //UI elements
@@ -25,13 +32,15 @@ public class ContractUIHandler : MonoBehaviour
     public Dropdown selectedFeatureDropdown;
     public Button createContractButton;
 
+
     //REFERENCES FOR OTHER MANAGERS
     private GameObject myPlayerDataObject;
     private ContractManager contractManager;
     private FeatureManager featureManager;
     private FirmManager firmManager;
     private ScheduleManager scheduleManager;
-        
+    private MarketingManager marketingManager;
+
 
     // Start is called before the first frame update
     void Start()
@@ -44,6 +53,7 @@ public class ContractUIHandler : MonoBehaviour
         featureManager.SetContractManager(contractManager);
         firmManager = myPlayerDataObject.GetComponent<FirmManager>();
         scheduleManager = myPlayerDataObject.GetComponent<ScheduleManager>();
+        marketingManager = myPlayerDataObject.GetComponent<MarketingManager>();
 
         if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
         {
@@ -53,55 +63,88 @@ public class ContractUIHandler : MonoBehaviour
             GenerateDeveloperDropdownOptions();
             UpdateDeveloperFirmList(GameHandler.allGames[contractManager.GetGameID()].GetListDeveloperFirmNameDescription());
             UpdateUIContractListsContents();
+            UpdateContractOverview();
         }
         else  //som developer
         {   
             UpdateUIContractListsContents();
         }
+    }
+
+    //METHODS
+    public void CreateContract()
+    {
+        contractManager.CreateContract(selectedDeveloperDropdown.options[selectedDeveloperDropdown.value].text, selectedFeatureDropdown.options[selectedFeatureDropdown.value].text);
+    }
+    public void SendBackContract(string contractID, string price, string delivery, string riskSharingFee)
+    {
+        contractManager.ModifyContract(contractID, int.Parse(price), int.Parse(delivery), int.Parse(riskSharingFee));
+    }
+    public void AcceptContract(string contractID)
+    {
+        Contract contract = contractManager.GetMyContracts()[contractID];
+        if (contract.GetContractState() == ContractState.InNegotiations)
+        {
+            contractManager.FinalContract(contractID);
+        }
+        else
+        {
+            contractManager.AcceptContract(contractID);
+        }
+
+    }
+    public void RefuseContract(string contractID)
+    {
+        contractManager.RejectContract(contractID);
+    }
+
+    public void ContracNotificationON()
+    {
+        NotificationImage.SetActive(true);
+        if(ContractTabToggle.isOn == true)
+        {
+            StartCoroutine(Wait5SecondsAndDisable());
+        }
+    }
+
+    public void ContractNotificationOFF() //trigered by UI when contractTabActivated or ked je contract tab aktivne a vyprsi urcity casovy limit? 
+    {
+        if (NotificationImage.activeSelf == true)
+        {
+            NotificationImage.SetActive(false);
+        }
 
     }
 
+    IEnumerator Wait5SecondsAndDisable()
+    {
+        yield return new WaitForSeconds(5);
+        ContractNotificationOFF();
+    }
+
+    //GENERATING & UPDATING UI ELEMENTS
+
+        //provider only!!!
     public void GenerateDeveloperDropdownOptions()
     {
         selectedDeveloperDropdown.ClearOptions();
         selectedDeveloperDropdown.AddOptions(firmManager.GetDeveloperList());
     }
-
     public void UpdateDeveloperDropdownOptions(List<string> developerFirmList)
     {
         selectedDeveloperDropdown.ClearOptions();
         selectedDeveloperDropdown.AddOptions(developerFirmList);
     }
 
-
     public void GenerateFeatureDropdownOptions(List<string> featureOptions)
     {
         selectedFeatureDropdown.ClearOptions();
         selectedFeatureDropdown.AddOptions(featureOptions);
     }
-
     public void UpdateFeatureDropdownOptions(List<string> FeatureOptions)
     {
         GenerateFeatureDropdownOptions(FeatureOptions);
     }
-
-    public void CreateContract()
-    {
-        contractManager.CreateContract(selectedDeveloperDropdown.options[selectedDeveloperDropdown.value].text, selectedFeatureDropdown.options[selectedFeatureDropdown.value].text);
-    }
-
-    public void EnableContractCreation()
-    {
-        if(selectedFeatureDropdown.options.Count != 0 &&  selectedFeatureDropdown.options.Count != 0)
-        {
-            createContractButton.interactable = true;
-        }
-        else
-        {
-            createContractButton.interactable = false;
-        }
-    } 
-
    
     public void UpdateDeveloperFirmList(Dictionary<string, string> developerFirmNameDescription)
     {
@@ -125,6 +168,40 @@ public class ContractUIHandler : MonoBehaviour
       
     }
 
+    public void EnableContractCreation() //called from UI
+    {
+        if (selectedFeatureDropdown.options.Count != 0 && selectedDeveloperDropdown.options.Count != 0)
+        {
+            createContractButton.interactable = true;
+        }
+        else
+        {
+            createContractButton.interactable = false;
+        }
+    }
+
+    public void UpdateContractOverview()
+    {   
+        foreach(Transform child in overviewContractListContent.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        Dictionary<string, Contract> myContracts = contractManager.GetMyContracts();
+        foreach (Contract contract in myContracts.Values)
+        {   if((contract.GetContractState() == ContractState.InNegotiations) || (contract.GetContractState() == ContractState.Final) || (contract.GetContractState() == ContractState.Accepted))
+            {
+                GameObject contractOverviewUIComponent = Instantiate(contractOverviewUIComponentPrefab);
+                contractOverviewUIComponent.transform.SetParent(overviewContractListContent.transform, false);
+                ContractOverviewUIComponentHandler contractOverviewUIComponentHandler = contractOverviewUIComponent.GetComponent<ContractOverviewUIComponentHandler>();
+                contractOverviewUIComponentHandler.SetUpContractOverview(contract.GetContractID(), contract.GetContractFeature().nameID, contract.GetContractDelivery(), contract.GetContractPrice(), contract.GetContractFeature().individualCustomers, contract.GetContractFeature().businessCustomers, contract.GetContractFeature().enterpriseCustomers, marketingManager.GetIndividualsPrice(), marketingManager.GetBusinessPrice(), marketingManager.GetEnterprisePrice());
+            }
+        }
+    }
+
+
+    //provider & developer
+
     public void UpdateUIContractListsContents()
     {
         Debug.Log("ResetingContractUIList");
@@ -145,11 +222,11 @@ public class ContractUIHandler : MonoBehaviour
             //PROVIDER
             if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
             {
-                Debug.Log(contractManager.GetPlayerRole());
-                Debug.Log(contract.GetContractTrun());
+                //Debug.Log(contractManager.GetPlayerRole());
+                //Debug.Log(contract.GetContractTrun());
                 contractUIComponentHandler.SetPartnersNameText(contractManager.GetFirmName(contract.GetDeveloperID()));
               
-                if (contract.GetContractTrun() % 2 == 0)  //providers turn
+                if (contract.GetContractTurn() % 2 == 0)  //providers turn
                 {
                     contractUIComponentHandler.SetPlayerTurnText("Your turn");
                     contractUIComponentHandler.DisableDetailButton();
@@ -163,12 +240,12 @@ public class ContractUIHandler : MonoBehaviour
             }
             else //DEVELOPER
             {
-                Debug.Log(contractManager.GetPlayerRole());
-                Debug.Log(contract.GetContractTrun());
-                Debug.Log(contract.GetProviderID());
+                //Debug.Log(contractManager.GetPlayerRole());
+                //Debug.Log(contract.GetContractTrun());
+                //Debug.Log(contract.GetProviderID());
                 contractUIComponentHandler.SetPartnersNameText(contractManager.GetFirmName(contract.GetProviderID()));
                
-                if (contract.GetContractTrun() % 2 == 0) //providers turn
+                if (contract.GetContractTurn() % 2 == 0) //providers turn
                 {
                     contractUIComponentHandler.SetPlayerTurnText("ProvidersTurn");
                     contractUIComponentHandler.DisableEditButton();
@@ -223,7 +300,6 @@ public class ContractUIHandler : MonoBehaviour
         }
         else { contractPreviewUIHandler.DisableScheduleInfoText(); }
     }
-
     public void GenerateContractEditPreview(string contractID)
     {
         Contract contract = contractManager.GetMyContracts()[contractID];
@@ -271,28 +347,6 @@ public class ContractUIHandler : MonoBehaviour
         else { contractPreviewUIHandler.DisableScheduleInfoText(); }
     }
 
-    public void SendBackContract(string contractID, string price, string delivery)
-    {
-        contractManager.ModifyContract(contractID, int.Parse(price), int.Parse(delivery));
-    }
 
 
-    public void AcceptContract(string contractID)
-    {
-        Contract contract = contractManager.GetMyContracts()[contractID];
-        if(contract.GetContractState() == ContractState.InNegotiations)
-        {
-            contractManager.FinalContract(contractID);
-        }
-        else
-        {
-            contractManager.AcceptContract(contractID);
-        }
-        
-    }
-
-    public void RefuseContract(string contractID)
-    {
-        contractManager.RejectContract(contractID);
-    }
 }

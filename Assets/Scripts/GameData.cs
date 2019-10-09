@@ -10,8 +10,6 @@ public class SyncDictionaryStringString : SyncDictionary<string, string> { };
 /// </summary>
 public class GameData : NetworkBehaviour
 {
-
-
     //VARIABLES
     [SyncVar(hook = "OnChangeGameID")]
     private string gameID;
@@ -77,7 +75,7 @@ public class GameData : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        // Equipment is already populated with anything the server set up
+        // Syn lists/dicts are already populated with anything the server set up
         // but we can subscribe to the callback in case it is updated later on
         developersFirms.Callback += OnDevelopersFirmsChange;
         allFirmDescriptions.Callback += OnFirmDescriptionChange;
@@ -94,12 +92,13 @@ public class GameData : NetworkBehaviour
         if (GameHandler.allGames.ContainsKey(this.gameID) == false)
         {
             GameHandler.allGames.Add(this.gameID, this);
+            Debug.Log("Game with ID " + gameID + "was created");
         }
 
         if (GameHandler.allPlayers.ContainsKey(this.GetGameID()) == false)
         {
             GameHandler.allPlayers.Add(this.GetGameID(), new Dictionary<string, GameObject>());
-            Debug.Log("Game with ID " + gameID + "was created");
+            Debug.Log("Playerslots for game" + gameID + "were created");
         }
         if(GameHandler.singleton.GetGeneratedGameList())
         {
@@ -370,9 +369,9 @@ public class GameData : NetworkBehaviour
 
     public void OnAllFirmsChange(SyncDictionaryStringString.Operation op, string firmName, string description)
     {
-        Debug.Log("allfirmsChanged");
-        Debug.Log(op);
-        Debug.Log(hasAuthority);
+       //Debug.Log("allfirmsChanged");
+       //Debug.Log(op);
+       //Debug.Log(hasAuthority);
         RecreateAllFirmsReverse();
         
     }

@@ -12,7 +12,11 @@ public struct Feature
     public int timeCost;
     public int difficulty;
 
-    public Feature(string name, int functionality, int userfriendliness, int integrability, int timeCost, int difficulty)
+    public int individualCustomers;
+    public int businessCustomers;
+    public int enterpriseCustomers;
+
+    public Feature(string name, int functionality, int integrability, int userfriendliness, int timeCost, int difficulty )
     {
         this.nameID = name;
         this.functionality = functionality;
@@ -20,6 +24,9 @@ public struct Feature
         this.integrability = integrability;
         this.timeCost = timeCost;
         this.difficulty = difficulty;
+        this.enterpriseCustomers = (int)System.Math.Round(((float)functionality * 0.5f), System.MidpointRounding.AwayFromZero);
+        this.businessCustomers = (int)System.Math.Round(((float)integrability * 50), System.MidpointRounding.AwayFromZero);
+        this.individualCustomers = (int)System.Math.Round(((float)functionality * 1000), System.MidpointRounding.AwayFromZero);
     }
 
     public override bool Equals(object obj)
@@ -39,7 +46,7 @@ public struct Feature
         if(obj is Feature)
         {
             Feature f = (Feature)obj;
-            return (this.nameID == f.nameID) && (this.functionality == f.functionality) && (this.userfriendliness == f.userfriendliness) && (this.integrability == f.integrability) && (this.timeCost == f.timeCost) && (this.difficulty == f.difficulty);
+            return (this.nameID == f.nameID) && (this.functionality == f.functionality) && (this.userfriendliness == f.userfriendliness) && (this.integrability == f.integrability) && (this.timeCost == f.timeCost) && (this.difficulty == f.difficulty) && (this.individualCustomers == f.individualCustomers) && (this.businessCustomers == f.businessCustomers) && (this.enterpriseCustomers) == (f.enterpriseCustomers);
         }
         else
         {
@@ -61,7 +68,7 @@ public struct Feature
         {
             return false;
         }
-        return (this.nameID == f.nameID) && (this.functionality == f.functionality) && (this.userfriendliness == f.userfriendliness) && (this.integrability == f.integrability) && (this.timeCost == f.timeCost) && (this.difficulty == f.difficulty);
+        return (this.nameID == f.nameID) && (this.functionality == f.functionality) && (this.userfriendliness == f.userfriendliness) && (this.integrability == f.integrability) && (this.timeCost == f.timeCost) && (this.difficulty == f.difficulty) && (this.individualCustomers == f.individualCustomers) && (this.businessCustomers == f.businessCustomers) && (this.enterpriseCustomers) == (f.enterpriseCustomers);
     }
 
     public override int GetHashCode()
@@ -90,7 +97,7 @@ public class FeatureManager : NetworkBehaviour
     private SyncDictionaryFeatures outsourcedFeatures = new SyncDictionaryFeatures();
     private SyncDictionaryFeatures inDevelopmentFeatures = new SyncDictionaryFeatures();
     private SyncDictionaryFeatures doneFeatures = new SyncDictionaryFeatures();
-    private SyncListString featuresForProposal = new SyncListString();
+    //private SyncListString featuresForProposal = new SyncListString();
 
     //GETTERS & SETTERS
     public void SetFeatureUIHandler(FeatureUIHandler featureUIHandler) { this.featureUIHandler = featureUIHandler; }
@@ -105,53 +112,49 @@ public class FeatureManager : NetworkBehaviour
 
     //METHODS  
     public override void OnStartServer() //lists are then synchronized on clients
-    {
-        allFeatures.Add("feature1", new Feature("feature1", 10, 0, 0, 150, 1));
-        allFeatures.Add("feature2", new Feature("feature2", 1, 8, 1, 250, 1));
-        allFeatures.Add("feature3", new Feature("feature3", 0, 0, 8, 200, 1));
-        allFeatures.Add("feature4", new Feature("feature4", 10, 0, 2, 170, 1));
-        allFeatures.Add("feature5", new Feature("feature5", 0, 5, 2, 190, 1));
-        allFeatures.Add("feature6", new Feature("feature6", 0, 2, 8, 270, 1));
-      
-        foreach(KeyValuePair<string, Feature> feature in allFeatures)
+    {                                          //name, func, ui, int, t, diff,  ent, bus, ind
+        GenerateAllFeatures();
+        if(availableFeatures.Count == 0) 
         {
-            availableFeatures.Add(feature);
+            SetupDefaultValues();
         }
+
+        
     }
 
     public override void OnStartClient()
     {
         availableFeatures.Callback += OnChangeFeatureAvailable;
         outsourcedFeatures.Callback += OnChangeFeatureOutsourced;
-           
+
     }
 
-    public void OnChangeFeatureAvailable(SyncDictionaryFeatures.Operation op, string key, Feature feature)
+    //METHODS
+    [Server]
+    public void GenerateAllFeatures()
     {
-        if (featureUIHandler != null)
-        {
-            featureUIHandler.UpdateAvailableFeatureUIList();
-        }
+        allFeatures.Add("feature1", new Feature("feature1", 10, 0, 0, 150, 1));
+        allFeatures.Add("feature2", new Feature("feature2", 1, 1, 8, 250, 1));
+        allFeatures.Add("feature3", new Feature("feature3", 0, 8, 0, 200, 1));
+        allFeatures.Add("feature4", new Feature("feature4", 10, 2, 0, 170, 1));
+        allFeatures.Add("feature5", new Feature("feature5", 0, 2, 5, 190, 1));
+        allFeatures.Add("feature6", new Feature("feature6", 0, 8, 2, 270, 1));
     }
 
-    public void OnChangeFeatureOutsourced(SyncDictionaryFeatures.Operation op, string key, Feature feature) //here update all gui elements if they exist
+    [Server]
+    public void SetupDefaultValues()
     {
-        if(featureUIHandler != null)
+        foreach (KeyValuePair<string, Feature> feature in allFeatures)
         {
-            featureUIHandler.UpdateOutsourcedFeatureUIList();
-            featureUIHandler.UpdateAvailableFeatureUIList();
-        }
-        if(contractUIHandler != null)
-        {
-            contractUIHandler.UpdateFeatureDropdownOptions(new List<string>(outsourcedFeatures.Keys));
+            availableFeatures.Add(feature);
         }
     }
 
+    [Client]
     public void AddFeatureForOutsourcing(string name)
     {
         CmdAddFeatureForOutsourcing(name);
     }
-
     [Command]
     public void CmdAddFeatureForOutsourcing(string name)
     {
@@ -159,17 +162,20 @@ public class FeatureManager : NetworkBehaviour
         {
             outsourcedFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
         }
-        if (featuresForProposal.Contains(name) == false)
+    }
+    [Server]
+    public void RemoveFeatureForOutsourcingServer(string name)
+    {
+        if (outsourcedFeatures.ContainsKey(name) == true)
         {
-            featuresForProposal.Add(name);
+            outsourcedFeatures.Remove(name);
         }
     }
-
+    [Client]
     public void RemoveFeatureForOutsourcing(string name)
     {
         CmdRemoveFeatureForOutsourcing(name);
     }
-    
     [Command]
     public void CmdRemoveFeatureForOutsourcing(string name)
     {
@@ -177,13 +183,130 @@ public class FeatureManager : NetworkBehaviour
         {
             outsourcedFeatures.Remove(allFeatures[name].nameID);
         }
-        if (featuresForProposal.Contains(name))
+    }
+    [Client]
+    public void AddFeatureInDevelopment(string name)
+    {
+        CmdAddFeatureInDevelopment(name);
+    }
+    [Command]
+    public void CmdAddFeatureInDevelopment(string name)
+    {
+        if (inDevelopmentFeatures.ContainsKey(name) == false)
         {
-            featuresForProposal.Remove(name);
+            inDevelopmentFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+        }
+
+    }
+    [Server]
+    public void AddFeatureInDevelopmentServer(string name)  //call only from server
+    {
+        if(inDevelopmentFeatures.ContainsKey(name) == false)
+        {
+            inDevelopmentFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+        }
+    }
+    [Client]
+    public void RemoveFeatureInDevelopment(string name)
+    {
+        CmdRemoveFeatureInDevelopmet(name);
+    }
+    [Command]
+    public void CmdRemoveFeatureInDevelopmet(string name)
+    {
+        if (inDevelopmentFeatures.ContainsKey(name) == true)
+        {
+            inDevelopmentFeatures.Remove(name);
+        }
+    }
+    [Server]
+    public void RemoveFeatureInDevelopmentServer(string name)
+    {
+        if (inDevelopmentFeatures.ContainsKey(name) == true)
+        {
+            inDevelopmentFeatures.Remove(name);
+        }
+    }
+    [Client]
+    public void AddFeatureToDone(string name)
+    {
+        if(doneFeatures.ContainsKey(name) == false)
+        {
+            doneFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+        }
+    }
+    [Command]
+    public void CmdAddFeatureToDone(string name)
+    {
+        if (doneFeatures.ContainsKey(name) == false)
+        {
+            doneFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+        }
+    }
+    [Server]
+    public void AddFeatureToDoneServer(string name)
+    {
+        if (doneFeatures.ContainsKey(name) == false)
+        {
+            doneFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
         }
     }
 
-   
+    [Client]
+    public void UpdateAvailableFeatures()
+    {
+        CmdUpdateAvailableFeatures();
+    }
+    [Command]
+    public void CmdUpdateAvailableFeatures()
+    {
+        foreach(Feature feature in availableFeatures.Values)
+        {
+            if (inDevelopmentFeatures.ContainsKey(feature.nameID) || doneFeatures.ContainsKey(feature.nameID))
+            {
+                availableFeatures.Remove(feature.nameID);
+            }
+        }
+    }
+    //HOOKS
 
+    public void OnChangeFeatureAvailable(SyncDictionaryFeatures.Operation op, string key, Feature feature)
+    {
+        if (featureUIHandler != null)
+        {
+            featureUIHandler.UpdateFeatureUIList();
+        }
+    }
+
+    public void OnChangeFeatureOutsourced(SyncDictionaryFeatures.Operation op, string key, Feature feature) //here update all gui elements if they exist
+    {
+        if (featureUIHandler != null)
+        {
+            featureUIHandler.UpdateOutsourcedFeatureUIList();
+            featureUIHandler.UpdateFeatureUIList();
+        }
+        if (contractUIHandler != null)
+        {
+            contractUIHandler.UpdateFeatureDropdownOptions(new List<string>(outsourcedFeatures.Keys));
+        }
+    }
+
+    public void OnChangeFeatureInDevelopmet(SyncDictionaryFeatures.Operation op, string key, Feature feature)
+    {
+        UpdateAvailableFeatures();
+        if (featureUIHandler != null)
+        {
+            featureUIHandler.UpdateFeatureUIList();
+        }
+    }
+
+    public void OnChangeFeatureDone(SyncDictionaryFeatures.Operation op, string key, Feature feature)
+    {
+        UpdateAvailableFeatures();
+        if (featureUIHandler != null)
+        {
+            featureUIHandler.UpdateFeatureUIList();
+        }
+    }
 
 }

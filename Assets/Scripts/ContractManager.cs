@@ -15,24 +15,29 @@ public class ContractManager : NetworkBehaviour
     private ContractUIHandler contractUIHandler;
     private FirmManager firmManager;
     private ScheduleManager scheduleManager;
-    
+    private CustomersManager customersManager;
+    private FeatureManager featureManager;
+
 
     //GETTERS & SETTERS
+    public FeatureManager GetFeatureManager() { return featureManager; }
     public ScheduleManager GetScheduleManager() { return scheduleManager; }
     public void SetContractUIHandler(ContractUIHandler contractUIHandler) { this.contractUIHandler = contractUIHandler; }
+    public ContractUIHandler GetContractUIHandler() { return contractUIHandler; }
     public PlayerRoles GetPlayerRole() { return playerRole; }
     public string GetGameID() { return gameID; }
     public Dictionary<string, Contract> GetMyContracts() { return myContracts; }
 
-    // Start is called before the first frame update
-    void Start()
+
+    void Start() //both server & client
     {
         playerRole = this.gameObject.GetComponent<PlayerData>().GetPlayerRole();
         gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
         playerID = this.gameObject.GetComponent<PlayerData>().GetPlayerID();
         firmManager = this.gameObject.GetComponent<FirmManager>();
         scheduleManager = this.gameObject.GetComponent<ScheduleManager>();
-
+        customersManager = this.gameObject.GetComponent<CustomersManager>();
+        featureManager = this.gameObject.GetComponent<FeatureManager>();
     }
 
 
@@ -42,30 +47,23 @@ public class ContractManager : NetworkBehaviour
         CmdSyncContractListOnClient();
     }
 
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-
+    //METHODS
     public void TryToAddContractToMyContracts(string contractID, Contract contract)
     {
         if (!myContracts.ContainsKey(contractID))
         {
             myContracts.Add(contractID, contract);
             myContractsCount++;
-            Debug.Log(myContractsCount);
+            //Debug.Log(myContractsCount);
 
             if (contractUIHandler != null)
             {
                 contractUIHandler.UpdateUIContractListsContents();
             }
+            SetNotice(contractID);
         }
         
     }
-
     public void CreateContract(string developersFirmName, string featureID)
     {
         string contractID = GameHandler.singleton.GenerateUniqueID();
@@ -75,25 +73,25 @@ public class ContractManager : NetworkBehaviour
         int turn = 1;
         int delivery = 0;
         int price = 0;
+        int riskSharingFee = 0;
+        int trueDevelopmentTime = 0;
         string providerFirm = firmManager.GetFirmName();
         string[] historyArray =  { "-----------------Turn 0 -----------------", "Contract was created by " + providerFirm };
         
-        CmdCreateContract(contractID, gameID, this.playerID, developerID, selectedFeature, state, turn, delivery, price, historyArray);
+        CmdCreateContract(contractID, gameID, this.playerID, developerID, selectedFeature, state, turn, delivery, price, historyArray, riskSharingFee, trueDevelopmentTime);
     }
 
-
-    //METHODS
     [Command]
-    public void CmdCreateContract(string contractID, string gameID, string providerID, string developerID, Feature feature, ContractState contractState, int turn, int delivery, int price, string[] history)
+    public void CmdCreateContract(string contractID, string gameID, string providerID, string developerID, Feature feature, ContractState contractState, int turn, int delivery, int price, string[] history, int riskSharingFee, int trueDevelopmentTime)
     {
-        Contract newContract = new Contract(contractID, gameID, providerID, developerID, feature, contractState, turn, delivery, price, history);
+        Contract newContract = new Contract(contractID, gameID, providerID, developerID, feature, contractState, turn, delivery, price, history, riskSharingFee, trueDevelopmentTime);
         ContractManager developerCM = GameHandler.allGames[gameID].GetDeveloper(developerID).GetComponent<ContractManager>();
         ContractManager providerCM = GameHandler.allGames[gameID].GetProvider(providerID).GetComponent<ContractManager>();
         developerCM.TryToAddContractToMyContracts(contractID, newContract);      //adding contract on server objects
         providerCM.TryToAddContractToMyContracts(contractID, newContract);       //adding contract on server objects
 
-        developerCM.RpcCreateContract(contractID, gameID, providerID, developerID, feature, contractState, turn, delivery, price, history);
-        providerCM.RpcCreateContract(contractID, gameID, providerID, developerID, feature, contractState, turn, delivery, price, history);
+        developerCM.RpcCreateContract(contractID, gameID, providerID, developerID, feature, contractState, turn, delivery, price, history, riskSharingFee, trueDevelopmentTime);
+        providerCM.RpcCreateContract(contractID, gameID, providerID, developerID, feature, contractState, turn, delivery, price, history, riskSharingFee, trueDevelopmentTime);
         //Schedule
         if (developerCM.GetScheduleManager() != null)
         {
@@ -101,11 +99,10 @@ public class ContractManager : NetworkBehaviour
             developerCM.GetScheduleManager().CreateScheduledFeature(contractID, providerID, contractState, feature);
         }
     }
-
     [ClientRpc]
-    public void RpcCreateContract(string contractID, string gameID, string providerID, string developerID, Feature feature, ContractState contractState, int turn, int delivery, int price, string[] historyArray)
+    public void RpcCreateContract(string contractID, string gameID, string providerID, string developerID, Feature feature, ContractState contractState, int turn, int delivery, int price, string[] historyArray, int riskSharingFee, int trueDevelopmentTime)
     {
-        Contract newContract = new Contract(contractID, gameID, providerID, developerID, feature, contractState, turn, delivery, price, historyArray);
+        Contract newContract = new Contract(contractID, gameID, providerID, developerID, feature, contractState, turn, delivery, price, historyArray, riskSharingFee, trueDevelopmentTime);
         this.TryToAddContractToMyContracts(contractID, newContract);        //adding contract on client objects
         //Schedule
         if (scheduleManager != null)
@@ -114,24 +111,22 @@ public class ContractManager : NetworkBehaviour
         }
     }
 
-
     [Command]
     public void CmdSyncContractListOnClient()
     {
         foreach (Contract contract in myContracts.Values)
         {
-            RpcCreateContract(contract.GetContractID(), contract.GetContractGameID(), contract.GetProviderID(), contract.GetDeveloperID(), contract.GetContractFeature(), contract.GetContractState(), contract.GetContractTrun(), contract.GetContractDelivery(), contract.GetContractPrice(), contract.GetContractHistory().ToArray());
+            RpcCreateContract(contract.GetContractID(), contract.GetContractGameID(), contract.GetProviderID(), contract.GetDeveloperID(), contract.GetContractFeature(), contract.GetContractState(), contract.GetContractTurn(), contract.GetContractDelivery(), contract.GetContractPrice(), contract.GetContractHistory().ToArray(), contract.GetContractRiskSharingFee(), contract.GetTrueDevelopmentTime());
         }
     }
 
-    public void ModifyContract(string contractID, int price, int delivery)
+    public void ModifyContract(string contractID, int price, int delivery, int riskSharingFee)
     {
         Debug.Log("changes registered");
-        CmdModifyContract(contractID, price, delivery);
+        CmdModifyContract(contractID, price, delivery, riskSharingFee);
     }
-
     [Command]
-    public void CmdModifyContract(string contractID, int price, int delivery)
+    public void CmdModifyContract(string contractID, int price, int delivery, int riskSharingFee)
     {
         Debug.LogWarning(contractID);
         ContractManager developerCM = GameHandler.allGames[gameID].GetDeveloper(myContracts[contractID].GetDeveloperID()).GetComponent<ContractManager>();
@@ -164,11 +159,20 @@ public class ContractManager : NetworkBehaviour
             developerCM.RpcModifyContractDelivery(contractID, delivery, message);
             providerCM.RpcModifyContractDelivery(contractID, delivery, message);
         }
+        if(riskSharingFee != myContracts[contractID].GetContractRiskSharingFee())
+        {
+            myContracts[contractID].SetContractRiskSharingFee(riskSharingFee);
+            string message = firmManager.GetFirmName() + "changed risk sharing fee to: " + riskSharingFee;
+            myContracts[contractID].AddHistoryRecord(message);
+
+            developerCM.RpcModifyContractRiskSharingFee(contractID, riskSharingFee, message);
+            providerCM.RpcModifyContractRiskSharingFee(contractID, riskSharingFee, message);
+
+        }
         myContracts[contractID].MoveTurn();
         developerCM.RpcModifyContractTurn(contractID);
         providerCM.RpcModifyContractTurn(contractID);
     }
-
     [ClientRpc]
     public void RpcModifyContractPrice(string contractID, int price, string message)
     {
@@ -189,15 +193,15 @@ public class ContractManager : NetworkBehaviour
         Debug.Log("changes applied");
         myContracts[contractID].SetContractPrice(price);
         myContracts[contractID].AddHistoryRecord(message);
-        Debug.Log(myContracts[contractID].GetContractTrun());
-        //myContracts[contractID].MoveTurn();
-        Debug.Log(myContracts[contractID].GetContractTrun());
         if (contractUIHandler != null)
         {
             contractUIHandler.UpdateUIContractListsContents();
+            if (playerRole == PlayerRoles.Provider)
+            {
+                contractUIHandler.UpdateContractOverview();
+            }
         }
     }
-
     [ClientRpc]
     public void RpcModifyContractDelivery(string contractID, int delivery, string message)
     {
@@ -214,20 +218,53 @@ public class ContractManager : NetworkBehaviour
         Debug.Log("changes applied");
         myContracts[contractID].SetContractDelivery(delivery);
         myContracts[contractID].AddHistoryRecord(message);
-        // myContracts[contractID].MoveTurn();
         if (contractUIHandler != null)
         {
             contractUIHandler.UpdateUIContractListsContents();
+            if(playerRole == PlayerRoles.Provider)
+            {
+                contractUIHandler.UpdateContractOverview();
+            }
         }
     }
-
+    [ClientRpc]
+    public void RpcModifyContractRiskSharingFee(string contractID, int riskSharingFee, string message)
+    {
+        Debug.LogWarning(contractID);
+        if (myContracts[contractID].GetContractState() == ContractState.Proposal)
+        {
+            myContracts[contractID].SetContractState(ContractState.InNegotiations);
+            //SCHEDULE
+            if (scheduleManager != null)
+            {
+                scheduleManager.ChangeStateOfScheduledFeature(contractID, ContractState.InNegotiations);
+            }
+        }
+        Debug.Log("changes applied");
+        myContracts[contractID].SetContractRiskSharingFee(riskSharingFee);
+        myContracts[contractID].AddHistoryRecord(message);
+        if (contractUIHandler != null)
+        {
+            contractUIHandler.UpdateUIContractListsContents();
+            if (playerRole == PlayerRoles.Provider)
+            {
+                contractUIHandler.UpdateContractOverview();
+            }
+        }
+    }
     [ClientRpc]
     public void RpcModifyContractTurn(string contractID)
     {
         myContracts[contractID].MoveTurn();
+        SetNotice(contractID);
         if (contractUIHandler != null)
         {
             contractUIHandler.UpdateUIContractListsContents();
+            if (playerRole == PlayerRoles.Provider)
+            {
+                contractUIHandler.UpdateContractOverview();
+                
+            }
         }
     }
 
@@ -236,37 +273,35 @@ public class ContractManager : NetworkBehaviour
         return GameHandler.allGames[gameID].GetFirmName(playerID);
     }
 
-
-    public void SetNotice(int turn)
+    public void SetNotice(string contractID)
     {
-        if ((turn % 2 == 0) && string.Equals(playerRole.ToString(), "provider"))
+        if (contractUIHandler != null)
         {
-            Debug.Log("Providers turn");
-        }
-        if ((turn % 2 != 0) && string.Equals(playerRole.ToString(), "developer"))
-        {
-            Debug.Log("Developers turn");
-        }
+            if ((myContracts[contractID].GetContractTurn() % 2 == 0) && playerRole == PlayerRoles.Provider)  //my turn conditions
+            {
+                contractUIHandler.ContracNotificationON();
 
+            }
+            if ((myContracts[contractID].GetContractTurn() % 2 != 0) && playerRole == PlayerRoles.Developer)
+            {
+                contractUIHandler.ContracNotificationON();
+            }
+        }
         //ak rola tohoto objektu odpovedá hodnote ťahu
         //na tabe contracts zobraz vykríčník
     }
-
 
     public void AcceptContract(string contractID)
     {
         Debug.Log("Accepting contract");
         CmdAcceptContract(contractID);
-
     }
-
     public void RejectContract(string contractID)
     {
         Debug.Log("Rejecting contract");
         CmdRejectContract(contractID);
 
     }
-
     public void FinalContract(string contractID)
     {
         CmdFinalContract(contractID);
@@ -274,10 +309,17 @@ public class ContractManager : NetworkBehaviour
 
     [Command]
     public void CmdAcceptContract(string contractID)
-    {
+    {   
         ContractManager developerCM = GameHandler.allGames[gameID].GetDeveloper(myContracts[contractID].GetDeveloperID()).GetComponent<ContractManager>();
         ContractManager providerCM = GameHandler.allGames[gameID].GetProvider(myContracts[contractID].GetProviderID()).GetComponent<ContractManager>();
         myContracts[contractID].SetContractState(ContractState.Accepted);
+
+        if(providerCM.GetFeatureManager() != null)
+        {
+            providerCM.GetFeatureManager().AddFeatureInDevelopmentServer(myContracts[contractID].GetContractFeature().nameID);
+            providerCM.GetFeatureManager().RemoveFeatureForOutsourcingServer(myContracts[contractID].GetContractFeature().nameID);
+        }
+        
         string message = firmManager.GetFirmName() + " accepted contract. ";
         myContracts[contractID].AddHistoryRecord(message);
         developerCM.RpcAcceptContract(contractID, message);
@@ -304,9 +346,7 @@ public class ContractManager : NetworkBehaviour
         {
             developerCM.GetScheduleManager().ChangeStateOfScheduledFeature(contractID, ContractState.Accepted);
         }
-
     }
-
     [ClientRpc]
     public void RpcAcceptContract(string contractID, string message)
     {
@@ -321,8 +361,18 @@ public class ContractManager : NetworkBehaviour
         {
             scheduleManager.ChangeStateOfScheduledFeature(contractID, ContractState.Accepted);
         }
+        //CUSTOMERS MANAGER
+        if (playerRole == PlayerRoles.Provider)
+        {
+            customersManager.UpdateCustomersCount();
+        }
+        //ACCOUNTING
+        DeveloperAccountingManager developerAM = GameHandler.allGames[gameID].GetDeveloper(myContracts[contractID].GetDeveloperID()).GetComponent<DeveloperAccountingManager>();
+        ProviderAccountingManager providerAM = GameHandler.allGames[gameID].GetProvider(myContracts[contractID].GetProviderID()).GetComponent<ProviderAccountingManager>();
+        developerAM.UpdateRevenue();
+        providerAM.UpdateContractPayments();
+        providerAM.UpdateRevenue();        
     }
-
     [Command]
     public void CmdRejectContract(string contractID)
     {
@@ -341,7 +391,6 @@ public class ContractManager : NetworkBehaviour
         }
 
     }
-
     [ClientRpc]
     public void RpcRejectContract(string contractID, string message)
     {
@@ -350,6 +399,10 @@ public class ContractManager : NetworkBehaviour
         if (contractUIHandler != null)
         {
             contractUIHandler.UpdateUIContractListsContents();
+            if(playerRole == PlayerRoles.Provider)
+            {
+                contractUIHandler.UpdateContractOverview();
+            }
         }
         //SCHEDULE
         if(scheduleManager != null)
@@ -357,7 +410,6 @@ public class ContractManager : NetworkBehaviour
             scheduleManager.DeleteScheduledFeature(contractID);
         }
     }
-
     [Command]
     public void CmdFinalContract(string contractID)
     {
@@ -377,7 +429,6 @@ public class ContractManager : NetworkBehaviour
             developerCM.GetScheduleManager().ChangeStateOfScheduledFeature(contractID, ContractState.Final);
         }
     }
-
     [ClientRpc]
     public void RpcFinalContract(string contractID, string message)
     {
@@ -395,6 +446,8 @@ public class ContractManager : NetworkBehaviour
 
     }
 
+
+    // NEXT QUARTER EVALUATION METHODS...
     public void EvaluateContracts()
     {
         foreach (Contract contract in myContracts.Values)
@@ -405,7 +458,6 @@ public class ContractManager : NetworkBehaviour
             }
         }
     }
-
 
     [Command]
     public void CmdEvaluateContracts()
@@ -419,7 +471,6 @@ public class ContractManager : NetworkBehaviour
         }
         RpcEvaluateContracts();
     }
-
     [ClientRpc]
     public void RpcEvaluateContracts()
     {

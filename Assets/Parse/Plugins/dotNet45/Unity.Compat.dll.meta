@@ -3,34 +3,42 @@ guid: 3db0783b58c2429b9bc1f560ba323d05
 labels:
 - gvh
 - gvh_dotnet-4.5
-- gvh_version-5.4.4
-timeCreated: 1550076466
-licenseType: Free
+- gvh_version-6.6.0
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
   iconMap: {}
   executionOrder: {}
+  defineConstraints: []
   isPreloaded: 0
   isOverridable: 0
+  isExplicitlyReferenced: 0
+  validateReferences: 1
   platformData:
+  - first:
+      '': Linux
+    second:
+      enabled: 1
+      settings:
+        CPU: x86
+  - first:
+      '': LinuxUniversal
+    second:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
   - first:
       '': OSXIntel
     second:
       enabled: 1
       settings:
-        CPU: AnyCPU
+        CPU: x86
   - first:
       '': OSXIntel64
     second:
       enabled: 1
       settings:
-        CPU: AnyCPU
-  - first:
-      '': SamsungTV
-    second:
-      enabled: 1
-      settings: {}
+        CPU: x86_64
   - first:
       '': Web
     second:
@@ -50,7 +58,7 @@ PluginImporter:
   - first:
       Any: 
     second:
-      enabled: 0
+      enabled: 1
       settings: {}
   - first:
       Editor: Editor
@@ -63,47 +71,15 @@ PluginImporter:
     second:
       enabled: 1
       settings:
-        CPU: AnyCPU
+        CPU: x86
   - first:
       Facebook: Win64
     second:
       enabled: 1
       settings:
-        CPU: AnyCPU
-  - first:
-      Nintendo 3DS: N3DS
-    second:
-      enabled: 1
-      settings: {}
-  - first:
-      Nintendo Switch: Switch
-    second:
-      enabled: 1
-      settings: {}
-  - first:
-      PS4: PS4
-    second:
-      enabled: 1
-      settings: {}
-  - first:
-      PSP2: PSP2
-    second:
-      enabled: 1
-      settings: {}
-  - first:
-      Standalone: Linux
-    second:
-      enabled: 1
-      settings:
-        CPU: x86
-  - first:
-      Standalone: Linux64
-    second:
-      enabled: 1
-      settings:
         CPU: x86_64
   - first:
-      Standalone: LinuxUniversal
+      Standalone: Linux64
     second:
       enabled: 1
       settings:
@@ -119,28 +95,13 @@ PluginImporter:
     second:
       enabled: 1
       settings:
-        CPU: AnyCPU
+        CPU: x86
   - first:
       Standalone: Win64
     second:
       enabled: 1
       settings:
-        CPU: AnyCPU
-  - first:
-      Tizen: Tizen
-    second:
-      enabled: 1
-      settings: {}
-  - first:
-      WebGL: WebGL
-    second:
-      enabled: 1
-      settings: {}
-  - first:
-      WiiU: WiiU
-    second:
-      enabled: 1
-      settings: {}
+        CPU: x86_64
   - first:
       Windows Store Apps: WindowsStoreApps
     second:
@@ -148,22 +109,12 @@ PluginImporter:
       settings:
         CPU: AnyCPU
   - first:
-      XboxOne: XboxOne
-    second:
-      enabled: 1
-      settings: {}
-  - first:
       iPhone: iOS
     second:
       enabled: 1
       settings:
         CompileFlags: 
         FrameworkDependencies: 
-  - first:
-      tvOS: tvOS
-    second:
-      enabled: 1
-      settings: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

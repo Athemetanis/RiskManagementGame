@@ -5,32 +5,43 @@ using Mirror;
 
 public class ProductManager : NetworkBehaviour
 {   
+
+    private SyncListInt functionalityQ;
+    private SyncListInt userFriendlinessQ;
+    private SyncListInt integrabilityQ;
+
     //VARIABLES
     [SyncVar(hook = "OnChangeFunctionality")]
-    public int functionality;
+    private int functionality;
     [SyncVar(hook = "OnChangeUserFriendliness")]
-    public int userFriendliness;
+    private int userFriendliness;
     [SyncVar(hook = "OnChangeIntergrability")]
-    public int integrability;
+    private int integrability;
 
+   
+    //REFERENCES
     private ProductUIHandler productUIHandler;
 
     //GETTERS & SETTERS
     public void SetProductUIHandler(ProductUIHandler productUIHandler) { this.productUIHandler = productUIHandler; }
 
-    // Start is called before the first frame update
-    void Start()
+    public override void OnStartServer()
     {
-        if (isServer)
+       if(functionality == 0)
         {
-            functionality = 10;
-            userFriendliness = 10;
-            integrability = 10;
+            SetupDefaultValues();
         }
     }
 
-   
-
+    [Server]
+    public void SetupDefaultValues()
+    {
+        functionality = 10;
+        userFriendliness = 10;
+        integrability = 10;
+    }
+    
+    //Hooks
     public void OnChangeFunctionality(int functionality)
     {
         this.functionality = functionality;
@@ -40,7 +51,6 @@ public class ProductManager : NetworkBehaviour
         }
 
     }
-
     public void OnChangeUserFriendliness(int userFriendliness)
     {
         this.userFriendliness = userFriendliness;
@@ -49,7 +59,6 @@ public class ProductManager : NetworkBehaviour
             productUIHandler.UpdateUIUserFrienlinessText(userFriendliness);
         }
     }
-
     public void OnChangeIntergrability(int integrability)
     {
         this.integrability = integrability;
@@ -58,5 +67,6 @@ public class ProductManager : NetworkBehaviour
             productUIHandler.UpdateUIIntegrabilityText(integrability);
         }
     }
+
 
 }

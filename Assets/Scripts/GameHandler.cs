@@ -133,8 +133,7 @@ public class GameHandler : NetworkBehaviour {
             allGamesUI.Clear();
 
             GeneratingGamesUIForPlayer();
-                                         } 
-       
+        } 
     }
 
     public void DestroyGameListUI()

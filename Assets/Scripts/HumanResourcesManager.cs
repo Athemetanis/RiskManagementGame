@@ -6,6 +6,8 @@ using Mirror;
 public class HumanResourcesManager : NetworkBehaviour
 {
     //VARIABLES
+
+
     [SyncVar(hook = "OnChangeProgrammersCount")]
     private int programmersCurrentCount;
     [SyncVar(hook = "OnChangeUISpecialistsCount")]
@@ -14,8 +16,12 @@ public class HumanResourcesManager : NetworkBehaviour
     private int integrabilitySpecialistsCurrentCount;
     [SyncVar(hook = "OnChangeProgrammersAvailableCount")]
     private int programmersAvailableCount;
-    [SyncVar(hook = "OnChangeSpecialistsAvailableCount")]
-    private int specialistsAvailableCount;
+
+    [SyncVar(hook = "OnChangeIntegrabilitySpecialistAvailableCount")]
+    private int integrabilitySpecialistsAvailableCount;
+    [SyncVar(hook = "OnChangeUISpecialistAvailableCount")]
+    private int userInterfaceSpecialistsAvailableCount;
+
     [SyncVar(hook = "OnChangeHireProgrammersCount")]
     private int hireProgrammersCount;
     [SyncVar(hook = "OnChangeHireUISpecialistsCount")]
@@ -30,12 +36,6 @@ public class HumanResourcesManager : NetworkBehaviour
     [SyncVar(hook = "OnChangeIntegrabilitySpecialistSalary")]
     private int integrabilitySpecialistSalary;
 
-
-
-
-    [SyncVar(hook = "OnChangeQASpecialistsCount")]
-    private int qualityAssuranceSpecialistsCurrentCount;
-
     private HumanResourcesUIHandler humanResourcesUIHandler;
     private DeveloperAccountingManager developerAccountingManager;
     private ScheduleManager scheduleManager;
@@ -47,14 +47,14 @@ public class HumanResourcesManager : NetworkBehaviour
     public int GetUISPecialistsCount() { return userInterfaceSpecialistsCurrentCount; }
     public void SetIntegrabilitySpecialistsCount(int count) { integrabilitySpecialistsCurrentCount = count; }
     public int GetIntegrabilitySpecialistsCount() { return integrabilitySpecialistsCurrentCount; }
-    public void SetQASpecialistsCount(int count) { qualityAssuranceSpecialistsCurrentCount = count; }
-    public int GetQASpecialistsCount() { return qualityAssuranceSpecialistsCurrentCount; }
     public void SetHumanResourcesUIHandler(HumanResourcesUIHandler humanResourcesUIHandler) { this.humanResourcesUIHandler = humanResourcesUIHandler; }
     public int GetProgrammerSalary() { return programmerSalary; }
     public int GetUISpecialistSalary() { return uiSpecialistSalary; }
     public int GetIntegrabilitySpecialistSalary() { return integrabilitySpecialistSalary; }
     public int GetProgrammersAvailableCount() { return programmersAvailableCount; }
-    public int GetSpecialistsAvailableCount() { return specialistsAvailableCount; }
+    //public int GetSpecialistsAvailableCount() { return specialistsAvailableCount; }
+    public int GetUISpecialsitsAvailableCount() { return userInterfaceSpecialistsAvailableCount; }
+    public int GetIntegrabilitySpecialistsAvailableCount() { return integrabilitySpecialistsAvailableCount; }
 
     private void Awake()
     {
@@ -68,14 +68,11 @@ public class HumanResourcesManager : NetworkBehaviour
     {
         scheduleManager = this.gameObject.GetComponent<ScheduleManager>();
         developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
-        programmersCurrentCount = 10;
-        userInterfaceSpecialistsCurrentCount = 1;
-        integrabilitySpecialistsCurrentCount = 1;
-        programmersAvailableCount = 5;
-        specialistsAvailableCount = 2;
-        programmerSalary = 30000;
-        uiSpecialistSalary = 40000;
-        integrabilitySpecialistSalary = 40000;
+
+        if (integrabilitySpecialistsAvailableCount == 0)
+        {
+            SetupDefaultValues();
+        }
 
     }
 
@@ -84,7 +81,23 @@ public class HumanResourcesManager : NetworkBehaviour
         scheduleManager = this.gameObject.GetComponent<ScheduleManager>();
         developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
     }
-   
+    [Server]
+    public void SetupDefaultValues()
+    {
+        programmersCurrentCount = 0;
+        userInterfaceSpecialistsCurrentCount = 0;
+        integrabilitySpecialistsCurrentCount = 0;
+        programmersAvailableCount = 10;
+        userInterfaceSpecialistsAvailableCount = 7;
+        integrabilitySpecialistsAvailableCount = 7;
+        hireProgrammersCount = 0;
+        hireIntegrabilitySpecialistsCount = 0;
+        hireUISpecialistsCount = 0;
+
+        programmerSalary = 30000;
+        uiSpecialistSalary = 40000;
+        integrabilitySpecialistSalary = 40000;
+    }
 
     public void AddProgramer()
     {
@@ -131,19 +144,19 @@ public class HumanResourcesManager : NetworkBehaviour
     [Command]
     public void CmdAddUISpecialist()
     {
-        if (specialistsAvailableCount > 0)
+        if (userInterfaceSpecialistsAvailableCount > 0)
         {
             userInterfaceSpecialistsCurrentCount++;
-            specialistsAvailableCount--;
+            userInterfaceSpecialistsAvailableCount--;
         }
     }
     [Command]
     public void CmdAddIntegrabilitySpecialist()
     {
-        if (specialistsAvailableCount > 0)
+        if (integrabilitySpecialistsAvailableCount > 0)
         {
             integrabilitySpecialistsCurrentCount++;
-            specialistsAvailableCount--;
+            integrabilitySpecialistsAvailableCount--;
         }
     }
     [Command]
@@ -152,7 +165,7 @@ public class HumanResourcesManager : NetworkBehaviour
         if (userInterfaceSpecialistsCurrentCount > 0)
         {
             userInterfaceSpecialistsCurrentCount--;
-            specialistsAvailableCount++;
+            userInterfaceSpecialistsAvailableCount++;
         }
     }
     [Command]
@@ -161,7 +174,7 @@ public class HumanResourcesManager : NetworkBehaviour
         if (integrabilitySpecialistsCurrentCount > 0)
         {
             integrabilitySpecialistsCurrentCount--;
-            specialistsAvailableCount++;
+            integrabilitySpecialistsAvailableCount++;
         }
     }
 
@@ -194,7 +207,7 @@ public class HumanResourcesManager : NetworkBehaviour
     public void OnChangeProgrammersCount(int programmersCount)
     {
         this.programmersCurrentCount = programmersCount;
-        developerAccountingManager.ComputeSalaries();
+        developerAccountingManager.UpdateSalaries();
         if (this.humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateProgramersCurrentCountText(this.programmersCurrentCount);
@@ -207,7 +220,7 @@ public class HumanResourcesManager : NetworkBehaviour
     public void OnChangeUISpecialistsCount(int UISpecialistsCount)
     {
         this.userInterfaceSpecialistsCurrentCount = UISpecialistsCount;
-        developerAccountingManager.ComputeSalaries();
+        developerAccountingManager.UpdateSalaries();
         if (this.humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateUserInterfaceSpecialistsCurrentCountText(this.userInterfaceSpecialistsCurrentCount);
@@ -220,7 +233,7 @@ public class HumanResourcesManager : NetworkBehaviour
     public void OnChangeIntegrabilitySpecialistsCount(int integrabilitySpecialistsCount)
     {
         this.integrabilitySpecialistsCurrentCount = integrabilitySpecialistsCount;
-        developerAccountingManager.ComputeSalaries();
+        developerAccountingManager.UpdateSalaries();
         if (this.humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateIntegrabilitySpecialistsCurrentCountText(this.integrabilitySpecialistsCurrentCount);
@@ -238,26 +251,32 @@ public class HumanResourcesManager : NetworkBehaviour
             humanResourcesUIHandler.UpdateProgramersAvailableCountText(this.programmersAvailableCount);
         }
     }
-    public void OnChangeSpecialistsAvailableCount(int specialistsAvailableCount)
+    /*public void OnChangeSpecialistsAvailableCount(int specialistsAvailableCount)
     {
         this.specialistsAvailableCount = specialistsAvailableCount;
         if (this.humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateSpecialistsAvailableCountText(this.specialistsAvailableCount);
         }
-    }
-    public void OnChangeQASpecialistsCount(int qualityAssuranceSpecialistsCount)
+    }*/
+
+    public void OnChangeIntegrabilitySpecialistAvailableCount(int integrabilitySpecialistsAvailableCount)
     {
-        this.qualityAssuranceSpecialistsCurrentCount = qualityAssuranceSpecialistsCount;
+        this.integrabilitySpecialistsAvailableCount = integrabilitySpecialistsAvailableCount;
         if (this.humanResourcesUIHandler != null)
         {
-            if (this.qualityAssuranceSpecialistsCurrentCount == 0 )
-            {
-
-
-            }
+            humanResourcesUIHandler.UpdateIntegrabilitySpecialistsAvailableCountText(this.integrabilitySpecialistsAvailableCount);
         }
     }
+    public void OnChangeUISpecialistAvailableCount(int uiSpecialistsAvailableCount)
+    {
+        this.userInterfaceSpecialistsAvailableCount = uiSpecialistsAvailableCount;
+        if (this.humanResourcesUIHandler != null)
+        {
+            humanResourcesUIHandler.UpdateUISpecialistsAvailableCountText(this.userInterfaceSpecialistsAvailableCount);
+        }
+    }
+
     public void OnChangeHireProgrammersCount(int hireProgrammersCount)
     {
         this.hireProgrammersCount = hireProgrammersCount;
@@ -285,7 +304,7 @@ public class HumanResourcesManager : NetworkBehaviour
     public void OnChangeProgrammerSalary (int programmerSalary)
     {
         this.programmerSalary = programmerSalary;
-        developerAccountingManager.ComputeSalaries();
+        developerAccountingManager.UpdateSalaries();
         if(humanResourcesUIHandler != null )
         {
             humanResourcesUIHandler.UpdateProgrammerSalarySlider(this.programmerSalary);
@@ -294,7 +313,7 @@ public class HumanResourcesManager : NetworkBehaviour
     public void OnChangeUISpecialistSalary(int uiSpecialistSalary)
     {
         this.uiSpecialistSalary = uiSpecialistSalary;
-        developerAccountingManager.ComputeSalaries();
+        developerAccountingManager.UpdateSalaries();
         if (humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateUISpecialistSalarySlider(this.uiSpecialistSalary);
@@ -303,7 +322,7 @@ public class HumanResourcesManager : NetworkBehaviour
     public void OnChangeIntegrabilitySpecialistSalary(int integrabilitySpecialistSalary)
     {
         this.integrabilitySpecialistSalary = integrabilitySpecialistSalary;
-        developerAccountingManager.ComputeSalaries();
+        developerAccountingManager.UpdateSalaries();
         if (humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateIntegrabilitySpecialistSalarySlider(this.integrabilitySpecialistSalary);

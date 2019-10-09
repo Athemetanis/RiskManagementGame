@@ -12,9 +12,8 @@ public class HumanResourcesUIHandler : MonoBehaviour
     public Text integrabilitySpecialistsCurrentCountText;
 
     public Text programersAvailableCountText;
-    public Text specialistsAvailableCountText;
-
-    public Text qualityAssuranceSpecialistsCountText;
+    public Text userInterfaceSpecialistsAvailableCountText;
+    public Text integrabilitySpecialistsAvialableCountText;
 
     public Button addProgrammersButton;
     public Button addUIpecialistButton;
@@ -27,15 +26,13 @@ public class HumanResourcesUIHandler : MonoBehaviour
     public InputField hireProgrammersCountIF;
     public InputField hireUISpecialistsCountIF;
     public InputField hireIntegrabilitySpecialistsCountIF;
-    public InputField hireGASpecialistsCountIF;
 
     public Slider programmerSalarySlider;
     public Slider uiSpecialistSalarySlider;
     public Slider integrabilitySpecialistSalarySlider;
-    public Slider qaSpecilistSalarySlider;
 
     public Text programmerSalaryText;
-    public Text uiSPecialistSalaryText;
+    public Text uiSpecialistSalaryText;
     public Text integrabilitySpecialistsSalaryText;
 
     private bool initialized;
@@ -48,7 +45,10 @@ public class HumanResourcesUIHandler : MonoBehaviour
     public void SetIntegrabilitySpecialistsCurrentCountText(string integrabilitySpecialistsCurrentCountText) { this.integrabilitySpecialistsCurrentCountText.text = integrabilitySpecialistsCurrentCountText; }
 
     public void SetprogramersAvailableCountText(string programersAvailableCountText) { this.programersAvailableCountText.text = programersAvailableCountText; }
-    public void SetSpecialistsAvailableCountText(string specialistsAvailableCountText) { this.specialistsAvailableCountText.text = specialistsAvailableCountText; }
+    //public void SetSpecialistsAvailableCountText(string specialistsAvailableCountText) { this.specialistsAvailableCountText.text = specialistsAvailableCountText; }
+
+    public void SetIntegrabilitySpecialistsAvailableCountText(string integrabilitySpecialistsAvailavbleCountText) { this.integrabilitySpecialistsAvialableCountText.text = integrabilitySpecialistsAvailavbleCountText; }
+    public void SetUISpecialistsAvailableCountText(string userInterfaceSpecialistsAvailableCountText) { this.userInterfaceSpecialistsAvailableCountText.text = userInterfaceSpecialistsAvailableCountText; }
 
     // Start is called before the first frame update
     void Start()
@@ -112,7 +112,7 @@ public class HumanResourcesUIHandler : MonoBehaviour
         if (initialized)
         {
             humanResourcesManager.ChangeUISpecialistSalary((int)uiSpecialistSalarySlider.value);
-            uiSPecialistSalaryText.text = uiSpecialistSalarySlider.value.ToString();
+            uiSpecialistSalaryText.text = uiSpecialistSalarySlider.value.ToString();
         }
     }
     public void ChangeIntegrabilitySpecialistSalary()
@@ -136,7 +136,8 @@ public class HumanResourcesUIHandler : MonoBehaviour
         UpdateUserInterfaceSpecialistsCurrentCountText(humanResourcesManager.GetUISPecialistsCount());
         UpdateIntegrabilitySpecialistsCurrentCountText(humanResourcesManager.GetIntegrabilitySpecialistsCount());
         UpdateProgramersAvailableCountText(humanResourcesManager.GetProgrammersAvailableCount());
-        UpdateSpecialistsAvailableCountText(humanResourcesManager.GetSpecialistsAvailableCount());
+        UpdateIntegrabilitySpecialistsAvailableCountText(humanResourcesManager.GetIntegrabilitySpecialistsAvailableCount());
+        UpdateUISpecialistsAvailableCountText(humanResourcesManager.GetUISpecialsitsAvailableCount());
 
         initialized = true;
     }
@@ -189,16 +190,28 @@ public class HumanResourcesUIHandler : MonoBehaviour
             EnableAddProgrammerButton();
         }
     }
-    public void UpdateSpecialistsAvailableCountText(int specialistsAvailableCount)
+    public void UpdateUISpecialistsAvailableCountText(int uiSpecialistsAvailableCount)
     {
-        specialistsAvailableCountText.text = specialistsAvailableCount.ToString();
-        if (specialistsAvailableCount == 0)
+        userInterfaceSpecialistsAvailableCountText.text = uiSpecialistsAvailableCount.ToString();
+        if(uiSpecialistsAvailableCount == 0)
         {
-            DiasbleAddSpecialistButtons();
+            DisableAddUISpecialistButton();
         }
         else
         {
-            EnasbleAddSpecialistButtons();
+            EnableAddIntegrabilitySpecialistButton();
+        }
+    }
+    public void UpdateIntegrabilitySpecialistsAvailableCountText(int integrabilitySpecialistsAvailableCount)
+    {
+        integrabilitySpecialistsAvialableCountText.text = integrabilitySpecialistsAvailableCount.ToString();
+        if(integrabilitySpecialistsAvailableCount == 0)
+        {
+            DisableAddIntegrabilitySpecialistButton();
+        }
+        else
+        {
+            EnableAddUISpecialistButton();
         }
     }
 
@@ -210,12 +223,13 @@ public class HumanResourcesUIHandler : MonoBehaviour
     {
         this.programmerSalarySlider.value = programmerSalary;
         programmerSalaryText.text = programmerSalary.ToString();
+        Debug.LogWarning("updating programmer salary slide");
 
     }
     public void UpdateUISpecialistSalarySlider(int uiSpecialistSalary)
     {
         this.uiSpecialistSalarySlider.value = uiSpecialistSalary;
-        uiSPecialistSalaryText.text = uiSpecialistSalary.ToString();
+        uiSpecialistSalaryText.text = uiSpecialistSalary.ToString();
     }
     public void UpdateIntegrabilitySpecialistSalarySlider(int integrabilitySpecialistSalary)
     {
@@ -231,11 +245,17 @@ public class HumanResourcesUIHandler : MonoBehaviour
     {
         substractProgrammerButton.interactable = false;
     }
-    public void DiasbleAddSpecialistButtons()
+
+
+    public void DisableAddUISpecialistButton()
     {
         addUIpecialistButton.interactable = false;
+    }
+    public void DisableAddIntegrabilitySpecialistButton()
+    {
         addIntegrabilitySpecialistButton.interactable = false;
     }
+
     public void DisableSubstractUISpecialistButton()
     {
         substractUISpecialistButton.interactable = false;
@@ -253,11 +273,16 @@ public class HumanResourcesUIHandler : MonoBehaviour
     {
         substractProgrammerButton.interactable = true;
     }
-    public void EnasbleAddSpecialistButtons()
+
+    public void EnableAddUISpecialistButton()
     {
         addUIpecialistButton.interactable = true;
+    }
+    public void EnableAddIntegrabilitySpecialistButton()
+    {
         addIntegrabilitySpecialistButton.interactable = true;
     }
+
     public void EnableSubstractUISpecialistButton()
     {
         substractUISpecialistButton.interactable = true;

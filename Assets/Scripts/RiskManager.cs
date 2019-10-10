@@ -91,18 +91,8 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
         riskImpact.Callback += OnImpactChange;
         riskColor.Callback += OnColorChange;
         risks.Callback += OnRisksChange;
-
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
-        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
     }
 
-    public override void OnStartAuthority()
-    {        
-        if (riskUIHandler != null)
-        {
-           // riskUIHandler
-        }
-    }
 
     //METHODS
     public void LoadQuarterData(int quarter)
@@ -284,8 +274,7 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
 
     // NEXT QUARTER EVALUATION METHODS...
     public void MoveToTheNextQuarter()
-    {
-        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+    {   
         CmdSaveCurrentQuarterData(currentQuarter);
         CmdSetNewRefences();
         CmdUpdateCurrentQuarterData(currentQuarter);

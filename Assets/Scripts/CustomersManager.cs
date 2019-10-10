@@ -59,40 +59,71 @@ public class CustomersManager : NetworkBehaviour
     //REFERENCE
     private CustomersUIHandler customersUIHandler;
     private ContractManager contractManager;
+    private ProviderAccountingManager providerAccountingmanager;
 
     //GETTERS & SETTERS
     public void SetCustomersUIHandler(CustomersUIHandler customersUIHandler) { this.customersUIHandler = customersUIHandler; }
 
+    public int GetBeginningEnterpriseCustomers() { return beginningEnterpriseCustomers; }
+    public int GetBeginningBusinessCustomers() { return beginningBusinessCustomers; }
+    public int GetBeginningIndividualCustomers() { return beginningIndividualsCutomers; }
+
+    public int GetEnterpriseCustomersDuringQ() { return enterpriseCustomersAddDuringQ; }
+    public int GetBusinessCustomersDuringQ() { return businessCustomersAddDuringQ; }
+    public int GetIndividualCustomersDuringQ() { return individualCustomersAddDuringQ; }
+
+    public int GetEnterpriseCustomersEndQ() { return enterpriseCustomersAddEndQ; }
+    public int GetBusinessCustomersEndQ() { return businessCustomersAddEndQ; }
+    public int GetIndividualCustomersEndQ() { return individualCustomersAddEndQ; }
+       
     public int GetEndEnterpriseCustomers() { return endEnterpriseCustomers; }
     public int GetEndBusinessCustomers() { return endBusinessCustomers; }
     public int GetEndIndividualCustomers() { return endIndividualsCutomers; }
+
+    public int GetEnterpriseCustomersAdvLoss() { return enterpriseCustomersAdvLoss; }
+    public int GetBusinessCustomersAdvLoss() { return businessCustomersAdvLoss; }
+    public int GetIndividualCustomersAdvLoss() { return individualCustomersAdvLoss; }
+
+    public int GetEnterpriseCustomersAdvAdd() { return enterpriseCustomersAdvAdd; }
+    public int GetBusinessCustomersAdvAdd() { return businessCustomersAdvAdd; }
+    public int GetIndividualCustomersAdvAdd() { return individualCustomersAdvAdd; }
 
     // Start is called before the first frame update
     public override void OnStartServer()
     {
         gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+        contractManager = this.gameObject.GetComponent<ContractManager>();
+        providerAccountingmanager = this.gameObject.GetComponent<ProviderAccountingManager>();
         if (endEnterpriseCustomersQ.Count == 0)
         {
             SetupDefaultValues();
         }
         LoadQuarterData(currentQuarter);
-        contractManager = this.gameObject.GetComponent<ContractManager>();
+        UpdateCustomersCountServer();
+
     }
     public override void OnStartClient()
     {
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
-        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         contractManager = this.gameObject.GetComponent<ContractManager>();
+        providerAccountingmanager = this.gameObject.GetComponent<ProviderAccountingManager>();
     }
+
+
 
     //METHODS
     [Server]
     public void SetupDefaultValues()
     {
-        endEnterpriseCustomersQ[0] = 0;
-        endBusinessCustomersQ[0] = 0;
-        endIndividualsCutomersQ[0] = 0;
+        endEnterpriseCustomersQ.Insert(0, 0);
+        endBusinessCustomersQ.Insert(0, 0);
+        endIndividualsCutomersQ.Insert(0, 0);
+        enterpriseCustomersAdvAdd = 0;
+        businessCustomersAdvAdd = 0;
+        individualCustomersAdvAdd = 0;
+        enterpriseCustomersAdvLoss = 0;
+        businessCustomersAdvLoss = 0;
+        individualCustomersAdvLoss = 0;
     }
     [Server]
     public void LoadQuarterData(int quarter)
@@ -100,10 +131,10 @@ public class CustomersManager : NetworkBehaviour
         if (endBusinessCustomersQ.Count != quarter) 
         {
             for (int i = endBusinessCustomersQ.Count + 1 ; i < quarter; i++)
-            {
-                endEnterpriseCustomersQ[i] = endEnterpriseCustomersQ[i - 1];
-                endBusinessCustomersQ[i] = endBusinessCustomersQ[i - 1];
-                endIndividualsCutomersQ[i] = endIndividualsCutomersQ[i - 1];
+            {   
+                endEnterpriseCustomersQ.Insert(i, endEnterpriseCustomersQ[i - 1]);
+                endBusinessCustomersQ.Insert(i, endBusinessCustomersQ[i - 1]);
+                endIndividualsCutomersQ.Insert(i, endIndividualsCutomersQ[i - 1]);
             }
         }
         beginningEnterpriseCustomers = endEnterpriseCustomersQ[quarter - 1];
@@ -112,13 +143,10 @@ public class CustomersManager : NetworkBehaviour
 
     }
 
-    public void UpdateCustomersCount()
+    [Server]
+    public void UpdateCustomersCountServer()
     {
-        CmdUpdateCustomersCount();
-    }
-    [Command]
-    public void CmdUpdateCustomersCount()
-    {
+        Debug.LogError("idem aktualizovat zakaznikov");
         enterpriseCustomersAddDuringQ = 0;
         individualCustomersAddDuringQ = 0;
         businessCustomersAddDuringQ = 0;
@@ -126,16 +154,20 @@ public class CustomersManager : NetworkBehaviour
         enterpriseCustomersAddEndQ = 0;
         businessCustomersAddEndQ = 0;
         individualCustomersAddEndQ = 0;
+
+
+    Debug.LogError("updating customers, contracts= " + contractManager.GetMyContracts().Count);
         foreach (Contract contract in contractManager.GetMyContracts().Values)
         {
-            if(contract.GetContractState() == ContractState.Accepted)
+            if (contract.GetContractState() == ContractState.Accepted)
             {
+    Debug.LogError("existuje contract ktory je akceptovany");
                 int individualCustomersAll = contract.GetContractFeature().individualCustomers;
                 int businessCustomersAll = contract.GetContractFeature().businessCustomers;
                 int enterpriseCustomersAll = contract.GetContractFeature().enterpriseCustomers;
-                int individualCustomersDuringQ = (individualCustomersAll / 60) * contract.GetContractDelivery();
-                int businessCustomerDuringQ = (businessCustomersAll / 60) * contract.GetContractDelivery();
-                int enterpriseCustomersDuringQ = (enterpriseCustomersAll / 60) * contract.GetContractDelivery();
+                int individualCustomersDuringQ = (int)System.Math.Round((individualCustomersAll / 60f) * (60f - contract.GetContractDelivery()), System.MidpointRounding.AwayFromZero);
+                int businessCustomerDuringQ = (int)System.Math.Round((businessCustomersAll / 60f) * (60f - contract.GetContractDelivery()), System.MidpointRounding.AwayFromZero);
+                int enterpriseCustomersDuringQ = (int)System.Math.Round((enterpriseCustomersAll / 60f) * (60f - contract.GetContractDelivery()), System.MidpointRounding.AwayFromZero);
                 int individualCustomersEndQ = individualCustomersAll - individualCustomersDuringQ;
                 int businessCustomersEndQ = businessCustomersAll - businessCustomerDuringQ;
                 int enterpriseCustomersEndQ = enterpriseCustomersAll - enterpriseCustomersDuringQ;
@@ -143,16 +175,17 @@ public class CustomersManager : NetworkBehaviour
                 enterpriseCustomersAddDuringQ += enterpriseCustomersDuringQ;
                 businessCustomersAddDuringQ += businessCustomerDuringQ;
                 individualCustomersAddDuringQ += individualCustomersDuringQ;
-                enterpriseCustomersAddEndQ = enterpriseCustomersEndQ;
-                businessCustomersAddEndQ = businessCustomersEndQ;
-                individualCustomersAddEndQ = individualCustomersEndQ;
-            }
-            endEnterpriseCustomers = beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ + enterpriseCustomersAddEndQ;
-            endBusinessCustomers = beginningBusinessCustomers + businessCustomersAddDuringQ + businessCustomersAddEndQ;
-            endIndividualsCutomers = beginningIndividualsCutomers + individualCustomersAddDuringQ + individualCustomersAddEndQ;
-        } 
+                enterpriseCustomersAddEndQ += enterpriseCustomersEndQ;
+                businessCustomersAddEndQ += businessCustomersEndQ;
+                individualCustomersAddEndQ += individualCustomersEndQ;
+            }          
+        }
+        endEnterpriseCustomers = beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ + enterpriseCustomersAddEndQ;
+        endBusinessCustomers = beginningBusinessCustomers + businessCustomersAddDuringQ + businessCustomersAddEndQ;
+        endIndividualsCutomers = beginningIndividualsCutomers + individualCustomersAddDuringQ + individualCustomersAddEndQ;
+        providerAccountingmanager.UpdateRevenueServer();
     }
-
+   
     public void RiseEnterpriseCustomersAddDuringQ(int count) { CmdRiseEnterpriseCustomersAddDuringQ(count); }
     public void RiseBusinessCustomersAddDuringQ(int count) { CmdRiseBusinessCustomersAddDuringQ(count); }
     public void RiseIndividualCustomersAddDuringQ(int count) { CmdRiseIndividualCustomersAddDuringQ(count); }
@@ -298,5 +331,11 @@ public class CustomersManager : NetworkBehaviour
         }
     }
 
+    // NEXT QUARTER EVALUATION METHODS...
+
+    public void MoveToNextQuarter()
+    {
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+    }
 
 }

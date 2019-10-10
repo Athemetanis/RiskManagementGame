@@ -37,6 +37,7 @@ public class FeatureUIComponentHandler : MonoBehaviour
     public void SetupFeature(string nameID, int functionality, int integrability, int userInterface, int timeCost, int enterpriseCustomers, int businessCustomers, int individualCustomers)
     {
         nameIDText.text = nameID;
+        functionalityText.text = functionality.ToString();
         integrationText.text = integrability.ToString();
         userExperienceText.text = userInterface.ToString();
         timeCostsText.text = timeCost.ToString();

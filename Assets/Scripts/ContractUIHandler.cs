@@ -48,17 +48,20 @@ public class ContractUIHandler : MonoBehaviour
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         contractManager = myPlayerDataObject.GetComponent<ContractManager>();
         contractManager.SetContractUIHandler(this);
-        featureManager = myPlayerDataObject.GetComponent<FeatureManager>();
-        featureManager.SetContractUIHandler(this);
-        featureManager.SetContractManager(contractManager);
+
+
         firmManager = myPlayerDataObject.GetComponent<FirmManager>();
         scheduleManager = myPlayerDataObject.GetComponent<ScheduleManager>();
-        marketingManager = myPlayerDataObject.GetComponent<MarketingManager>();
+
 
         if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
         {
-            //Debug.Log(contractManager.GetPlayerRole());
-            //Debug.Log("Vygeneruj List Developerov");
+            featureManager = myPlayerDataObject.GetComponent<FeatureManager>();
+            featureManager.SetContractUIHandler(this);
+            featureManager.SetContractManager(contractManager);
+            marketingManager = myPlayerDataObject.GetComponent<MarketingManager>();
+            marketingManager.SetContractUIHandler(this);
+
             GenerateFeatureDropdownOptions(new List<string>(featureManager.GetOutsourcedFeatures().Keys));
             GenerateDeveloperDropdownOptions();
             UpdateDeveloperFirmList(GameHandler.allGames[contractManager.GetGameID()].GetListDeveloperFirmNameDescription());
@@ -66,7 +69,7 @@ public class ContractUIHandler : MonoBehaviour
             UpdateContractOverview();
         }
         else  //som developer
-        {   
+        {
             UpdateUIContractListsContents();
         }
     }
@@ -281,6 +284,7 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.SetPrice(contract.GetContractPrice());
         contractPreviewUIHandler.SetState(contract.GetContractState());
         contractPreviewUIHandler.GenerateHistoryRecord(contract.GetContractHistory());
+        contractPreviewUIHandler.SetRiskSharingFee(contract.GetContractRiskSharingFee());
         contractPreviewUIHandler.PreviewContract();
         if(scheduleManager != null) //Developer
         {
@@ -315,8 +319,9 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.SetPrice(contract.GetContractPrice());
         contractPreviewUIHandler.SetState(contract.GetContractState());
         contractPreviewUIHandler.GenerateHistoryRecord(contract.GetContractHistory());
+        contractPreviewUIHandler.SetRiskSharingFee(contract.GetContractRiskSharingFee());
 
-        if(contract.GetContractState() == ContractState.Proposal)
+        if (contract.GetContractState() == ContractState.Proposal)
         {
             contractPreviewUIHandler.ProposalContract();
         }

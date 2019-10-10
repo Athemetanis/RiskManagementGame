@@ -41,9 +41,9 @@ public class CustomersUIHandler : MonoBehaviour
     public void SetBusCustomersAddEndQ(int addition) { businessCustomerAddEndQ.text = addition.ToString(); }
     public void SetIndCustomersAddEndQ(int addition) { individualCustomerAddEndQ.text = addition.ToString(); }
 
-    public void SetEndEntCustomers(int endCount) { beginningEnterpriseCustomers.text = endCount.ToString(); }
-    public void SetEndBusCutomers(int endCount) { beginningBusinessCustomers.text = endCount.ToString(); }
-    public void SetEndIndCustomers(int endCount) { beginningIndividualsCustmers.text = endCount.ToString(); }
+    public void SetEndEntCustomers(int endCount) { endEnterpriseCustomers.text = endCount.ToString(); }
+    public void SetEndBusCutomers(int endCount) { endBusinessCustomers.text = endCount.ToString(); }
+    public void SetEndIndCustomers(int endCount) { endIndividualCustomers.text = endCount.ToString(); }
 
     public void SetEntCostumersAdvLoss(int loss) { enterpriseCustomersAdvLoss.text = loss.ToString(); }
     public void SetBusCustomersAdvLoss(int loss) { businessCustomersAdvLoss.text = loss.ToString(); }
@@ -59,6 +59,33 @@ public class CustomersUIHandler : MonoBehaviour
     {
         customersManager = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject().GetComponent<CustomersManager>();
         customersManager.SetCustomersUIHandler(this);
+        UpdateAllUIElements();
+    }
+
+    public void UpdateAllUIElements()
+    {
+        beginningEnterpriseCustomers.text = customersManager.GetBeginningEnterpriseCustomers().ToString("n0");
+        beginningBusinessCustomers.text = customersManager.GetBeginningBusinessCustomers().ToString("n0");
+        beginningIndividualsCustmers.text = customersManager.GetBeginningIndividualCustomers().ToString("n0");
+        enterpriseCustomerAddDuringQ.text = customersManager.GetEnterpriseCustomersDuringQ().ToString("n0");
+        businessCustomerAddDuringQ.text = customersManager.GetBusinessCustomersDuringQ().ToString("n0");
+        individualCustomerAddDuringQ.text = customersManager.GetIndividualCustomersDuringQ().ToString("n0");
+        enterpriseCustomerAddEndQ.text = customersManager.GetEnterpriseCustomersEndQ().ToString("n0");
+        businessCustomerAddEndQ.text = customersManager.GetBusinessCustomersEndQ().ToString("n0");
+        individualCustomerAddEndQ.text = customersManager.GetIndividualCustomersEndQ().ToString("n0");
+        endEnterpriseCustomers.text = customersManager.GetEndEnterpriseCustomers().ToString("n0");
+        endBusinessCustomers.text = customersManager.GetEndBusinessCustomers().ToString("n0");
+        endIndividualCustomers.text = customersManager.GetEndIndividualCustomers().ToString("n0");
+
+        enterpriseCustomersAdvLoss.text = customersManager.GetEnterpriseCustomersAdvLoss().ToString("n0");
+        businessCustomersAdvLoss.text = customersManager.GetBusinessCustomersAdvLoss().ToString("n0");
+        individualCustomersAdvLoss.text = customersManager.GetIndividualCustomersAdvLoss().ToString("n0");
+        enterpriseCustomersAdvAdd.text = customersManager.GetEnterpriseCustomersAdvAdd().ToString("n0");
+        businessCustomersAdvAdd.text = customersManager.GetBusinessCustomersAdvAdd().ToString("n0");
+        individualCustomersAdvAdd.text = customersManager.GetIndividualCustomersAdvAdd().ToString("n0");
+
+
+
     }
 
 

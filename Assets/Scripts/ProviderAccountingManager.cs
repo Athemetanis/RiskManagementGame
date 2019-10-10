@@ -1,4 +1,7 @@
-﻿using Mirror;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Mirror;
 
 public class ProviderAccountingManager : NetworkBehaviour
 {
@@ -108,18 +111,18 @@ public class ProviderAccountingManager : NetworkBehaviour
     [Server]
     public void SetupDefaultValues()
     {
-        beginningCashBalanceQuarters[0] = 0;
-        revenueQuarters[0] = 0;
-        individualRevenueQuarters[0] = 0;
-        businessRevenueQuarters[0] = 0;
-        enterpriseRevenueQarters[0] = 0;
-        advertisementCostQuarters[0] = 0;
-        contractPaymentsQuarters[0] = 0;
-        riskSharingFeesReceivedQuarters[0] = 0;
-        marketingResearchQuarters[0] = 0;
-        borrowEmergencyLoanQuarters[0] = 0;
-        repayEmergencyLoanQuarters[0] = 0;
-        endCashBalanceQuarters[0] = 2000000;
+        beginningCashBalanceQuarters.Insert(0, 0);
+        revenueQuarters.Insert(0, 0);
+        individualRevenueQuarters.Insert(0, 0);
+        businessRevenueQuarters.Insert(0, 0);
+        enterpriseRevenueQarters.Insert(0, 0);
+        advertisementCostQuarters.Insert(0, 0);
+        contractPaymentsQuarters.Insert(0, 0);
+        riskSharingFeesReceivedQuarters.Insert(0, 0);
+        marketingResearchQuarters.Insert(0, 0);
+        borrowEmergencyLoanQuarters.Insert(0, 0);
+        repayEmergencyLoanQuarters.Insert(0, 0);
+        endCashBalanceQuarters.Insert(0, 2000000);
     }
     [Server]
     public void LoagQuarterData(int quarter)
@@ -128,24 +131,24 @@ public class ProviderAccountingManager : NetworkBehaviour
         {
             for (int i = endCashBalanceQuarters.Count + 1; i < quarter; i++)
             {
-                beginningCashBalanceQuarters[i] = endCashBalanceQuarters[i - 1];
-                advertisementCostQuarters[i] = advertisementCostQuarters[i - 1];
-                contractPaymentsQuarters[i] = 0;
-                riskSharingFeesReceivedQuarters[i] = 0;
-                marketingResearchQuarters[i] = 0;
-                borrowEmergencyLoanQuarters[i] = 0;
-                repayEmergencyLoanQuarters[i] = 0;
+                beginningCashBalanceQuarters.Insert(i, endCashBalanceQuarters[i - 1]);
+                advertisementCostQuarters.Insert(i, advertisementCostQuarters[i - 1]);
+                contractPaymentsQuarters.Insert(i, 0);
+                riskSharingFeesReceivedQuarters.Insert(i, 0);
+                marketingResearchQuarters.Insert(i, 0);
+                borrowEmergencyLoanQuarters.Insert(i, 0);
+                repayEmergencyLoanQuarters.Insert(i, 0);
                 int individualCustomers = customersManager.GetEndIndividualCustomers();
                 int businessCustomers = customersManager.GetEndBusinessCustomers();
                 int enterpriseCustomers = customersManager.GetEndEnterpriseCustomers();
                 int individualPrice = marketingManager.GetIndividualsPrice();
                 int businessPrice = marketingManager.GetBusinessPrice();
                 int enterprisePrice = marketingManager.GetEnterprisePrice();
-                individualRevenueQuarters[i] = individualCustomers * individualPrice;
-                businessRevenueQuarters[i] = businessCustomers * businessPrice;
-                enterpriseRevenueQarters[i] = enterpriseCustomers * enterprisePrice;
-                revenueQuarters[i] = individualCustomersRevenue + businessCustomersRevenue + enterpriseCustomersRevenue;
-                endCashBalanceQuarters[i] = beginningCashBalanceQuarters[i] + revenueQuarters[i] - advertisementCostQuarters[i];
+                individualRevenueQuarters.Insert(i, individualCustomers * individualPrice);
+                businessRevenueQuarters.Insert(i, businessCustomers * businessPrice);
+                enterpriseRevenueQarters.Insert(i, enterpriseCustomers * enterprisePrice);
+                revenueQuarters.Insert(i, individualCustomersRevenue + businessCustomersRevenue + enterpriseCustomersRevenue);
+                endCashBalanceQuarters.Insert(i, beginningCashBalanceQuarters[i] + revenueQuarters[i] - advertisementCostQuarters[i]);
             }
         }
         beginningCashBalance = endCashBalanceQuarters[quarter - 1];
@@ -156,26 +159,55 @@ public class ProviderAccountingManager : NetworkBehaviour
         return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], enterpriseRevenueQarters[correspondingQuarter], businessRevenueQuarters[correspondingQuarter], individualRevenueQuarters[correspondingQuarter], advertisementCostQuarters[correspondingQuarter], contractPaymentsQuarters[correspondingQuarter], riskSharingFeesReceivedQuarters[correspondingQuarter], marketingResearchQuarters[correspondingQuarter], borrowEmergencyLoanQuarters[correspondingQuarter], repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter]);
     }
 
-
-    public void UpdateRevenue()
+    /*public void UpdateRevenue()
     {
         CmdUpdateRevenue();
     }
-    [Command]
-    public void CmdUpdateRevenue() ////zleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+    public void CmdUpdateRevenue() 
     {
-        int individualCustomers = customersManager.GetEndIndividualCustomers(); //zisk je len zo zakaznikov na zaciatku Q a v priebehu Q nie z konecneho poctu na konci 
-        int businessCustomers = customersManager.GetEndBusinessCustomers();
-        int enterpriseCustomers = customersManager.GetEndEnterpriseCustomers();
+        int beginningIndividualCustomers = customersManager.GetBeginningIndividualCustomers();
+        int beginningBusinessCustomers = customersManager.GetBeginningBusinessCustomers();
+        int beginningEnterpriseCustomers = customersManager.GetBeginningEnterpriseCustomers();
+
+        int enterpriseCustomersAddDuringQ = customersManager.GetEnterpriseCustomersDuringQ();
+        int businessCustomersAddDuringQ = customersManager.GetBusinessCustomersDuringQ();
+        int individualCustomersAddDuringQ = customersManager.GetIndividualCustomersDuringQ();
+
         int individualPrice = marketingManager.GetIndividualsPrice();
         int businessPrice = marketingManager.GetBusinessPrice();
         int enterprisePrice = marketingManager.GetEnterprisePrice();
-        individualCustomersRevenue = individualCustomers * individualPrice;
-        businessCustomersRevenue = businessCustomers * businessPrice;
-        enterpriseCustomers = enterpriseCustomers * enterprisePrice;
+
+        individualCustomersRevenue = (beginningIndividualCustomers + enterpriseCustomersAddDuringQ) * individualPrice;
+        businessCustomersRevenue = (beginningBusinessCustomers + businessCustomersAddDuringQ) * businessPrice;
+        enterpriseCustomersRevenue = (beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ) * enterprisePrice;
         revenue = individualCustomersRevenue + businessCustomersRevenue + enterpriseCustomersRevenue;
+
+        endCashBalance = ComputeEndCashBalance();
+    }*/
+
+    [Server]
+    public void UpdateRevenueServer()
+    {   
+        int beginningIndividualCustomers = customersManager.GetBeginningIndividualCustomers(); 
+        int beginningBusinessCustomers = customersManager.GetBeginningBusinessCustomers();
+        int beginningEnterpriseCustomers = customersManager.GetBeginningEnterpriseCustomers();
+
+        int enterpriseCustomersAddDuringQ = customersManager.GetEnterpriseCustomersDuringQ();
+        int businessCustomersAddDuringQ = customersManager.GetBusinessCustomersDuringQ();
+        int individualCustomersAddDuringQ = customersManager.GetIndividualCustomersDuringQ();
+
+        int individualPrice = marketingManager.GetIndividualsPrice();
+        int businessPrice = marketingManager.GetBusinessPrice();
+        int enterprisePrice = marketingManager.GetEnterprisePrice();
+
+        individualCustomersRevenue = (beginningIndividualCustomers + individualCustomersAddDuringQ) * individualPrice;
+        businessCustomersRevenue = (beginningBusinessCustomers + businessCustomersAddDuringQ) * businessPrice;
+        enterpriseCustomersRevenue = (beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ) * enterprisePrice;
+        revenue = individualCustomersRevenue + businessCustomersRevenue + enterpriseCustomersRevenue;
+
         endCashBalance = ComputeEndCashBalance();
     }
+    [Client]
     public void UpdateAdvertisementCost()
     {
         CmdUpdateAdvertisementCost();
@@ -203,14 +235,33 @@ public class ProviderAccountingManager : NetworkBehaviour
         }
         endCashBalance = ComputeEndCashBalance();
     }
-
-    public void UpdateContractPayments()
+    [Server]
+    public void UpdateAdvertisementCostServer()
     {
-        CmdUpdateContractPayments();
+        switch (marketingManager.GetAdvertisementCoverage())
+        {
+            case 0:
+                advertisementCost = marketingManager.GetAdvertisement0Price();
+                break;
+            case 25:
+                advertisementCost = marketingManager.GetAdvertisement25Price();
+                break;
+            case 50:
+                advertisementCost = marketingManager.GetAdvertisement50Price();
+                break;
+            case 75:
+                advertisementCost = marketingManager.GetAdvertisement75Price();
+                break;
+            case 100:
+                advertisementCost = marketingManager.GetAdvertisement100Price();
+                break;
+        }
+        endCashBalance = ComputeEndCashBalance();
     }
-    [Command]
-    public void CmdUpdateContractPayments()
+    [Server]
+    public void UpdateContractPaymentsServer()
     {
+        Debug.LogWarning("UpdatingContractPayments");
         contractPayments = 0;
         foreach (Contract contract in contractManager.GetMyContracts().Values)
         {
@@ -219,14 +270,16 @@ public class ProviderAccountingManager : NetworkBehaviour
                 contractPayments += contract.GetContractPrice();
             }
         }
+       
     }
-
+    
     public int ComputeEndCashBalance()
     {
         int endCash = 0;
         endCash = beginningCashBalance - contractPayments - advertisementCost - marketingResearch + revenue + riskSharingFeesReceived;
         return endCash;
     }
+
 
     //HOOKS
     public void OnChangeBeginningCashBalance(int beginningCashBalance)
@@ -245,12 +298,80 @@ public class ProviderAccountingManager : NetworkBehaviour
             providerAccountingUIComponentHandlerCurrent.UpdateRevenueText(this.revenue);
         }
     }
+    public void OnChangeIndividualCustomersRevenue(int individualCustomersRevenue)
+    {
+        this.individualCustomersRevenue = individualCustomersRevenue;
+        if(providerAccountingUIComponentHandlerCurrent != null)
+        {
+            providerAccountingUIComponentHandlerCurrent.UpdateIndividualRevenue(this.individualCustomersRevenue);
+        }
+    }
+    public void OnChangeBusinessCustomersRevenue(int businessCustomersRevenue)
+    {
+        this.businessCustomersRevenue = businessCustomersRevenue;
+        if (providerAccountingUIComponentHandlerCurrent != null)
+        {
+            providerAccountingUIComponentHandlerCurrent.UpdateBusinessRevenue(this.businessCustomersRevenue);
+        }
+
+    }
+    public void OnChangeEnterpriseCustomersRevenue(int enterpriseCustomersRevenue)
+    {
+        this.enterpriseCustomersRevenue = enterpriseCustomersRevenue;
+        if (providerAccountingUIComponentHandlerCurrent != null)
+        {
+            providerAccountingUIComponentHandlerCurrent.UpdateEnterpriseRevenue(this.enterpriseCustomersRevenue);
+        }
+
+    }
     public void OnChangeAdvertisementCost(int advertisementCost)
     {
         this.advertisementCost = advertisementCost;
         if (providerAccountingUIComponentHandlerCurrent != null)
         {
             providerAccountingUIComponentHandlerCurrent.UpdateAdvertisementText(this.advertisementCost);
+        }
+    }
+    public void OnChangeContractPayments(int contractPayments)
+    {
+        this.contractPayments = contractPayments;
+        if (providerAccountingUIComponentHandlerCurrent != null)
+        {
+            providerAccountingUIComponentHandlerCurrent.UpdateContractPayments(this.contractPayments);
+        }
+
+    }
+    public void OnChangeRiskSharingFeesReceived (int riskSharingFeesReceived)
+    {
+        this.riskSharingFeesReceived = riskSharingFeesReceived;
+        if (providerAccountingUIComponentHandlerCurrent != null)
+        {
+            providerAccountingUIComponentHandlerCurrent.UpdateRiskSharingFee(this.riskSharingFeesReceived);
+        }
+    }
+    public void OnChangeMarketingResearch(int marketingResearch)
+    {
+        this.marketingResearch = marketingResearch;
+        if (providerAccountingUIComponentHandlerCurrent != null)
+        {
+            providerAccountingUIComponentHandlerCurrent.UpdateMarketingResearch(this.marketingResearch);
+        }
+    }
+    public void OnChangeBorrowEmergencyLoan(int borrowEmergencyLoan)
+    {
+        this.borrowEmergencyLoan = borrowEmergencyLoan;
+        if (providerAccountingUIComponentHandlerCurrent != null)
+        {
+            providerAccountingUIComponentHandlerCurrent.UpdateBorrowEmergencyLoan(this.borrowEmergencyLoan);
+        }
+
+    }
+    public void OnChangeRepayEmergencyLoan(int repayEmergencyLoan)
+    {
+        this.repayEmergencyLoan = repayEmergencyLoan;
+        if (providerAccountingUIComponentHandlerCurrent != null)
+        {
+            providerAccountingUIComponentHandlerCurrent.UpdateRepayEmergencyLoan(this.repayEmergencyLoan);
         }
     }
     public void OnChangeEndCashBalance(int endCashBalance)
@@ -260,39 +381,5 @@ public class ProviderAccountingManager : NetworkBehaviour
         {
             providerAccountingUIComponentHandlerCurrent.UpdateEndCashBalanceText(this.endCashBalance);
         }
-    }
-
-    public void OnChangeIndividualCustomersRevenue(int individualCustomersRevenue)
-    {
-        this.individualCustomersRevenue = individualCustomersRevenue;
-    }
-    public void OnChangeBusinessCustomersRevenue(int businessCustomersRevenue)
-    {
-        this.businessCustomersRevenue = businessCustomersRevenue;
-    }
-    public void OnChangeEnterpriseCustomersRevenue(int enterpriseCustomersRevenue)
-    {
-        this.enterpriseCustomersRevenue = enterpriseCustomersRevenue;
-    }
-    public void OnChangeContractPayments(int contractPayments)
-    {
-        this.contractPayments = contractPayments;
-    }
-    public void OnChangeRiskSharingFeesReceived (int riskSharingFeesReceived)
-    {
-        this.riskSharingFeesReceived = riskSharingFeesReceived;
-
-    }
-    public void OnChangeMarketingResearch(int marketingResearch)
-    {
-        this.marketingResearch = marketingResearch;
-    }
-    public void OnChangeBorrowEmergencyLoan(int borrowEmergencyLoan)
-    {
-        this.borrowEmergencyLoan = borrowEmergencyLoan;
-    }
-    public void OnChangeRepayEmergencyLoan(int repayEmergencyLoan)
-    {
-        this.repayEmergencyLoan = repayEmergencyLoan;
     }
 }

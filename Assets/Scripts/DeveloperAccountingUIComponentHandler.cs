@@ -12,6 +12,7 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
     public Text programmersSalariesText;
     public Text uiSpecialistsSalariesText;
     public Text integrabilitySpecialistsSalariesText;
+    public Text riskSharingFeePaidText;
     public Text marketingResearchText;
     public Text borrowEmergencyLoanText;
     public Text repayEmergencyLoanText;
@@ -52,13 +53,14 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
         }
         if (correspondingAccountingQuarter < currentQuarter)
         {
-            (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries,int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) = developerAccountingManager.GetCorrecpondingQuarterData(correspondingAccountingQuarter);
+            (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries,int riskSharingFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) = developerAccountingManager.GetCorrecpondingQuarterData(correspondingAccountingQuarter);
             beginningCashBalanceText.text = beginningCashBalance.ToString("n0");
             revenueText.text = revenue.ToString("n0");
             salariesText.text = salaries.ToString("n0");
             programmersSalariesText.text = programmersSalaries.ToString("n0");
             uiSpecialistsSalariesText.text = uiSpecialistsSalaries.ToString("n0");
             integrabilitySpecialistsSalariesText.text = integrabilitySpecialistsSalaries.ToString("n0");
+            riskSharingFeePaidText.text = riskSharingFeePaid.ToString("n0");
             marketingResearchText.text = marketingResearch.ToString("n0");
             borrowEmergencyLoanText.text = borrowEmergencyLoan.ToString("n0");
             repayEmergencyLoanText.text = repayEmergencyLoan.ToString("n0");
@@ -113,6 +115,10 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
     {
         integrabilitySpecialistsSalariesText.text = integrabilitySpecialistsSalaries.ToString("n0");
    }
+    public void UpdateRiskSharingFeePaid(int riskSharingFeePaid)
+    {
+        riskSharingFeePaidText.text = riskSharingFeePaid.ToString("n0");
+    }
     public void UpdateMarketingResearch(int marketingResearch)
     {
         marketingResearchText.text = marketingResearch.ToString("n0");

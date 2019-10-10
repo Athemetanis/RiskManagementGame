@@ -22,6 +22,7 @@ public class ContractManager : NetworkBehaviour
     //GETTERS & SETTERS
     public FeatureManager GetFeatureManager() { return featureManager; }
     public ScheduleManager GetScheduleManager() { return scheduleManager; }
+    public CustomersManager GetCustomersManager() { return customersManager; }
     public void SetContractUIHandler(ContractUIHandler contractUIHandler) { this.contractUIHandler = contractUIHandler; }
     public ContractUIHandler GetContractUIHandler() { return contractUIHandler; }
     public PlayerRoles GetPlayerRole() { return playerRole; }
@@ -64,6 +65,7 @@ public class ContractManager : NetworkBehaviour
         }
         
     }
+
     public void CreateContract(string developersFirmName, string featureID)
     {
         string contractID = GameHandler.singleton.GenerateUniqueID();
@@ -118,6 +120,11 @@ public class ContractManager : NetworkBehaviour
         {
             RpcCreateContract(contract.GetContractID(), contract.GetContractGameID(), contract.GetProviderID(), contract.GetDeveloperID(), contract.GetContractFeature(), contract.GetContractState(), contract.GetContractTurn(), contract.GetContractDelivery(), contract.GetContractPrice(), contract.GetContractHistory().ToArray(), contract.GetContractRiskSharingFee(), contract.GetTrueDevelopmentTime());
         }
+        if(customersManager != null) //PROVIDER
+        {
+            customersManager.UpdateCustomersCountServer();
+        }
+      
     }
 
     public void ModifyContract(string contractID, int price, int delivery, int riskSharingFee)
@@ -176,7 +183,7 @@ public class ContractManager : NetworkBehaviour
     [ClientRpc]
     public void RpcModifyContractPrice(string contractID, int price, string message)
     {
-        Debug.LogWarning("contractID: " + contractID);
+        //Debug.LogWarning("contractID: " + contractID);
         foreach(Contract contract in myContracts.Values)
         {
             Debug.Log(contract.GetContractID());
@@ -190,7 +197,7 @@ public class ContractManager : NetworkBehaviour
                 scheduleManager.ChangeStateOfScheduledFeature(contractID, ContractState.InNegotiations);
             }
         }
-        Debug.Log("changes applied");
+        //Debug.Log("changes applied");
         myContracts[contractID].SetContractPrice(price);
         myContracts[contractID].AddHistoryRecord(message);
         if (contractUIHandler != null)
@@ -205,7 +212,7 @@ public class ContractManager : NetworkBehaviour
     [ClientRpc]
     public void RpcModifyContractDelivery(string contractID, int delivery, string message)
     {
-        Debug.LogWarning(contractID);
+        //Debug.LogWarning(contractID);
         if (myContracts[contractID].GetContractState() == ContractState.Proposal)
         {
             myContracts[contractID].SetContractState(ContractState.InNegotiations);
@@ -215,7 +222,7 @@ public class ContractManager : NetworkBehaviour
                 scheduleManager.ChangeStateOfScheduledFeature(contractID, ContractState.InNegotiations);
             }
         }
-        Debug.Log("changes applied");
+        //Debug.Log("changes applied");
         myContracts[contractID].SetContractDelivery(delivery);
         myContracts[contractID].AddHistoryRecord(message);
         if (contractUIHandler != null)
@@ -230,7 +237,7 @@ public class ContractManager : NetworkBehaviour
     [ClientRpc]
     public void RpcModifyContractRiskSharingFee(string contractID, int riskSharingFee, string message)
     {
-        Debug.LogWarning(contractID);
+        //Debug.LogWarning(contractID);
         if (myContracts[contractID].GetContractState() == ContractState.Proposal)
         {
             myContracts[contractID].SetContractState(ContractState.InNegotiations);
@@ -240,7 +247,7 @@ public class ContractManager : NetworkBehaviour
                 scheduleManager.ChangeStateOfScheduledFeature(contractID, ContractState.InNegotiations);
             }
         }
-        Debug.Log("changes applied");
+        //Debug.Log("changes applied");
         myContracts[contractID].SetContractRiskSharingFee(riskSharingFee);
         myContracts[contractID].AddHistoryRecord(message);
         if (contractUIHandler != null)
@@ -346,6 +353,17 @@ public class ContractManager : NetworkBehaviour
         {
             developerCM.GetScheduleManager().ChangeStateOfScheduledFeature(contractID, ContractState.Accepted);
         }
+        //CUSTOMERS MANAGER
+        if (providerCM.GetCustomersManager() != null)
+        {
+            providerCM.GetCustomersManager().UpdateCustomersCountServer();
+        }
+        //ACCOUNTING
+        DeveloperAccountingManager developerAM = GameHandler.allGames[gameID].GetDeveloper(myContracts[contractID].GetDeveloperID()).GetComponent<DeveloperAccountingManager>();
+        ProviderAccountingManager providerAM = GameHandler.allGames[gameID].GetProvider(myContracts[contractID].GetProviderID()).GetComponent<ProviderAccountingManager>();
+        developerAM.UpdateRevenueServer();
+        providerAM.UpdateContractPaymentsServer();
+        
     }
     [ClientRpc]
     public void RpcAcceptContract(string contractID, string message)
@@ -361,17 +379,7 @@ public class ContractManager : NetworkBehaviour
         {
             scheduleManager.ChangeStateOfScheduledFeature(contractID, ContractState.Accepted);
         }
-        //CUSTOMERS MANAGER
-        if (playerRole == PlayerRoles.Provider)
-        {
-            customersManager.UpdateCustomersCount();
-        }
-        //ACCOUNTING
-        DeveloperAccountingManager developerAM = GameHandler.allGames[gameID].GetDeveloper(myContracts[contractID].GetDeveloperID()).GetComponent<DeveloperAccountingManager>();
-        ProviderAccountingManager providerAM = GameHandler.allGames[gameID].GetProvider(myContracts[contractID].GetProviderID()).GetComponent<ProviderAccountingManager>();
-        developerAM.UpdateRevenue();
-        providerAM.UpdateContractPayments();
-        providerAM.UpdateRevenue();        
+        
     }
     [Command]
     public void CmdRejectContract(string contractID)

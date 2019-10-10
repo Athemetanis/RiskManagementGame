@@ -199,7 +199,7 @@ public class HumanResourcesUIHandler : MonoBehaviour
         }
         else
         {
-            EnableAddIntegrabilitySpecialistButton();
+            EnableAddUISpecialistButton();
         }
     }
     public void UpdateIntegrabilitySpecialistsAvailableCountText(int integrabilitySpecialistsAvailableCount)
@@ -211,7 +211,7 @@ public class HumanResourcesUIHandler : MonoBehaviour
         }
         else
         {
-            EnableAddUISpecialistButton();
+            EnableAddIntegrabilitySpecialistButton();
         }
     }
 
@@ -223,7 +223,6 @@ public class HumanResourcesUIHandler : MonoBehaviour
     {
         this.programmerSalarySlider.value = programmerSalary;
         programmerSalaryText.text = programmerSalary.ToString();
-        Debug.LogWarning("updating programmer salary slide");
 
     }
     public void UpdateUISpecialistSalarySlider(int uiSpecialistSalary)
@@ -264,16 +263,6 @@ public class HumanResourcesUIHandler : MonoBehaviour
     {
         substractIntegrabilityButton.interactable = false;
     }
-
-    public void EnableAddProgrammerButton()
-    {
-        addProgrammersButton.interactable = true;
-    }
-    public void EnableSubstractProgrammerButton()
-    {
-        substractProgrammerButton.interactable = true;
-    }
-
     public void EnableAddUISpecialistButton()
     {
         addUIpecialistButton.interactable = true;
@@ -292,5 +281,16 @@ public class HumanResourcesUIHandler : MonoBehaviour
         substractIntegrabilityButton.interactable = true;
     }
 
+
+    public void EnableAddProgrammerButton()
+    {
+        addProgrammersButton.interactable = true;
+    }
+    public void EnableSubstractProgrammerButton()
+    {
+        substractProgrammerButton.interactable = true;
+    }
+
+   
 
 }

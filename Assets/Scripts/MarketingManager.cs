@@ -23,6 +23,7 @@ public class MarketingManager : NetworkBehaviour
     //REFERENCEs
     private MarketingUIHandler marketingUIHandler;
     private ContractUIHandler contractUIHandler;
+    private ProviderAccountingManager providerAccountingManager;
 
     //GETTERS & SETTERS
     public void SetMarketingUIHandler(MarketingUIHandler marketingUIHandler) { this.marketingUIHandler = marketingUIHandler; }
@@ -43,7 +44,11 @@ public class MarketingManager : NetworkBehaviour
         {
             SetUpDefaultValues();
         }
-       
+        providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
+    }
+    public override void OnStartClient()
+    {
+        providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
     }
     public void SetUpDefaultValues()
     {
@@ -61,6 +66,7 @@ public class MarketingManager : NetworkBehaviour
     public void CmdChangeAdvertisementCoverage(int advertisementCoverage)
     {
         this.advertisementCoverage = advertisementCoverage;
+        providerAccountingManager.UpdateAdvertisementCostServer();
     } 
 
     public void ChangeIndividualPrice(int individualPrice)
@@ -71,56 +77,63 @@ public class MarketingManager : NetworkBehaviour
     public void CmdChangeIndividualPrice(int individualPrice)
     {
         this.individualPrice = individualPrice;
+        providerAccountingManager.UpdateRevenueServer();
     }
     public void ChangeBusinessPrice(int businessPrice)
     {
         CmdChangeBusinessPrice(businessPrice);
+        
     }
     [Command]
     public void CmdChangeBusinessPrice(int businessPrice)
     {
         this.businessPrice = businessPrice;
+        providerAccountingManager.UpdateRevenueServer();
     }
     public void ChangeEnterprisePrice(int enterprisePrice)
     {
         CmdChangeEnterprisePrice(enterprisePrice);
+        
     }
     [Command]
     public void CmdChangeEnterprisePrice(int enterprisePrice)
     {
         this.enterprisePrice = enterprisePrice;
+        providerAccountingManager.UpdateRevenueServer();
     }
 
     //HOOKS
     public void OnChangeAdvertisement(int advertisement)
     {
+        advertisementCoverage = advertisement;
         if(marketingUIHandler != null)
         {
             marketingUIHandler.UpdateAdvertisementCoverageToggle(advertisement);
             
         }
     }
-    public void OnChangeIndividualPrice( int individualPrice)
+    public void OnChangeIndividualPrice(int individualPrice)
     {
-
+        this.individualPrice = individualPrice;
         if (marketingUIHandler != null)
         {
             marketingUIHandler.UpdateIndividualPriceSlider(individualPrice);
             contractUIHandler.UpdateContractOverview();
+
         }
     }
     public void OnChangeBusinessPrice(int businessPrice)
     {
-
+        this.businessPrice = businessPrice;
         if (marketingUIHandler != null)
         {
             marketingUIHandler.UpdateBusinessPriceSlider(businessPrice);
             contractUIHandler.UpdateContractOverview();
         }
     }
-    public void OnChangeEnterprisePrice(int enerprisePrice)
+    public void OnChangeEnterprisePrice(int enterprisePrice)
     {
-
+        this.enterprisePrice = enterprisePrice;
         if (marketingUIHandler != null)
         {
             marketingUIHandler.UpdateEnterprisePriceSlider(enterprisePrice);

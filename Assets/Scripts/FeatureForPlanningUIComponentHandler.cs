@@ -13,7 +13,6 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
     public Text functionalityValueText;
     public Text userInterfaceValueText;
     public Text integrabilityValueText;
-    public LineRenderer graphLineRenderer;
     public InputField developmentTimeIF;
     public GameObject graphContainer;
 
@@ -38,7 +37,7 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
     public void SetParnersNameText(string firmName) { partnersNameText.text = firmName; }
     public void SetContractState(ContractState contractState) { contractStateText.text = contractState.ToString(); }
     public void SetFeatureIDText(string featureID) { featureIDText.text = featureID; }
-    public void SetFunctionalityValueText(int functionality) { this.functionalityValueText.text = functionality.ToString(); }
+    public void SetFunctionalityValueText(int functionality) { functionalityValueText.text = functionality.ToString(); }
     public void SetUIValueText(int userfriendliness) { userInterfaceValueText.text = userfriendliness.ToString(); }
     public void SetIntegrabilityValueText(int integrability) { integrabilityValueText.text = integrability.ToString(); }
     public void SetDevelopmentTimeIF(int developmentTime) { developmentTimeIF.text = developmentTime.ToString(); }
@@ -123,7 +122,6 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
                 connectingLineRT.sizeDelta = new Vector2(distance, 3f);
                 connectingLineRT.anchoredPosition = lastPoint + direction * distance * 0.5f;
                 connectingLineRT.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
-
             }
             lastPoint = currentPoint;
         }

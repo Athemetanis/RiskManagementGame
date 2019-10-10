@@ -32,6 +32,7 @@ public class ContractPreviewUIHandler : MonoBehaviour
 
     private string price;
     private string delivery;
+    private string riskSharingFee;
 
     //GETTERS & SETTERS
 
@@ -44,6 +45,7 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public void SetContractUIHandler(ContractUIHandler contractUIHandler) { this.contractUIHandler = contractUIHandler; }
     public void SetState(ContractState state) { stateText.text = state.ToString(); }
     public void SetScheduleInfoText(string scheduleInfo) { scheduleInfoText.text = scheduleInfo; }
+    public void SetRiskSharingFee(int riskSharingFee) { this.riskSharingFee = riskSharingFee.ToString(); }
 
     //METHODS
     public void DestroyGameObject()
@@ -75,8 +77,10 @@ public class ContractPreviewUIHandler : MonoBehaviour
         cancelProposingButton.gameObject.SetActive(false);
         priceIF.gameObject.SetActive(true);
         deliveryIF.gameObject.SetActive(true);
+        riskSharingFeeIF.gameObject.SetActive(true);
         priceIF.text = price;
         deliveryIF.text = delivery;
+        riskSharingFeeIF.text = riskSharingFee;
         priceIF.interactable = false;
         deliveryIF.interactable = false;
         riskSharingFeeIF.interactable = false;
@@ -92,11 +96,14 @@ public class ContractPreviewUIHandler : MonoBehaviour
         cancelProposingButton.gameObject.SetActive(false);
         priceIF.gameObject.SetActive(true);
         deliveryIF.gameObject.SetActive(true);
+        riskSharingFeeIF.gameObject.SetActive(true);
         priceIF.text = price;
         deliveryIF.text = delivery;
+        riskSharingFeeIF.text = riskSharingFee;
         priceIF.interactable = false;
         deliveryIF.interactable = false;
         riskSharingFeeIF.interactable = false;
+
 
     }
     public void ModifyProposePriceDelivery() //when modify/propose button clicked. Dont forget to set active coresponding CANCEL button in inspector - button OnClick!!!
@@ -106,8 +113,10 @@ public class ContractPreviewUIHandler : MonoBehaviour
         riskSharingFeeIF.gameObject.SetActive(true);
         priceIF.text = price;
         deliveryIF.text = delivery;
+        riskSharingFeeIF.text = riskSharingFee;
         priceIF.interactable = true;
         deliveryIF.interactable = true;
+        riskSharingFeeIF.interactable = true;
         modifyButton.gameObject.SetActive(false);
         proposeButton.gameObject.SetActive(false);
         sendBackButton.gameObject.SetActive(true);
@@ -121,6 +130,7 @@ public class ContractPreviewUIHandler : MonoBehaviour
         riskSharingFeeIF.interactable = false;
         priceIF.text = price;
         deliveryIF.text = delivery;
+        riskSharingFeeIF.text = riskSharingFee;
         modifyButton.gameObject.SetActive(true);
         cancelChangesButton.gameObject.SetActive(false);
         sendBackButton.gameObject.SetActive(false);
@@ -161,8 +171,10 @@ public class ContractPreviewUIHandler : MonoBehaviour
         cancelProposingButton.gameObject.SetActive(false);
         priceIF.gameObject.SetActive(true);
         deliveryIF.gameObject.SetActive(true);
+        riskSharingFeeIF.gameObject.SetActive(true);
         priceIF.text = price;
         deliveryIF.text = delivery;
+        riskSharingFeeIF.text = riskSharingFee;
         priceIF.interactable = false;
         deliveryIF.interactable = false;
         riskSharingFeeIF.interactable = false;

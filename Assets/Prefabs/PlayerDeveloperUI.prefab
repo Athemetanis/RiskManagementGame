@@ -3592,7 +3592,7 @@ RectTransform:
   - {fileID: 8320149402319268590}
   - {fileID: 7984218493504716793}
   m_Father: {fileID: 5703170230529035728}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6712,7 +6712,7 @@ GameObject:
   - component: {fileID: 7421163988516123405}
   - component: {fileID: 4629969646796240954}
   m_Layer: 5
-  m_Name: Specialists Available
+  m_Name: UI Specialists Available
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6734,7 +6734,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 270.99994, y: 13.599998}
+  m_AnchoredPosition: {x: 270.99994, y: 27.3}
   m_SizeDelta: {x: 31.3, y: 30}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &7421163988516123405
@@ -8454,10 +8454,10 @@ GameObject:
   - component: {fileID: -5733536415013501376}
   - component: {fileID: 2681922713526824224}
   - component: {fileID: 6828258080767260358}
-  - component: {fileID: 1972598088880370761}
   - component: {fileID: 1121156110456900687}
   - component: {fileID: 1068548297519637162}
   - component: {fileID: 9092257872901283423}
+  - component: {fileID: 1972598088880370761}
   m_Layer: 5
   m_Name: PlayerDeveloperUI
   m_TagString: Untagged
@@ -8600,20 +8600,6 @@ MonoBehaviour:
   firmNameIF: {fileID: 5681909421940646214}
   firmDescriptionIF: {fileID: 2233892446400665945}
   errorMessageText: {fileID: 2446824807189422248}
---- !u!114 &1972598088880370761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2113743339525991649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1e18a79e98c91247b5b8562feee8d39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  warningText: {fileID: 0}
-  submitButton: {fileID: 0}
 --- !u!114 &1121156110456900687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8630,8 +8616,8 @@ MonoBehaviour:
   userInterfaceSpecialistsCurrentCountText: {fileID: 879353860444468446}
   integrabilitySpecialistsCurrentCountText: {fileID: 3690126338804489163}
   programersAvailableCountText: {fileID: 3279369524622267172}
-  specialistsAvailableCountText: {fileID: 4629969646796240954}
-  qualityAssuranceSpecialistsCountText: {fileID: 4743854889227055989}
+  userInterfaceSpecialistsAvailableCountText: {fileID: 4629969646796240954}
+  integrabilitySpecialistsAvialableCountText: {fileID: 6025969263291818345}
   addProgrammersButton: {fileID: 3184688762109817774}
   addUIpecialistButton: {fileID: 5866315282436756876}
   addIntegrabilitySpecialistButton: {fileID: 7248377375768744441}
@@ -8641,13 +8627,11 @@ MonoBehaviour:
   hireProgrammersCountIF: {fileID: 7606454170091064255}
   hireUISpecialistsCountIF: {fileID: 6007168282900487719}
   hireIntegrabilitySpecialistsCountIF: {fileID: 3438219599618555526}
-  hireGASpecialistsCountIF: {fileID: 5724293631227342230}
   programmerSalarySlider: {fileID: 3974796969866869865}
   uiSpecialistSalarySlider: {fileID: 2650422157092839181}
   integrabilitySpecialistSalarySlider: {fileID: 8508825687226390176}
-  qaSpecilistSalarySlider: {fileID: 0}
   programmerSalaryText: {fileID: 3276225024421499029}
-  uiSPecialistSalaryText: {fileID: 913327315109313686}
+  uiSpecialistSalaryText: {fileID: 913327315109313686}
   integrabilitySpecialistsSalaryText: {fileID: 7883416793636943114}
 --- !u!114 &1068548297519637162
 MonoBehaviour:
@@ -8687,6 +8671,20 @@ MonoBehaviour:
   riskGraphContentQ4: {fileID: 1560466905253440909}
   riskGraphImagePrefab: {fileID: 4748745591992878545, guid: 647068aff527d474e95296aee4b891fd,
     type: 3}
+--- !u!114 &1972598088880370761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113743339525991649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1e18a79e98c91247b5b8562feee8d39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  warningText: {fileID: 0}
+  submitButton: {fileID: 0}
 --- !u!1 &2140019096476071293
 GameObject:
   m_ObjectHideFlags: 0
@@ -10803,7 +10801,7 @@ RectTransform:
   - {fileID: 5298453255271844881}
   - {fileID: 4817868273366696270}
   m_Father: {fileID: 5703170230529035728}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -13538,6 +13536,7 @@ RectTransform:
   - {fileID: 1620819243648487620}
   - {fileID: 7745187460707360841}
   - {fileID: 84244099398024125}
+  - {fileID: 7434170652580286667}
   - {fileID: 7619691122225167215}
   - {fileID: 4682831306902563663}
   - {fileID: 8626590372588250501}
@@ -14843,7 +14842,7 @@ RectTransform:
   - {fileID: 5029724370865779410}
   - {fileID: 8943117215583882378}
   m_Father: {fileID: 5703170230529035728}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -24758,7 +24757,7 @@ RectTransform:
   - {fileID: 2208195807569621692}
   - {fileID: 8132784796676524985}
   m_Father: {fileID: 5703170230529035728}
-  m_RootOrder: 19
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -25507,6 +25506,83 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!1 &6370277114967405107
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7434170652580286667}
+  - component: {fileID: 8360187597680644554}
+  - component: {fileID: 6025969263291818345}
+  m_Layer: 5
+  m_Name: Integrability Specialists Available
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7434170652580286667
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6370277114967405107}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5703170230529035728}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 270.99988, y: -3.1}
+  m_SizeDelta: {x: 31.3, y: 30}
+  m_Pivot: {x: 0, y: 0.5}
+--- !u!222 &8360187597680644554
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6370277114967405107}
+  m_CullTransparentMesh: 0
+--- !u!114 &6025969263291818345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6370277114967405107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_RaycastTarget: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 5
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 0
 --- !u!1 &6396104402265014678
 GameObject:
   m_ObjectHideFlags: 0
@@ -35202,7 +35278,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5703170230529035728}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}

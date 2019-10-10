@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Firebase.Auth;
 using UnityEngine;
+using UnityEditor;
 using UnityEngine.UI;
 using Firebase;
 using System;
@@ -40,14 +41,17 @@ public class AuthenticationManager : MonoBehaviour {
     private void Awake()
     {
         authForm = this.gameObject.GetComponentInChildren<AuthenticationUIHandler>();
-        Debug.Log("authForm" + authForm.name);
+        //Debug.Log("authForm" + authForm.name);
+
 
     }
+
 
 
     private void Start()
     {
         InitializeFirebase();
+        //auth.SignOut(); //remove if not playing in editor
     }
 
 

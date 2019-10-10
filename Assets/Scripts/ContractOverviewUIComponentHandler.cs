@@ -35,9 +35,9 @@ public class ContractOverviewUIComponentHandler : MonoBehaviour
         deliveryTimeText.text = deliveryTime.ToString();
         priceText.text = price.ToString();
 
-        int individualCustomersQCount = (individualCustomersOverallCount / 60 ) * deliveryTime;
-        int businessCustomerQCount = (businessCustomerOverallCount / 60 ) * deliveryTime;
-        int enterpriseCustomersQCount = (enterpriseCustomersOverallCount / 60 ) * deliveryTime;
+        int individualCustomersQCount = (int)System.Math.Round((individualCustomersOverallCount / 60f ) * (60 - deliveryTime), System.MidpointRounding.AwayFromZero);
+        int businessCustomerQCount = (int)System.Math.Round((businessCustomerOverallCount / 60f ) * (60 - deliveryTime), System.MidpointRounding.AwayFromZero);
+        int enterpriseCustomersQCount = (int)System.Math.Round((enterpriseCustomersOverallCount / 60f ) * (60 - deliveryTime), System.MidpointRounding.AwayFromZero);
         individualCustomersQuadrantCountText.text = individualCustomersQCount.ToString();
         businessCustomersQuadrantCountText.text = businessCustomerQCount.ToString();
         enterpriseCustomersQuadrantCountText.text = enterpriseCustomersQCount.ToString();

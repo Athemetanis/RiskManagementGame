@@ -46,7 +46,7 @@ public class MarketingUIHandler : MonoBehaviour
         initialized = true;
     }
 
-    public void AdvertisementChanged()
+    public void AdvertisementChanged() //trigered from UI elements -  on value change in toggle
     {
         if(advertisementCoverage0Toggle.isOn == true)
         {
@@ -77,6 +77,7 @@ public class MarketingUIHandler : MonoBehaviour
             marketingManager.ChangeAdvertisementCoverage(advertisementCoverage);
         }
     }
+
     public void ChangeIndividualPrice()
     {
         if (initialized)
@@ -97,7 +98,7 @@ public class MarketingUIHandler : MonoBehaviour
     {
         if (initialized)
         {
-            marketingManager.ChangeBusinessPrice((int)enterprisePriceSlider.value);
+            marketingManager.ChangeEnterprisePrice((int)enterprisePriceSlider.value);
             enterprisePriceText.text = enterprisePriceSlider.value.ToString();
         }
     }
@@ -105,15 +106,15 @@ public class MarketingUIHandler : MonoBehaviour
     //METHODS FOR UPDATING UI ELEMENTS
     public void UpdateAllUIElements()
     {
-        if (initialized)
-        {
-            UpdateAdvertisementCoverageToggle(marketingManager.GetAdvertisementCoverage());
-            individualPriceSlider.value = marketingManager.GetIndividualsPrice();
-            businessPriceSlider.value = marketingManager.GetBusinessPrice();
-            enterprisePriceSlider.value = marketingManager.GetEnterprisePrice();
 
+        UpdateAdvertisementCoverageToggle(marketingManager.GetAdvertisementCoverage());
+        individualPriceSlider.value = marketingManager.GetIndividualsPrice();
+        individualPriceText.text = individualPriceSlider.value.ToString();
+        businessPriceSlider.value = marketingManager.GetBusinessPrice();
+        businessPriceText.text = businessPriceSlider.value.ToString();
+        enterprisePriceSlider.value = marketingManager.GetEnterprisePrice();
+        enterprisePriceText.text = enterprisePriceSlider.value.ToString();
 
-        }  
     }
 
     public void UpdateAdvertisementCoverageToggle(int advertisementCoverage)
@@ -140,24 +141,21 @@ public class MarketingUIHandler : MonoBehaviour
 
     public void UpdateIndividualPriceSlider(int individualPrice)
     {
-        if (initialized)
-        {
-            individualPriceSlider.value = individualPrice;
-        }           
+
+        individualPriceSlider.value = individualPrice;
+        individualPriceText.text = individualPrice.ToString();
+
     }
     public void UpdateBusinessPriceSlider(int businessPrice)
     {
-        if (initialized)
-        {
-            businessPriceSlider.value = businessPrice;
-        }
+        businessPriceSlider.value = businessPrice;
+        businessPriceText.text = businessPrice.ToString();
     }
     public void UpdateEnterprisePriceSlider(int enterprisePrice)
     {
-        if (initialized)
-        {
-            enterprisePriceSlider.value = enterprisePrice;
-        }
+        enterprisePriceSlider.value = enterprisePrice;
+        enterprisePriceText.text = enterprisePrice.ToString();
+
     }
 
 

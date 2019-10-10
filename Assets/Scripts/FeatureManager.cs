@@ -26,7 +26,7 @@ public struct Feature
         this.difficulty = difficulty;
         this.enterpriseCustomers = (int)System.Math.Round(((float)functionality * 0.5f), System.MidpointRounding.AwayFromZero);
         this.businessCustomers = (int)System.Math.Round(((float)integrability * 50), System.MidpointRounding.AwayFromZero);
-        this.individualCustomers = (int)System.Math.Round(((float)functionality * 1000), System.MidpointRounding.AwayFromZero);
+        this.individualCustomers = (int)System.Math.Round(((float)userfriendliness * 1000), System.MidpointRounding.AwayFromZero);
     }
 
     public override bool Equals(object obj)
@@ -126,7 +126,8 @@ public class FeatureManager : NetworkBehaviour
     {
         availableFeatures.Callback += OnChangeFeatureAvailable;
         outsourcedFeatures.Callback += OnChangeFeatureOutsourced;
-
+        inDevelopmentFeatures.Callback += OnChangeFeatureInDevelopmet;
+        doneFeatures.Callback += OnChangeFeatureDone;
     }
 
     //METHODS
@@ -204,7 +205,9 @@ public class FeatureManager : NetworkBehaviour
         if(inDevelopmentFeatures.ContainsKey(name) == false)
         {
             inDevelopmentFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+            UpdateAviableFeaturesServer();
         }
+
     }
     [Client]
     public void RemoveFeatureInDevelopment(string name)
@@ -249,18 +252,14 @@ public class FeatureManager : NetworkBehaviour
         if (doneFeatures.ContainsKey(name) == false)
         {
             doneFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+            UpdateAviableFeaturesServer();
         }
     }
-
-    [Client]
-    public void UpdateAvailableFeatures()
+    [Server]
+    public void UpdateAviableFeaturesServer()
     {
-        CmdUpdateAvailableFeatures();
-    }
-    [Command]
-    public void CmdUpdateAvailableFeatures()
-    {
-        foreach(Feature feature in availableFeatures.Values)
+        List<Feature> temp = new List<Feature>(availableFeatures.Values);
+        foreach (Feature feature in temp)
         {
             if (inDevelopmentFeatures.ContainsKey(feature.nameID) || doneFeatures.ContainsKey(feature.nameID))
             {
@@ -268,7 +267,26 @@ public class FeatureManager : NetworkBehaviour
             }
         }
     }
-    //HOOKS
+
+    /* [Client]
+     public void UpdateAvailableFeatures()
+     {
+         CmdUpdateAvailableFeatures();
+     }
+     [Command]
+     public void CmdUpdateAvailableFeatures()
+     {
+         List<Feature> temp = new List<Feature>(availableFeatures.Values);
+         foreach(Feature feature in temp)
+         {
+             if (inDevelopmentFeatures.ContainsKey(feature.nameID) || doneFeatures.ContainsKey(feature.nameID))
+             {
+                 availableFeatures.Remove(feature.nameID);
+             }
+         }
+     }
+     //HOOKS
+     */
 
     public void OnChangeFeatureAvailable(SyncDictionaryFeatures.Operation op, string key, Feature feature)
     {
@@ -277,6 +295,7 @@ public class FeatureManager : NetworkBehaviour
             featureUIHandler.UpdateFeatureUIList();
         }
     }
+   
 
     public void OnChangeFeatureOutsourced(SyncDictionaryFeatures.Operation op, string key, Feature feature) //here update all gui elements if they exist
     {
@@ -293,7 +312,6 @@ public class FeatureManager : NetworkBehaviour
 
     public void OnChangeFeatureInDevelopmet(SyncDictionaryFeatures.Operation op, string key, Feature feature)
     {
-        UpdateAvailableFeatures();
         if (featureUIHandler != null)
         {
             featureUIHandler.UpdateFeatureUIList();
@@ -302,7 +320,6 @@ public class FeatureManager : NetworkBehaviour
 
     public void OnChangeFeatureDone(SyncDictionaryFeatures.Operation op, string key, Feature feature)
     {
-        UpdateAvailableFeatures();
         if (featureUIHandler != null)
         {
             featureUIHandler.UpdateFeatureUIList();

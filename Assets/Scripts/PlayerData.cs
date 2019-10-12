@@ -19,7 +19,21 @@ public class PlayerData : NetworkBehaviour {
 
     //LOCAL VARIABLES
     private GameObject playerUI;
-        
+
+    //REFERENCES - MANAGERS
+    private ContractManager contractMamanger;
+    private FeatureManager featureManager;      //provider only
+    private ProductManager productManager;      //provider only
+    private CustomersManager customerManager;   //provider only
+    private MarketingManager marketingManager;  //provider only
+    private ScheduleManager scheduleManager;    //developer only
+    private HumanResourcesManager humanResourcesManager; //developer only
+    private RiskManager riskManager;
+    private SubmitDataManager submitDataManager;
+    private ProviderAccountingManager providerAccountingManager;    //provider only
+    private DeveloperAccountingManager developerAccountingManager; //developer only
+
+
     //GETTERS & SETTERS
     public void SetGameID(string gameID) { this.gameID = gameID; }
     public string GetGameID() { return gameID; }
@@ -35,7 +49,7 @@ public class PlayerData : NetworkBehaviour {
 
     //METHODS
     void Start()
-    {
+    {   
         if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
         {
             Debug.Log("player registered to all players: " + playerID);
@@ -48,6 +62,42 @@ public class PlayerData : NetworkBehaviour {
             GameHandler.allGames[gameID].AddPlayerToGame(this.gameObject);
             
         }
+
+        contractMamanger = this.gameObject.GetComponent<ContractManager>();
+        featureManager = this.gameObject.GetComponent<FeatureManager>();
+        productManager = this.gameObject.GetComponent<ProductManager>();
+        customerManager = this.gameObject.GetComponent<CustomersManager>();
+        marketingManager = this.gameObject.GetComponent<MarketingManager>();
+        scheduleManager = this.gameObject.GetComponent<ScheduleManager>();
+        humanResourcesManager = this.gameObject.GetComponent<HumanResourcesManager>();
+        riskManager = this.gameObject.GetComponent<RiskManager>();
+        submitDataManager = this.gameObject.GetComponent<SubmitDataManager>();
+        providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
+        developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
+
+    }
+
+
+    public void MoveToNextQuarter()
+    {
+        //1. akutalizuj realne data na zaklade kontrakt managera
+        //2.posun sa do noveho kvartalu v gameData????
+        //2. prirad nove reference na objekty nadchadzajuceho Q a aktualizuj ich?
+        if(playerRole == PlayerRoles.Developer)
+        {
+            contractMamanger.EvaluateContractsServer();
+            developerAccountingManager.UpdateCurrentQuarterDataServer(); 
+        }
+        else //provider
+        {
+            featureManager.UpdateCurrentQuarterData();
+            productManager.UpdateCurrentQuarterData();
+            customerManager.UpdateCurrentQuarterData();
+            providerAccountingManager.UpdateCurrentQuarterData();
+
+        }
+
+
     }
 
 }

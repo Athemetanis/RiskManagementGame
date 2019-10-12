@@ -5,6 +5,7 @@ using Mirror;
 
 public class SyncDictionaryStringString : SyncDictionary<string, string> { };
 
+
 /// <summary>
 /// Contains information about one particular game, such as: game name, ID, list of players, round, lists of developers/provieders and their firm names
 /// </summary>
@@ -21,7 +22,9 @@ public class GameData : NetworkBehaviour
     private int gameRound;
     [SyncVar(hook = "OnChangePlayersCount")]
     private int playersCount;
-    private int readyPlayersCount;
+    //private int readyPlayersCount;
+
+    private SyncListString readyPlayers = new SyncListString();
            
     //--------------<playerID, GameObject player>-----------------//  Q: How am I syncing this? A: When script playerData starts on client/server it requests adding its game object into these lists. 
     private Dictionary<string, GameObject> playerList;
@@ -63,6 +66,7 @@ public class GameData : NetworkBehaviour
     public void SetProvidersCount(int providersCount) { this.providersCount = providersCount; }
     public int GetProvidersCount() { return providersCount; }
     public Dictionary<string, GameObject> GetPlayerList() { return playerList; }
+    public Dictionary<string, GameObject> GetProviderList() { return providerList; }
 
     public void SetGameUIHandler(GameUIHandler gameUIHandler) { this.gameUIHandler = gameUIHandler; }
     
@@ -106,53 +110,7 @@ public class GameData : NetworkBehaviour
         
     }
 
-    //METHODS
-    public void OnChangeGameID(string gameID)
-    {
-        this.gameID = gameID;
-        if (gameUIHandler != null)
-        {
-            gameUIHandler.ChangeIDText(gameID);
-        }
-    }
-    public void OnChangeGameName(string gameName)
-    {
-        this.gameName = gameName;
-        if (gameUIHandler != null)
-        {
-            gameUIHandler.ChangeNameText(gameName);
-        }
-    }
-    public void OnChangeGameRound(int gameRound)
-    {
-        this.gameRound = gameRound;
-        if (gameUIHandler != null)
-        {
-            gameUIHandler.ChangeRoundText(gameRound);
-        }
-    }
-
-    public void OnChangePlayersCount(int playersCount)
-    {
-        this.playersCount = playersCount;
-        if (gameUIHandler != null)
-        {
-            gameUIHandler.ChangePlayersCountText(playersCount);
-        }
-    }
-
-    public void GameUIUpdateAll()
-    {
-        if (gameUIHandler != null)
-        {
-            gameUIHandler.ChangeIDText(gameID);
-            gameUIHandler.ChangeNameText(gameName);
-            gameUIHandler.ChangeRoundText(gameRound);
-            gameUIHandler.ChangePlayersCountText(playersCount);
-
-        }
-    }
-    
+    //GAME METHODS
     public void AddPlayerToGame(GameObject player)
     {
         PlayerData playerData = player.GetComponent<PlayerData>();
@@ -171,17 +129,7 @@ public class GameData : NetworkBehaviour
                 providersCount++;
             }
         }
-
-        /*foreach (GameObject playerg in playerList.Values)
-        {
-            Debug.Log("values"+ playerg.GetComponent<PlayerData>().GetPlayerID());
-        }
-        foreach (string playerg in playerList.Keys)
-        {
-            Debug.Log("keys"+playerg);
-        }*/
     }
-
     public void RemovePlayerFromGame(GameObject player)
     {
         PlayerData playerData = player.GetComponent<PlayerData>();
@@ -207,15 +155,59 @@ public class GameData : NetworkBehaviour
     {
         return developerList[developerID];
     }
-
     public GameObject GetProvider(string providerID)
     {
         return providerList[providerID];
     }
+    
+    //GAME HOOKS
+    public void OnChangeGameID(string gameID)
+    {
+        this.gameID = gameID;
+        if (gameUIHandler != null)
+        {
+            gameUIHandler.ChangeIDText(gameID);
+        }
+    }
+    public void OnChangeGameName(string gameName)
+    {
+        this.gameName = gameName;
+        if (gameUIHandler != null)
+        {
+            gameUIHandler.ChangeNameText(gameName);
+        }
+    }
+    public void OnChangeGameRound(int gameRound)
+    {
+        this.gameRound = gameRound;
+        if (gameUIHandler != null)
+        {
+            gameUIHandler.ChangeRoundText(gameRound);
+        }
+    }
+    public void OnChangePlayersCount(int playersCount)
+    {
+        this.playersCount = playersCount;
+        if (gameUIHandler != null)
+        {
+            gameUIHandler.ChangePlayersCountText(playersCount);
+        }
+    }
 
+    //METHODS FOR UPDATING UI ELEMENTS
+    public void GameUIUpdateAll()
+    {
+        if (gameUIHandler != null)
+        {
+            gameUIHandler.ChangeIDText(gameID);
+            gameUIHandler.ChangeNameText(gameName);
+            gameUIHandler.ChangeRoundText(gameRound);
+            gameUIHandler.ChangePlayersCountText(playersCount);
 
+        }
+    }
 
-    //---------------------------- FIRM METHODS -----------------------------------///
+    //FIRM METHODS 
     public void AddFirmName(string playerID, string firmName)
     {
         allFirms.Add(playerID, firmName);
@@ -234,6 +226,24 @@ public class GameData : NetworkBehaviour
             providersFirms.Add(firmName, playerID);
         }
 
+    }
+    public void AddDevevelopersFirm(string playerID, string newFirmName, string oldFirmName)
+    {
+        Debug.Log("Developerova firma pridana do dev zoznamu");
+        developersFirms.Remove(oldFirmName);
+        developersFirms.Add(newFirmName, playerID);
+        
+    }
+    public void AddProvidersFirm(string playersID, string newFirmName, string oldFirmName)
+    {
+        Debug.Log("Providerova firma pridana do providerovho zoznamu");
+        providersFirms.Remove(oldFirmName);
+        providersFirms.Add(newFirmName, playersID);
+        
+    }
+    public List<string> GetDevelopersFirms()
+    {
+        return new List<string>(developersFirms.Keys);
     }
 
     public bool TryToChangeFirmName(string playerID, string newFirmName, string oldFirmName)
@@ -262,24 +272,6 @@ public class GameData : NetworkBehaviour
             return true;
         }
     }
-
-    public void AddDevevelopersFirm(string playerID, string newFirmName, string oldFirmName)
-    {
-        Debug.Log("Developerova firma pridana do dev zoznamu");
-        developersFirms.Remove(oldFirmName);
-        developersFirms.Add(newFirmName, playerID);
-        
-    }
-
-    public void AddProvidersFirm(string playersID, string newFirmName, string oldFirmName)
-    {
-        Debug.Log("Providerova firma pridana do providerovho zoznamu");
-        providersFirms.Remove(oldFirmName);
-        providersFirms.Add(newFirmName, playersID);
-        
-    }
-
-
     public void UpdateFirmDescription(string firmName, string firmDescription)
     {
         if (allFirmDescriptions.ContainsKey(firmName))
@@ -292,23 +284,43 @@ public class GameData : NetworkBehaviour
         }
     }
 
-    public List<string> GetDevelopersFirms()
-    {
-        return new List<string>(developersFirms.Keys);
-    }
-
-    //------------------------------------- GET PLAYER ID FROM FIRM NAME-------------------------------------------
     public string GetDevelopersFirmPlayerID(string firmsName)
     {
         return developersFirms[firmsName];
     }
-
     public string GetProvidersFirmPlayerID(string firmsName)
     {
         return providersFirms[firmsName];
     }
 
-    //------------------------------ FIRMS HOOKS
+
+    public void RecreateAllFirmsReverse()
+    {
+        allFirmsRevers.Clear();
+        foreach (KeyValuePair<string, string> pair in allFirms)
+        {
+            allFirmsRevers.Add(pair.Value, pair.Key);
+        }
+    }
+    public Dictionary<string, string> GetListDeveloperFirmNameDescription()
+    {
+        Dictionary<string, string> developerFirmNameDescritpion = new Dictionary<string, string>();
+
+        foreach (string firmName in developersFirms.Keys)
+        {
+            if (allFirmDescriptions.ContainsKey(firmName))
+            {
+                developerFirmNameDescritpion.Add(firmName, allFirmDescriptions[firmName]);
+            }
+        }
+        return developerFirmNameDescritpion;
+    }
+    public string GetFirmName(string playerID)
+    {
+        return allFirmsRevers[playerID];
+    }
+    
+    //FIRMS HOOKS
     public void OnDevelopersFirmsChange(SyncDictionaryStringString.Operation op, string firmName, string playerID)
     {
         if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerData() != null)
@@ -344,37 +356,43 @@ public class GameData : NetworkBehaviour
 
         }
     }
-
     public void OnAllFirmsChange(SyncDictionaryStringString.Operation op, string firmName, string description)
     {
         RecreateAllFirmsReverse();
     }
     
-    public void RecreateAllFirmsReverse()
-    {   
-        allFirmsRevers.Clear();
-        foreach (KeyValuePair<string, string> pair in allFirms)
+
+    //METHODS FOR VALUATING GAMES AND MOVING TO NEXT QUARTER
+
+    [Server]
+    public void TryToAddPlayersToReadyServer(string playerID)
+    {
+        if (!readyPlayers.Contains(playerID))
         {
-            allFirmsRevers.Add(pair.Value, pair.Key);
+            readyPlayers.Add(playerID);
+        }
+        if (readyPlayers.Count == playerList.Count)
+        {
+            EvaluateGameRoundServer();
+        }
+    }
+    [Server]
+    public void EvaluateGameRoundServer()
+    {
+        foreach(GameObject playerGO in playerList.Values)
+        {
+            playerGO.GetComponent<PlayerData>().MoveToNextQuarter();
         }
     }
 
-    public Dictionary<string, string> GetListDeveloperFirmNameDescription()
+    [Server]
+    public void MoveToNextRound()
     {
-        Dictionary<string, string> developerFirmNameDescritpion = new Dictionary<string, string>();
+        gameRound = gameRound + 1;
+        readyPlayers.Clear();
 
-        foreach (string firmName in developersFirms.Keys)
-        {
-            if (allFirmDescriptions.ContainsKey(firmName))
-            {
-                developerFirmNameDescritpion.Add(firmName, allFirmDescriptions[firmName]);
-            }
-        }
-        return developerFirmNameDescritpion;
     }
 
-    public string GetFirmName(string playerID)
-    {
-        return allFirmsRevers[playerID];
-    }
+
+
 }

@@ -502,7 +502,7 @@ public class ScheduleManager : NetworkBehaviour
                     }
                 }
                 Contract myContract = contractManager.GetMyContracts()[contractID];
-                myContract.SetTrueDevelopmentTime(truDevelopmentEnd);
+                myContract.SetTrueDeliveryTime(truDevelopmentEnd);
                 previousFetureEnd = truDevelopmentEnd;
             }            
         }

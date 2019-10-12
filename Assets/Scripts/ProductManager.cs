@@ -21,6 +21,8 @@ public class ProductManager : NetworkBehaviour
    
     //REFERENCES
     private ProductUIHandler productUIHandler;
+    private ContractManager contractManager;
+    private FeatureManager featureManager;
 
     //GETTERS & SETTERS
     public void SetProductUIHandler(ProductUIHandler productUIHandler) { this.productUIHandler = productUIHandler; }
@@ -28,9 +30,11 @@ public class ProductManager : NetworkBehaviour
     public override void OnStartServer()
     {
        if(functionality == 0)
-        {
+       {
             SetupDefaultValues();
-        }
+       }
+        contractManager = this.gameObject.GetComponent<ContractManager>();
+        featureManager = this.gameObject.GetComponent<FeatureManager>();
     }
 
     [Server]
@@ -41,6 +45,17 @@ public class ProductManager : NetworkBehaviour
         integrability = 10;
     }
     
+    [Server]
+    public void ComputeProductParameters()
+    {
+        foreach (Feature feature in featureManager.GetDoneFeatures().Values)
+        {
+            functionality += feature.functionality;
+            integrability += feature.integrability;
+            userFriendliness += feature.userfriendliness;
+        }
+    }
+
     //Hooks
     public void OnChangeFunctionality(int functionality)
     {
@@ -68,5 +83,19 @@ public class ProductManager : NetworkBehaviour
         }
     }
 
+    // NEXT QUARTER EVALUATION METHODS...
+    [Server]
+    public void UpdateCurrentQuarterData()
+    {
+        SetupDefaultValues();
+        ComputeProductParameters();
+    }
+
+
+    [Server]
+    public void MoveToNextQuarter()
+    {
+
+    }
 
 }

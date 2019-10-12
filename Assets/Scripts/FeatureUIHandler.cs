@@ -192,13 +192,5 @@ public class FeatureUIHandler : MonoBehaviour
         GenerateOutSourcedFeatureUIList();
     }
 
-    public void UpdateDoneFeatureUIList()
-    {
-        foreach (Transform child in doneFeatureListContent.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-        GenerateDoneFeatureUIList();
-    }
 
 }

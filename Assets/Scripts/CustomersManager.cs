@@ -60,6 +60,7 @@ public class CustomersManager : NetworkBehaviour
     private CustomersUIHandler customersUIHandler;
     private ContractManager contractManager;
     private ProviderAccountingManager providerAccountingmanager;
+    private MarketingManager marketingManager;
 
     //GETTERS & SETTERS
     public void SetCustomersUIHandler(CustomersUIHandler customersUIHandler) { this.customersUIHandler = customersUIHandler; }
@@ -88,6 +89,10 @@ public class CustomersManager : NetworkBehaviour
     public int GetBusinessCustomersAdvAdd() { return businessCustomersAdvAdd; }
     public int GetIndividualCustomersAdvAdd() { return individualCustomersAdvAdd; }
 
+    public int GetEnterpriseCustomersQ(int quarter) { return endEnterpriseCustomersQ[quarter]; }
+    public int GetBusinesCustomersQ(int quarter) { return endBusinessCustomersQ[quarter]; }
+    public int GetIndividualCustomersQ(int quarter) { return endIndividualsCutomersQ[quarter]; }
+
     // Start is called before the first frame update
     public override void OnStartServer()
     {
@@ -95,12 +100,13 @@ public class CustomersManager : NetworkBehaviour
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         contractManager = this.gameObject.GetComponent<ContractManager>();
         providerAccountingmanager = this.gameObject.GetComponent<ProviderAccountingManager>();
+        marketingManager = this.gameObject.GetComponent<MarketingManager>(); 
         if (endEnterpriseCustomersQ.Count == 0)
         {
             SetupDefaultValues();
         }
         LoadQuarterData(currentQuarter);
-        UpdateCustomersCountServer();
+        UpdateEstimatedCustomersCountServer();
 
     }
     public override void OnStartClient()
@@ -108,7 +114,6 @@ public class CustomersManager : NetworkBehaviour
         contractManager = this.gameObject.GetComponent<ContractManager>();
         providerAccountingmanager = this.gameObject.GetComponent<ProviderAccountingManager>();
     }
-
 
 
     //METHODS
@@ -144,7 +149,7 @@ public class CustomersManager : NetworkBehaviour
     }
 
     [Server]
-    public void UpdateCustomersCountServer()
+    public void UpdateEstimatedCustomersCountServer()
     {
         enterpriseCustomersAddDuringQ = 0;
         individualCustomersAddDuringQ = 0;
@@ -179,13 +184,84 @@ public class CustomersManager : NetworkBehaviour
                 individualCustomersAddEndQ += individualCustomersEndQ;
             }          
         }
-        endEnterpriseCustomers = beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ + enterpriseCustomersAddEndQ;
-        endBusinessCustomers = beginningBusinessCustomers + businessCustomersAddDuringQ + businessCustomersAddEndQ;
-        endIndividualsCutomers = beginningIndividualCutomers + individualCustomersAddDuringQ + individualCustomersAddEndQ;
+        endEnterpriseCustomers = ComputeEndEnterpriseCutomers();
+        endBusinessCustomers = ComputeEndBusinessCutomers();
+        endIndividualsCutomers = ComputeEndIndividualCustomers();
         providerAccountingmanager.UpdateRevenueServer();
     }
-   
-    public void RiseEnterpriseCustomersAddDuringQ(int count) { CmdRiseEnterpriseCustomersAddDuringQ(count); }
+    [Server]
+    public void UpdateAdverisementCustomersInfluence()
+    {
+        int advertisementSum = 0;
+        int advertisementCount = 0;
+        int averageAdvertisement = 0;
+        foreach(GameObject provider in GameHandler.allGames[gameID].GetProviderList().Values)
+        {
+            advertisementSum += provider.GetComponent<MarketingManager>().GetAdvertismenetCoverageQuarters(currentQuarter);
+            advertisementCount++;
+        }
+        averageAdvertisement = advertisementSum / advertisementCount;
+        if(marketingManager.GetAdvertisementCoverage() > averageAdvertisement)
+        {
+            //gaining 10% of customers
+            enterpriseCustomersAdvAdd = (int)System.Math.Round((beginningEnterpriseCustomers * 0.1f), System.MidpointRounding.AwayFromZero); 
+            businessCustomersAdvAdd = (int)System.Math.Round((beginningBusinessCustomers * 0.1f), System.MidpointRounding.AwayFromZero);
+            individualCustomersAdvAdd = (int)System.Math.Round((beginningIndividualCutomers * 0.1f), System.MidpointRounding.AwayFromZero);
+
+        }
+        else
+        {
+            //losing 10% of cutomers
+            enterpriseCustomersAdvLoss = (int)System.Math.Round((beginningEnterpriseCustomers * 0.1f), System.MidpointRounding.AwayFromZero);
+            businessCustomersAdvLoss = (int)System.Math.Round((beginningBusinessCustomers * 0.1f), System.MidpointRounding.AwayFromZero);
+            individualCustomersAdvLoss = (int)System.Math.Round((beginningIndividualCutomers * 0.1f), System.MidpointRounding.AwayFromZero);
+        }
+        endEnterpriseCustomers = ComputeEndEnterpriseCutomers();
+        endBusinessCustomers = ComputeEndBusinessCutomers();
+        endIndividualsCutomers = ComputeEndIndividualCustomers();
+    }
+    [Server]
+    public void UpdateRealCustomersCountServer()
+    {
+        enterpriseCustomersAddDuringQ = 0;
+        individualCustomersAddDuringQ = 0;
+        businessCustomersAddDuringQ = 0;
+
+        enterpriseCustomersAddEndQ = 0;
+        businessCustomersAddEndQ = 0;
+        individualCustomersAddEndQ = 0;
+
+
+        foreach (Contract contract in contractManager.GetMyContracts().Values)
+        {
+            if (contract.GetContractState() == ContractState.Completed)
+            {
+                int individualCustomersAll = contract.GetContractFeature().individualCustomers;
+                int businessCustomersAll = contract.GetContractFeature().businessCustomers;
+                int enterpriseCustomersAll = contract.GetContractFeature().enterpriseCustomers;
+
+                int individualCustomersDuringQ = (int)System.Math.Round((individualCustomersAll / 60f) * (60f - contract.GetTrueDeliveryTime()), System.MidpointRounding.AwayFromZero);
+                int businessCustomerDuringQ = (int)System.Math.Round((businessCustomersAll / 60f) * (60f - contract.GetTrueDeliveryTime()), System.MidpointRounding.AwayFromZero);
+                int enterpriseCustomersDuringQ = (int)System.Math.Round((enterpriseCustomersAll / 60f) * (60f - contract.GetTrueDeliveryTime()), System.MidpointRounding.AwayFromZero);
+
+                int individualCustomersEndQ = individualCustomersAll - individualCustomersDuringQ;
+                int businessCustomersEndQ = businessCustomersAll - businessCustomerDuringQ;
+                int enterpriseCustomersEndQ = enterpriseCustomersAll - enterpriseCustomersDuringQ;
+
+                enterpriseCustomersAddDuringQ += enterpriseCustomersDuringQ;
+                businessCustomersAddDuringQ += businessCustomerDuringQ;
+                individualCustomersAddDuringQ += individualCustomersDuringQ;
+                enterpriseCustomersAddEndQ += enterpriseCustomersEndQ;
+                businessCustomersAddEndQ += businessCustomersEndQ;
+                individualCustomersAddEndQ += individualCustomersEndQ;
+            }
+        }
+        endEnterpriseCustomers = ComputeEndEnterpriseCutomers();
+        endBusinessCustomers = ComputeEndBusinessCutomers();
+        endIndividualsCutomers = ComputeEndIndividualCustomers();
+    }
+
+    /*public void RiseEnterpriseCustomersAddDuringQ(int count) { CmdRiseEnterpriseCustomersAddDuringQ(count); }
     public void RiseBusinessCustomersAddDuringQ(int count) { CmdRiseBusinessCustomersAddDuringQ(count); }
     public void RiseIndividualCustomersAddDuringQ(int count) { CmdRiseIndividualCustomersAddDuringQ(count); }
     public void RiseEnterpriseCustomersAddEndQ(int count) { CmdRiseEnterpriseCustomersAddEndQ(count); }
@@ -222,14 +298,12 @@ public class CustomersManager : NetworkBehaviour
     {
         individualCustomersAddEndQ += count;
         ComputeEndIndividualCustomers();
-    }
+    }*/
 
-    [Server] //call only from server!!!
-    public void ComputeEndEnterpriseCutomers() { endEnterpriseCustomers = beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ + enterpriseCustomersAddEndQ; }
-    [Server]
-    public void ComputeEndBusinessCutomers() { endBusinessCustomers = beginningBusinessCustomers + businessCustomersAddDuringQ + businessCustomersAddEndQ;  }
-    [Server]
-    public void ComputeEndIndividualCustomers() { endIndividualsCutomers = beginningIndividualCutomers + individualCustomersAddDuringQ + individualCustomersAddEndQ; }
+
+    public int ComputeEndEnterpriseCutomers() { int endEnterpriseCustomersTmp = beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ + enterpriseCustomersAddEndQ + enterpriseCustomersAdvAdd - enterpriseCustomersAdvLoss; return endEnterpriseCustomersTmp; }
+    public int ComputeEndBusinessCutomers() { int endBusinessCustomersTmp = beginningBusinessCustomers + businessCustomersAddDuringQ + businessCustomersAddEndQ + businessCustomersAdvAdd - businessCustomersAdvLoss; return endBusinessCustomersTmp; }
+    public int ComputeEndIndividualCustomers() { int endIndividualsCutomersTmp = beginningIndividualCutomers + individualCustomersAddDuringQ + individualCustomersAddEndQ + businessCustomersAdvAdd - businessCustomersAdvLoss; return endIndividualsCutomersTmp; }
 
     //HOOKS
     public void OnChangeBeginningEneterpriseCustomers(int beginningEnterpriseCustomers)
@@ -349,6 +423,11 @@ public class CustomersManager : NetworkBehaviour
     }
 
     // NEXT QUARTER EVALUATION METHODS...
+    public void UpdateCurrentQuarterData()
+    {
+        UpdateRealCustomersCountServer();
+    }
+
 
     public void MoveToNextQuarter()
     {

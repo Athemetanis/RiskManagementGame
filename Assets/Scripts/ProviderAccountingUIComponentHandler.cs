@@ -14,6 +14,7 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
     public TextMeshProUGUI advertisementText;
     public TextMeshProUGUI contractPaymentsText;
     public TextMeshProUGUI riskSharingFeesReceivedText;
+    public TextMeshProUGUI terminationFeeReceivedText;
     public TextMeshProUGUI marketingResearchText;
     public TextMeshProUGUI borrowEmergencyLoanText;
     public TextMeshProUGUI repayEmergencyLoanText;
@@ -52,7 +53,7 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
         }
         if(correspondingAccountingQuarter < currentQuarter)
         {
-            (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue, int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) = providerAccountingManager.GetCorrespondingQuarterData(correspondingAccountingQuarter);
+            (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue, int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int terminationFeeReceived,int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) = providerAccountingManager.GetCorrespondingQuarterData(correspondingAccountingQuarter);
             beginningCashBalanceText.text = beginningCashBalance.ToString("n0");
             revenueText.text = revenue.ToString("n0");
             enterpriseRevenueText.text = enterpriseRevenue.ToString("n0");
@@ -61,6 +62,7 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
             advertisementText.text = advertismenentCost.ToString("n0");
             contractPaymentsText.text = contractPayments.ToString("n0");
             riskSharingFeesReceivedText.text = riskSharingFeeReceived.ToString("n0");
+            terminationFeeReceivedText.text = terminationFeeReceived.ToString("n0");
             marketingResearchText.text = marketingResearch.ToString("n0");
             borrowEmergencyLoanText.text = borrowEmergencyLoan.ToString("n0");
             repayEmergencyLoanText.text = repayEmergencyLoan.ToString("n0");
@@ -88,6 +90,7 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
         advertisementText.text = providerAccountingManager.GetAdvertisementCost().ToString("n0");
         contractPaymentsText.text = providerAccountingManager.GetContractPayments().ToString("n0");
         riskSharingFeesReceivedText.text = providerAccountingManager.GetRishSharingFeesReceived().ToString("n0");
+        terminationFeeReceivedText.text = providerAccountingManager.GetTerminationFeeReceived().ToString("n0");
         marketingResearchText.text = providerAccountingManager.GetMarketingResearch().ToString("n0");
         borrowEmergencyLoanText.text = providerAccountingManager.GetBorrowEmergencyLoan().ToString("n0");
         repayEmergencyLoanText.text = providerAccountingManager.GetRepayEmergencyLoan().ToString("n0");
@@ -124,6 +127,10 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
     public void UpdateRiskSharingFee(int riskSharingFee)
     {
         riskSharingFeesReceivedText.text = riskSharingFee.ToString("n0");
+    }
+    public void UpdateTerminatinFeeReceived(int terminationFee)
+    {
+        terminationFeeReceivedText.text = terminationFee.ToString("n0");
     }
     public void UpdateMarketingResearch(int marketingResearch)
     {

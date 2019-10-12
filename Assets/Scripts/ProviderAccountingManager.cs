@@ -15,6 +15,7 @@ public class ProviderAccountingManager : NetworkBehaviour
     private SyncListInt advertisementCostQuarters = new SyncListInt() { };
     private SyncListInt contractPaymentsQuarters = new SyncListInt() { };
     private SyncListInt riskSharingFeesReceivedQuarters = new SyncListInt() { };
+    private SyncListInt terminationFeeReceivedQuarters = new SyncListInt() { };
     private SyncListInt marketingResearchQuarters = new SyncListInt() { };
     private SyncListInt borrowEmergencyLoanQuarters = new SyncListInt(){};
     private SyncListInt repayEmergencyLoanQuarters = new SyncListInt() { };
@@ -37,6 +38,8 @@ public class ProviderAccountingManager : NetworkBehaviour
     private int contractPayments;
     [SyncVar(hook = "OnChangeRiskSharingFeesReceived")]
     private int riskSharingFeesReceived;
+    [SyncVar(hook = "OnChangeTerminationFeeReceived")]
+    private int terminationFeeReceived;
     [SyncVar(hook = "OnChangeMarketingResearch")]
     private int marketingResearch;
     [SyncVar(hook = "OnChangeBorrowEmergencyLoan")]
@@ -72,6 +75,7 @@ public class ProviderAccountingManager : NetworkBehaviour
     public int GetAdvertisementCost() { return advertisementCost; }
     public int GetContractPayments() { return contractPayments; }
     public int GetRishSharingFeesReceived() { return riskSharingFeesReceived; }
+    public int GetTerminationFeeReceived() { return terminationFeeReceived; }
     public int GetMarketingResearch() { return marketingResearch; }
     public int GetBorrowEmergencyLoan() { return borrowEmergencyLoan; }
     public int GetRepayEmergencyLoan() { return repayEmergencyLoan; }
@@ -119,6 +123,7 @@ public class ProviderAccountingManager : NetworkBehaviour
         advertisementCostQuarters.Insert(0, 0);
         contractPaymentsQuarters.Insert(0, 0);
         riskSharingFeesReceivedQuarters.Insert(0, 0);
+        terminationFeeReceivedQuarters.Insert(0, 0);
         marketingResearchQuarters.Insert(0, 0);
         borrowEmergencyLoanQuarters.Insert(0, 0);
         repayEmergencyLoanQuarters.Insert(0, 0);
@@ -134,13 +139,14 @@ public class ProviderAccountingManager : NetworkBehaviour
                 beginningCashBalanceQuarters.Insert(i, endCashBalanceQuarters[i - 1]);
                 advertisementCostQuarters.Insert(i, advertisementCostQuarters[i - 1]);
                 contractPaymentsQuarters.Insert(i, 0);
+                terminationFeeReceivedQuarters.Insert(i, 0);
                 riskSharingFeesReceivedQuarters.Insert(i, 0);
                 marketingResearchQuarters.Insert(i, 0);
                 borrowEmergencyLoanQuarters.Insert(i, 0);
                 repayEmergencyLoanQuarters.Insert(i, 0);
-                int individualCustomers = customersManager.GetEndIndividualCustomers();
-                int businessCustomers = customersManager.GetEndBusinessCustomers();
-                int enterpriseCustomers = customersManager.GetEndEnterpriseCustomers();
+                int individualCustomers = customersManager.GetIndividualCustomersQ(i - 1);
+                int businessCustomers = customersManager.GetBusinesCustomersQ(i - 1);
+                int enterpriseCustomers = customersManager.GetEnterpriseCustomersQ(i - 1);
                 int individualPrice = marketingManager.GetIndividualsPrice();
                 int businessPrice = marketingManager.GetBusinessPrice();
                 int enterprisePrice = marketingManager.GetEnterprisePrice();
@@ -154,9 +160,9 @@ public class ProviderAccountingManager : NetworkBehaviour
         beginningCashBalance = endCashBalanceQuarters[quarter - 1];
     }
     
-    public (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue,int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) GetCorrespondingQuarterData(int correspondingQuarter)
+    public (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue,int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int terminationFeeReceived, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) GetCorrespondingQuarterData(int correspondingQuarter)
     {
-        return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], enterpriseRevenueQarters[correspondingQuarter], businessRevenueQuarters[correspondingQuarter], individualRevenueQuarters[correspondingQuarter], advertisementCostQuarters[correspondingQuarter], contractPaymentsQuarters[correspondingQuarter], riskSharingFeesReceivedQuarters[correspondingQuarter], marketingResearchQuarters[correspondingQuarter], borrowEmergencyLoanQuarters[correspondingQuarter], repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter]);
+        return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], enterpriseRevenueQarters[correspondingQuarter], businessRevenueQuarters[correspondingQuarter], individualRevenueQuarters[correspondingQuarter], advertisementCostQuarters[correspondingQuarter], contractPaymentsQuarters[correspondingQuarter], riskSharingFeesReceivedQuarters[correspondingQuarter], terminationFeeReceivedQuarters[correspondingQuarter], marketingResearchQuarters[correspondingQuarter], borrowEmergencyLoanQuarters[correspondingQuarter], repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter]);
     }
 
     /*public void UpdateRevenue()
@@ -196,13 +202,21 @@ public class ProviderAccountingManager : NetworkBehaviour
         int businessCustomersAddDuringQ = customersManager.GetBusinessCustomersDuringQ();
         int individualCustomersAddDuringQ = customersManager.GetIndividualCustomersDuringQ();
 
+        int enterpriseCustomersAdvLoss = customersManager.GetEnterpriseCustomersAdvLoss();
+        int businessCutomersAdvLoss = customersManager.GetBusinessCustomersAdvLoss();
+        int individualCustomersAdvLoss = customersManager.GetIndividualCustomersAdvLoss();
+
+        int enterpriseCustomersAdvAdd = customersManager.GetEnterpriseCustomersAdvAdd();
+        int businessCutomersAdvAdd = customersManager.GetBusinessCustomersAdvAdd();
+        int individualCustomersAdvAdd = customersManager.GetIndividualCustomersAdvAdd();
+
         int individualPrice = marketingManager.GetIndividualsPrice();
         int businessPrice = marketingManager.GetBusinessPrice();
         int enterprisePrice = marketingManager.GetEnterprisePrice();
 
-        individualCustomersRevenue = (beginningIndividualCustomers + individualCustomersAddDuringQ) * individualPrice;
-        businessCustomersRevenue = (beginningBusinessCustomers + businessCustomersAddDuringQ) * businessPrice;
-        enterpriseCustomersRevenue = (beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ) * enterprisePrice;
+        individualCustomersRevenue = (beginningIndividualCustomers + individualCustomersAddDuringQ + individualCustomersAdvAdd - individualCustomersAdvLoss) * individualPrice;
+        businessCustomersRevenue = (beginningBusinessCustomers + businessCustomersAddDuringQ + businessCutomersAdvAdd - businessCutomersAdvLoss) * businessPrice;
+        enterpriseCustomersRevenue = (beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ + enterpriseCustomersAdvAdd - enterpriseCustomersAdvLoss) * enterprisePrice;
         revenue = individualCustomersRevenue + businessCustomersRevenue + enterpriseCustomersRevenue;
 
         endCashBalance = ComputeEndCashBalance();
@@ -260,7 +274,7 @@ public class ProviderAccountingManager : NetworkBehaviour
     }
 
     [Server]
-    public void UpdateContractPaymentsServer()
+    public void UpdateEstimatedContractPaymentsServer()
     {
         contractPayments = 0;
         foreach (Contract contract in contractManager.GetMyContracts().Values)
@@ -272,15 +286,34 @@ public class ProviderAccountingManager : NetworkBehaviour
         }
        
     }
-    
+    [Server]
+    public void UpdateRealContractPaymentsServer()
+    {
+        contractPayments = 0;
+        riskSharingFeesReceived = 0;
+        terminationFeeReceived = 0;
+        foreach (Contract contract in contractManager.GetMyContracts().Values)
+        {
+            if (contract.GetContractState() == ContractState.Completed)
+            {
+                contractPayments += contract.GetContractPrice();
+                riskSharingFeesReceived += contract.GetRiskSharingFeePaid();
+            }
+            else if (contract.GetContractState() == ContractState.Terminated)
+            {
+                terminationFeeReceived += contract.GetTerminationFeePaid();
+            }
+        }
+
+        endCashBalance = ComputeEndCashBalance();
+    }
+           
     public int ComputeEndCashBalance()
     {
         int endCash = 0;
-        endCash = beginningCashBalance - contractPayments - advertisementCost - marketingResearch + revenue + riskSharingFeesReceived;
+        endCash = beginningCashBalance - contractPayments - advertisementCost - marketingResearch + revenue + riskSharingFeesReceived + terminationFeeReceived;
         return endCash;
     }
-
-
     //HOOKS
     public void OnChangeBeginningCashBalance(int beginningCashBalance)
     {
@@ -349,6 +382,14 @@ public class ProviderAccountingManager : NetworkBehaviour
             providerAccountingUIComponentHandlerCurrent.UpdateRiskSharingFee(this.riskSharingFeesReceived);
         }
     }
+    public void OnChangeTerminationFeeReceived(int terminationFeeReceived)
+    {
+        this.terminationFeeReceived = terminationFeeReceived;
+        if (providerAccountingUIComponentHandlerCurrent != null)
+        {
+            providerAccountingUIComponentHandlerCurrent.UpdateTerminatinFeeReceived(this.terminationFeeReceived);
+        }
+    }
     public void OnChangeMarketingResearch(int marketingResearch)
     {
         this.marketingResearch = marketingResearch;
@@ -381,5 +422,13 @@ public class ProviderAccountingManager : NetworkBehaviour
         {
             providerAccountingUIComponentHandlerCurrent.UpdateEndCashBalanceText(this.endCashBalance);
         }
+    }
+
+    // NEXT QUARTER EVALUATION METHODS...
+    [Server]
+    public void UpdateCurrentQuarterData()
+    {
+        UpdateRevenueServer();
+        UpdateRealContractPaymentsServer();
     }
 }

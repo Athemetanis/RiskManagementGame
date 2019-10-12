@@ -5,6 +5,10 @@ using Mirror;
 
 public class MarketingManager : NetworkBehaviour
 {   //VARIABLES
+
+    //STORED VALUES FOR Q1, Q2, Q3, Q4, on corresponding indexes: 0 1 2 3 4...
+    private SyncListInt advertismenetCoverageQuarters = new SyncListInt() { };
+
     [SyncVar(hook = "OnChangeAdvertisement")]
     private int advertisementCoverage;   //0,25,50,75,100,
     [SyncVar(hook = "OnChangeIndividualPrice")]
@@ -14,16 +18,20 @@ public class MarketingManager : NetworkBehaviour
     [SyncVar(hook = "OnChangeEnterprisePrice")]
     private int enterprisePrice;        //50-80
 
-    private int advertisement0Price = 0;
-    private int advertisement25Price = 10000;
-    private int advertisement50Price = 30000;
-    private int advertisement75Price = 60000;
-    private int advertisement100Price = 90000;
+    private readonly int advertisement0Price = 0;
+    private readonly int advertisement25Price = 10000;
+    private readonly int advertisement50Price = 30000;
+    private readonly int advertisement75Price = 60000;
+    private readonly int advertisement100Price = 90000;
+
+    private string gameID;
+    private int currentQuarter;
 
     //REFERENCEs
     private MarketingUIHandler marketingUIHandler;
     private ContractUIHandler contractUIHandler;
     private ProviderAccountingManager providerAccountingManager;
+    private CustomersManager customerManager;
 
     //GETTERS & SETTERS
     public void SetMarketingUIHandler(MarketingUIHandler marketingUIHandler) { this.marketingUIHandler = marketingUIHandler; }
@@ -37,14 +45,20 @@ public class MarketingManager : NetworkBehaviour
     public int GetAdvertisement50Price() { return advertisement50Price; }
     public int GetAdvertisement75Price() { return advertisement75Price; }
     public int GetAdvertisement100Price() { return advertisement100Price; }
+    public int GetAdvertismenetCoverageQuarters(int quarter) { return advertismenetCoverageQuarters[quarter]; }
 
     public override void OnStartServer()
     {
+        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+        providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
+        customerManager = this.gameObject.GetComponent<CustomersManager>();
         if (individualPrice == 0)
         {
             SetUpDefaultValues();
         }
-        providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
+        LoadQuarterData(currentQuarter);
+        customerManager.UpdateAdverisementCustomersInfluence();
     }
     public override void OnStartClient()
     {
@@ -52,10 +66,22 @@ public class MarketingManager : NetworkBehaviour
     }
     public void SetUpDefaultValues()
     {
+        advertismenetCoverageQuarters.Insert(0, 0);
         advertisementCoverage = 0;
         individualPrice = 8;
         businessPrice = 25;
         enterprisePrice = 60;
+    }
+    public void LoadQuarterData(int quarter)
+    {
+        if (advertismenetCoverageQuarters.Count != quarter)
+        {
+            for (int i = advertismenetCoverageQuarters.Count + 1; i < quarter; i++)
+            {
+                advertismenetCoverageQuarters.Insert(i, advertismenetCoverageQuarters[i - 1]);
+            }
+        }
+        advertisementCoverage = advertismenetCoverageQuarters[quarter - 1];
     }
     //METHODS
     public void ChangeAdvertisementCoverage(int advertisementCoverage)
@@ -140,4 +166,6 @@ public class MarketingManager : NetworkBehaviour
             contractUIHandler.UpdateContractOverview();
         }
     }
+
+
 }

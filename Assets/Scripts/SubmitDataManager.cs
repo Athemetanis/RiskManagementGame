@@ -5,48 +5,68 @@ using Mirror;
 
 public class SubmitDataManager : NetworkBehaviour
 {
+    [SyncVar(hook = "OnChangeSubmitData")]
+    private bool submitData;   //default value = false
 
+    string gameID;
+    //REFERENCES
     private ContractManager contractManager;
     private PlayerData playerData;
     private FeatureManager featureManager;
 
+
+    //GETTERS AND SETTERS
+    public void SetSubmitData(bool submitData) { this.submitData = submitData; }
+    public bool GetSubmitData() { return submitData; }
+
+
+
     // Start is called before the first frame update
-    void Start()
+    public override void OnStartServer()
+    {
+        submitData = false;
+        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        contractManager = this.gameObject.GetComponent<ContractManager>();
+        playerData = this.gameObject.GetComponent<PlayerData>();
+        featureManager = this.gameObject.GetComponent<FeatureManager>();
+    }
+
+    void StartClient()
     {
         contractManager = this.gameObject.GetComponent<ContractManager>();
         playerData = this.gameObject.GetComponent<PlayerData>();
         featureManager = this.gameObject.GetComponent<FeatureManager>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SubmitData()
+    {   
+        CmdSubmitData();
+    }
+
+    [Command]
+    public void CmdSubmitData()
     {
-        
+        submitData = true;
+        GameHandler.allGames[gameID].TryToAddPlayersToReadyServer(playerData.GetPlayerID());
+    }
+
+    public void OnChangeSubmitData(bool submitData)
+    {
+        if (submitData)
+        {
+            //cover my screeen with image and text abut wating for other player .... bla bla bla 
+        }
     }
 
 
+    [Server]
     public void MoveToNextQuarter()
     {
-        CmdMoveToNextQuarter();
-        CmdMoveGameQuarter();
+        submitData = false;
 
     }
+    
+    
 
-    [Command]
-    public void CmdMoveToNextQuarter()
-    {
-        foreach (GameObject player in GameHandler.allGames[playerData.GetGameID()].GetPlayerList().Values)
-        {
-            //player.GetComponent<ContractManager>().EvaluateContracts();
-            //player.GetComponent<ContractManager>().RpcEvaluateContracts();
-        }
-
-    }
-
-    [Command]
-    public void CmdMoveGameQuarter()
-    {
-        GameHandler.allGames[playerData.GetGameID()].SetGameRound( GameHandler.allGames[playerData.GetGameID()].GetGameRound() + 1 );
-    }
 
 }

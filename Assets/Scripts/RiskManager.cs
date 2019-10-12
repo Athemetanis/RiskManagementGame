@@ -273,11 +273,12 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     }
 
     // NEXT QUARTER EVALUATION METHODS...
+    [Server]
     public void MoveToTheNextQuarter()
     {   
         CmdSaveCurrentQuarterData(currentQuarter);
         CmdSetNewRefences();
-        CmdUpdateCurrentQuarterData(currentQuarter);
+        CmdLoadNextQuarterData(currentQuarter);
     }
     [Command]
     public void CmdSaveCurrentQuarterData(int currentQuarter)
@@ -354,7 +355,7 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     }
        
     [Command]
-    public void CmdUpdateCurrentQuarterData(int currentQuarter)
+    public void CmdLoadNextQuarterData(int currentQuarter)
     {
         risk1Description = "";
         risk1ImpactAction = "";

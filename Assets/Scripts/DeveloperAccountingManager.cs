@@ -18,6 +18,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
     private SyncListInt uiSpecialistsSalariesQuarters = new SyncListInt() { };
     private SyncListInt integrabilitySpecialistsSalariesQuarters = new SyncListInt() { };
     private SyncListInt riskSharingFeesPaidQuarters = new SyncListInt() { };
+    private SyncListInt terminationFeePaidQuarters = new SyncListInt() { };
     private SyncListInt marketingResearchQuarters = new SyncListInt() { };
     private SyncListInt borrowEmergencyLoanQuarters = new SyncListInt() { };
     private SyncListInt repayEmergencyLoanQuarters = new SyncListInt() { };
@@ -38,6 +39,8 @@ public class DeveloperAccountingManager : NetworkBehaviour
     private int integrabilitySpecialistsSalaries;
     [SyncVar(hook = "OnChangeRiskSharingFeesPaid")]
     private int riskSharingFeesPaid;
+    [SyncVar(hook = "OnChangeTerminationFeePaid")]
+    private int terminationFeePaid;
     [SyncVar(hook = "OnChangeMarketingResearch")]
     private int marketingResearch;
     [SyncVar(hook = "OnChangeBorrowEmergencyLoan")]
@@ -69,6 +72,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
     public int GetUISpecialistsSalaries() { return uiSpecialistsSalaries; }
     public int GetIntegrabilitySpecialistsSalaries() { return integrabilitySpecialistsSalaries; }
     public int GetRishSharingFeesPaid() { return riskSharingFeesPaid; }
+    public int GetTerminationFeePaid() { return terminationFeePaid; }
     public int GetMarketingResearch() { return marketingResearch; }
     public int GetBorrowEmergencyLoan() { return borrowEmergencyLoan; }
     public int GetRepayEmergencyLoan() { return repayEmergencyLoan; }
@@ -94,7 +98,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         }
         LoadQuarterData(currentQuarter);
         UpdateSalariesServer();
-        UpdateRevenueServer();
+        UpdateEstimatedRevenueServer();
     }
 
     public override void OnStartClient()
@@ -120,6 +124,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         uiSpecialistsSalariesQuarters.Insert(0, 0);
         integrabilitySpecialistsSalariesQuarters.Insert(0, 0);
         riskSharingFeesPaidQuarters.Insert(0, 0);
+        terminationFeePaidQuarters.Insert(0, 0);
         marketingResearchQuarters.Insert(0, 0);
         borrowEmergencyLoanQuarters.Insert(0, 0);
         repayEmergencyLoanQuarters.Insert(0, 0);
@@ -139,6 +144,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
                 uiSpecialistsSalariesQuarters.Insert(i, uiSpecialistsSalariesQuarters[i - 1]);
                 integrabilitySpecialistsSalariesQuarters.Insert(i, integrabilitySpecialistsSalariesQuarters[i - 1]);
                 riskSharingFeesPaidQuarters.Insert(i, 0);
+                terminationFeePaidQuarters.Insert(i, 0);
                 marketingResearchQuarters.Insert(i, 0);
                 borrowEmergencyLoanQuarters.Insert(i, 0);
                 repayEmergencyLoanQuarters.Insert(i, 0);
@@ -148,9 +154,9 @@ public class DeveloperAccountingManager : NetworkBehaviour
         beginningCashBalance = endCashBalanceQuarters[quarter - 1]; 
     }
 
-    public (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) GetCorrecpondingQuarterData(int correspondingQuarter)
+    public (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int terminationFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) GetCorrecpondingQuarterData(int correspondingQuarter)
     {
-        return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], salariesQuarters[correspondingQuarter], programmersSalariesQuarters[correspondingQuarter], uiSpecialistsSalariesQuarters[correspondingQuarter], integrabilitySpecialistsSalariesQuarters[correspondingQuarter], riskSharingFeesPaidQuarters[currentQuarter], marketingResearchQuarters[correspondingQuarter],borrowEmergencyLoanQuarters[correspondingQuarter],repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter]);
+        return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], salariesQuarters[correspondingQuarter], programmersSalariesQuarters[correspondingQuarter], uiSpecialistsSalariesQuarters[correspondingQuarter], integrabilitySpecialistsSalariesQuarters[correspondingQuarter], riskSharingFeesPaidQuarters[currentQuarter], terminationFeePaidQuarters[currentQuarter], marketingResearchQuarters[correspondingQuarter],borrowEmergencyLoanQuarters[correspondingQuarter],repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter]);
     }
 
     [Server]
@@ -172,7 +178,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         endCashBalance = ComputeEndCashBalance();
     }
     [Server]
-    public void UpdateRevenueServer()
+    public void UpdateEstimatedRevenueServer()
     {
         int contractPayments = 0;
         foreach (Contract contract in contractManager.GetMyContracts().Values)
@@ -186,11 +192,32 @@ public class DeveloperAccountingManager : NetworkBehaviour
 
         endCashBalance = ComputeEndCashBalance();
     }
-    
+    [Server]
+    public void UpdateRealRevenueServer()
+    {
+        int contractPayments = 0;
+        terminationFeePaid = 0;
+        riskSharingFeesPaid = 0;
+        foreach (Contract contract in contractManager.GetMyContracts().Values)
+        {
+            if (contract.GetContractState() == ContractState.Completed)
+            {
+                contractPayments += contract.GetContractPrice();
+                riskSharingFeesPaid += contract.GetRiskSharingFeePaid();
+            }
+            if(contract.GetContractState() == ContractState.Terminated)
+            {
+                terminationFeePaid += contract.GetTerminationFee();
+            }
+        }
+        revenue = contractPayments;
+        endCashBalance = ComputeEndCashBalance();
+    }
+
     public int ComputeEndCashBalance()
     {
         int endCash = 0;
-        endCash = beginningCashBalance - salaries + revenue - riskSharingFeesPaid - marketingResearch;
+        endCash = beginningCashBalance - salaries + revenue - riskSharingFeesPaid - terminationFeePaid - marketingResearch;
         return endCash;
     }
    
@@ -261,6 +288,15 @@ public class DeveloperAccountingManager : NetworkBehaviour
             developerAccountingUIHandlerCurrent.UpdateRiskSharingFeePaid(this.riskSharingFeesPaid);
         }
     }
+    public void OnChangeTerminationFeePaid(int terminationFeePaid)
+    {
+        this.terminationFeePaid = terminationFeePaid;
+        if (developerAccountingUIHandlerCurrent != null)
+        {
+            developerAccountingUIHandlerCurrent.UpdateTerminationFeepaid(terminationFeePaid);
+        }
+
+    }
     public void OnChangeMarketingResearch(int marketingResearch)
     {
         this.marketingResearch = marketingResearch;
@@ -287,18 +323,34 @@ public class DeveloperAccountingManager : NetworkBehaviour
     }
 
 
+
     // NEXT QUARTER EVALUATION METHODS...
+
+    [Server]
+    public void UpdateCurrentQuarterDataServer()
+    {
+        UpdateRealRevenueServer();
+        UpdateSalariesServer();
+    }
+
+
+
+
+
+    [Server]
     public void MoveToNextQuarter()
     {
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
-        CmdSaveCurrentQuarterData(currentQuarter);
-        CmdSetNewReferences();
-        CmdUpdateCurrentQuarterData();
+               
+
+        SaveCurrentQuarterDataServer(currentQuarter);
+        SetNewReferencesServer();
+
         
     }
-
-    [Command]
-    public void CmdSaveCurrentQuarterData(int currentQuarter)
+        
+    [Server]
+    public void SaveCurrentQuarterDataServer(int currentQuarter)
     {
 
         beginningCashBalanceQuarters.Insert(currentQuarter, beginningCashBalance);
@@ -314,54 +366,32 @@ public class DeveloperAccountingManager : NetworkBehaviour
         endCashBalanceQuarters.Insert(currentQuarter, endCashBalance);
     }
 
-    [Command]
-    public void CmdSetNewReferences()
+    [Server]
+    public void SetNewReferencesServer()
     {
         RpcSetNewReferences();
     }
+
     [ClientRpc]
     public void RpcSetNewReferences()
     {
-        if(developerAccountingUIHandlerCurrent != null)
-        {   
-            if(currentQuarter + 1 == 2)
-            {
-                developerAccountingUIHandlerCurrent = developerAccountingUIHandlerQ2;
-                developerAccountingUIHandlerQ2.gameObject.SetActive(true);
-            }
-            if (currentQuarter + 1 == 3)
-            {
-                developerAccountingUIHandlerCurrent = developerAccountingUIHandlerQ3;
-                developerAccountingUIHandlerQ3.gameObject.SetActive(true);
-            }
-            if (currentQuarter + 1 == 4)
-            {
-                developerAccountingUIHandlerCurrent = developerAccountingUIHandlerQ4;
-                developerAccountingUIHandlerQ4.gameObject.SetActive(true);
-            }
-        }
-    }
-
-    [Command]
-    public void CmdUpdateCurrentQuarterData()
-    {
-        beginningCashBalance = endCashBalance;
-
-        //+ prepocitat nanovo zvysok - nove revnue lebo nemam kontrakt, nove salaries lebo sa moho zmenit pocet zamestnancov, .... 
-        if(currentQuarter + 1 == 2)
+        if (currentQuarter + 1 == 2)
         {
             developerAccountingUIHandlerCurrent = developerAccountingUIHandlerQ2;
+            developerAccountingUIHandlerQ2.gameObject.SetActive(true);
         }
         if (currentQuarter + 1 == 3)
         {
             developerAccountingUIHandlerCurrent = developerAccountingUIHandlerQ3;
+            developerAccountingUIHandlerQ3.gameObject.SetActive(true);
         }
         if (currentQuarter + 1 == 4)
         {
             developerAccountingUIHandlerCurrent = developerAccountingUIHandlerQ4;
+            developerAccountingUIHandlerQ4.gameObject.SetActive(true);
         }
-
     }
+
 
    
 

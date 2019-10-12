@@ -5,16 +5,16 @@ using Mirror;
 
 public struct Feature 
 {
-    public string nameID;
-    public int functionality;
-    public int userfriendliness;
-    public int integrability;
-    public int timeCost;
-    public int difficulty;
+    public readonly string nameID;
+    public readonly int functionality;
+    public readonly int userfriendliness;
+    public readonly int integrability;
+    public readonly int timeCost;
+    public readonly int difficulty;
 
-    public int individualCustomers;
-    public int businessCustomers;
-    public int enterpriseCustomers;
+    public readonly int individualCustomers;
+    public readonly int businessCustomers;
+    public readonly int enterpriseCustomers;
 
     public Feature(string name, int functionality, int integrability, int userfriendliness, int timeCost, int difficulty )
     {
@@ -118,8 +118,6 @@ public class FeatureManager : NetworkBehaviour
         {
             SetupDefaultValues();
         }
-
-        
     }
 
     public override void OnStartClient()
@@ -327,11 +325,14 @@ public class FeatureManager : NetworkBehaviour
      //HOOKS
      */
 
+
+    //HOOKS
     public void OnChangeFeatureAvailable(SyncDictionaryFeatures.Operation op, string key, Feature feature)
     {
         if (featureUIHandler != null)
         {
             featureUIHandler.UpdateFeatureUIList();
+            featureUIHandler.UpdateOutsourcedFeatureUIList();
         }
     }
    
@@ -354,6 +355,7 @@ public class FeatureManager : NetworkBehaviour
         if (featureUIHandler != null)
         {
             featureUIHandler.UpdateFeatureUIList();
+            featureUIHandler.UpdateOutsourcedFeatureUIList();
         }
     }
 
@@ -362,7 +364,21 @@ public class FeatureManager : NetworkBehaviour
         if (featureUIHandler != null)
         {
             featureUIHandler.UpdateFeatureUIList();
+            featureUIHandler.UpdateOutsourcedFeatureUIList();
         }
     }
+
+    // NEXT QUARTER EVALUATION METHODS...
+
+    public void UpdateCurrentQuarterData()
+    {
+        if (featureUIHandler != null)
+        {
+            featureUIHandler.UpdateFeatureUIList();
+            featureUIHandler.UpdateOutsourcedFeatureUIList();
+        }
+
+    }
+
 
 }

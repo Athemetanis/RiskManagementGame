@@ -199,16 +199,6 @@ public class FeatureManager : NetworkBehaviour
         }
 
     }
-    [Server]
-    public void AddFeatureInDevelopmentServer(string name)  //call only from server
-    {
-        if(inDevelopmentFeatures.ContainsKey(name) == false)
-        {
-            inDevelopmentFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
-            UpdateAviableFeaturesServer();
-        }
-
-    }
     [Client]
     public void RemoveFeatureInDevelopment(string name)
     {
@@ -222,14 +212,7 @@ public class FeatureManager : NetworkBehaviour
             inDevelopmentFeatures.Remove(name);
         }
     }
-    [Server]
-    public void RemoveFeatureInDevelopmentServer(string name)
-    {
-        if (inDevelopmentFeatures.ContainsKey(name) == true)
-        {
-            inDevelopmentFeatures.Remove(name);
-        }
-    }
+    
     [Client]
     public void AddFeatureToDone(string name)
     {
@@ -246,17 +229,73 @@ public class FeatureManager : NetworkBehaviour
             doneFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
         }
     }
+
+
+    [Server]
+    public void AddFeatureInDevelopmentServer(string name)  //call only from server
+    {
+        if (inDevelopmentFeatures.ContainsKey(name) == false)
+        {
+            inDevelopmentFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+            UpdateAviableFeatures();
+        }
+
+    }
+    [Server]
+    public void RemoveFeatureInDevelopmentServer(string name)
+    {
+        if (inDevelopmentFeatures.ContainsKey(name) == true)
+        {
+            inDevelopmentFeatures.Remove(name);
+        }
+    }
     [Server]
     public void AddFeatureToDoneServer(string name)
     {
         if (doneFeatures.ContainsKey(name) == false)
         {
             doneFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
-            UpdateAviableFeaturesServer();
+            UpdateAviableFeatures();
         }
     }
     [Server]
-    public void UpdateAviableFeaturesServer()
+    public void AddFeatureToAvailableServer(string name)
+    {
+        if(availableFeatures.ContainsKey(name) != true)
+        {
+            availableFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+        }
+    }
+
+    [Client]
+    public void RemoveFeatureInDevelopmentClient(string name)
+    {
+        if (inDevelopmentFeatures.ContainsKey(name) == true)
+        {
+            inDevelopmentFeatures.Remove(name);
+        }
+    }
+    [Client]
+    public void AddFeatureToDoneClient(string name)
+    {
+        if (doneFeatures.ContainsKey(name) == false)
+        {
+            doneFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+            UpdateAviableFeatures();
+        }
+    }
+    [Client]
+    public void AddFeatureToAvailableClient(string name)
+    {
+        if (availableFeatures.ContainsKey(name) != true)
+        {
+            availableFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+        }
+    }
+
+
+    
+    public void UpdateAviableFeatures()
     {
         List<Feature> temp = new List<Feature>(availableFeatures.Values);
         foreach (Feature feature in temp)

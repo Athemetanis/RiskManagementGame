@@ -77,7 +77,6 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
 
     public void UpdateDropdownOptions(int count)
     {
-        Debug.Log("updating dropdown options");
         orderDropdown.ClearOptions();
         GenerateDropdownOptions(count);
     }
@@ -127,10 +126,6 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
         }
     }
 
-
-
-
-
     public void SetGraphTexts(int[] graphDays)
     {
         point1Text.text = graphDays[0].ToString();
@@ -144,7 +139,6 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
         point9Text.text = graphDays[8].ToString();
         point10Text.text = graphDays[9].ToString();
         point11Text.text = graphDays[10].ToString();
-
     }
 
     public void UpdateDevelopmentTime() //trigered when InputFieldChanged
@@ -160,8 +154,6 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
     {
         if (initialized)
         {
-            //Debug.LogError("updating order on: " + orderDropdown.value);
-           // Debug.LogError(contractIDText.text);
             if (orderDropdown.value == 0)
             {
                 scheduleUIHandler.UpdateFeatureOrder(contractIDText.text, "none");

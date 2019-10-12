@@ -4,7 +4,7 @@ using UnityEngine;
 using Mirror;
 //using System.Linq;
 
-public enum ContractState { Proposal, InNegotiations, Final, Accepted, Rejected, Done }
+public enum ContractState { Proposal, InNegotiations, Final, Accepted, Rejected, Completed, Terminated }
 
 public class Contract
 {   
@@ -21,6 +21,9 @@ public class Contract
     private List<string> history;
     private int riskSharingFee;
     private int trueDevelopmentTime;
+    private int riskSharingFeePaid;
+    private int terminationFee;
+    private int terminationFeePaid;
   
 
     //GETTERS & SETTERS
@@ -48,6 +51,12 @@ public class Contract
     public int GetContractRiskSharingFee() { return riskSharingFee; }
     public void SetTrueDevelopmentTime(int trueDevelopmentTime) { this.trueDevelopmentTime = trueDevelopmentTime; }
     public int GetTrueDevelopmentTime() { return trueDevelopmentTime; }
+    public void SetRiskSharingFeePaid(int riskSharingFeePaid) { this.riskSharingFeePaid = riskSharingFeePaid; }
+    public int GetRiskSharingFeePaid() { return riskSharingFeePaid;}
+    public void SeTerminationFee(int terminationFee) { this.terminationFee = terminationFee; }
+    public int GetTerminationFee() { return terminationFee; }
+    public int GetTerminationFeePaid() { return terminationFeePaid; }
+
 
 
     //CONSTRUCTOR
@@ -64,7 +73,29 @@ public class Contract
         this.price = price;
         this.history = new List<string> (history);
         this.riskSharingFee = riskSharingFee;
-        this.trueDevelopmentTime = trueDevelopmentTime;                             
+        this.trueDevelopmentTime = trueDevelopmentTime; //0 by creation
+        riskSharingFeePaid = 0;
+        terminationFee = 500000;
+        terminationFeePaid = 0;
+    }
+
+    public Contract(string contractID, string gameID, string providerID, string developerID, Feature feature, ContractState state, int turn, int delivery, int price, string[] history, int riskSharingFee, int trueDevelopmentTime, int riskSharingFeePaid, int terminationFeePaid)
+    {
+        this.contractID = contractID;
+        this.gameID = gameID;
+        this.providerID = providerID;
+        this.developerID = developerID;
+        this.feature = feature;
+        this.state = state;
+        this.turn = turn;
+        this.delivery = delivery;
+        this.price = price;
+        this.history = new List<string>(history);
+        this.riskSharingFee = riskSharingFee;
+        this.trueDevelopmentTime = trueDevelopmentTime; //0 by creation
+        this.riskSharingFeePaid = riskSharingFeePaid;
+        terminationFee = 500000;
+        this.terminationFeePaid = terminationFeePaid;
     }
     //METHODS
     public void AddHistoryRecord(string record)
@@ -74,5 +105,9 @@ public class Contract
     public void MoveTurn()
     {
         turn = turn + 1;
+    }
+    public void AssignTerminationFeePaid()
+    {
+        terminationFeePaid = terminationFee;
     }
 }

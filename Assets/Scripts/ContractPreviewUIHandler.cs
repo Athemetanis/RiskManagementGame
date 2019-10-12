@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ContractPreviewUIHandler : MonoBehaviour
 {
@@ -26,8 +27,18 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public Text scheduleInfoText;
     public Text warningText;
 
-    public GameObject historyTextUIComponentPrefab;
+    //-------Results
+    public TextMeshProUGUI agreedPriceText;
+    public TextMeshProUGUI agreedDeliveryText;
+    public TextMeshProUGUI agreedRiskSharingFeeText;
+    public TextMeshProUGUI actualDeliveryText;
+    public TextMeshProUGUI riskSharingFeePaidText;
+    public TextMeshProUGUI terminationFeePaidText;
 
+    public GameObject negotiationContainer;
+    public GameObject resultContianer;
+
+    public GameObject historyTextUIComponentPrefab;
     private ContractUIHandler contractUIHandler;
 
     private string price;
@@ -46,6 +57,14 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public void SetState(ContractState state) { stateText.text = state.ToString(); }
     public void SetScheduleInfoText(string scheduleInfo) { scheduleInfoText.text = scheduleInfo; }
     public void SetRiskSharingFee(int riskSharingFee) { this.riskSharingFee = riskSharingFee.ToString(); }
+
+    public void SetAgreedPriceText(int agreedPrice) { agreedPriceText.text = agreedPrice.ToString("n0"); }
+    public void SetAgreedDeliveryText(int agreedDelivery) { agreedDeliveryText.text = agreedDelivery.ToString("n0"); }
+    public void SetAgreedRiskSharingFee(int riskSharingFee) { agreedRiskSharingFeeText.text = riskSharingFee.ToString("n0"); }
+    public void SetActualDelivery(int actualDelivery) { actualDeliveryText.text = actualDelivery.ToString("n0"); }
+    public void SetRiskSharingFeePaid(int riskSharingFeePaid) { riskSharingFeePaidText.text = riskSharingFeePaid.ToString("n0"); }
+    public void SetTerminationFeePaid(int terminationFeePaid) { terminationFeePaidText.text = terminationFeePaid.ToString("n0"); }
+
 
     //METHODS
     public void DestroyGameObject()
@@ -181,7 +200,6 @@ public class ContractPreviewUIHandler : MonoBehaviour
     }
     public void SendBackContract()
     {
-        Debug.Log("sending changes");
         contractUIHandler.SendBackContract(contractIDText.text, priceIF.text, deliveryIF.text, riskSharingFeeIF.text);
         DestroyGameObject();
     }
@@ -210,4 +228,8 @@ public class ContractPreviewUIHandler : MonoBehaviour
             warningText.gameObject.SetActive(false);
         }
     }
+    public void EnableNegotiationContainer() { negotiationContainer.SetActive(true); }
+    public void DisableNegotiationContainer() { negotiationContainer.SetActive(false); }
+    public void EnadleResultContainer() { resultContianer.SetActive(true); }
+    public void DisableResultContainer() { resultContianer.SetActive(false); }
 }

@@ -213,7 +213,6 @@ public class PlayerManager : NetworkBehaviour {
             return;
         }
         Debug.Log("trying to find my playerdata object" + playerID);
-
         Debug.Log(GameHandler.allPlayers.ContainsKey(playerGameID));
         Debug.Log(GameHandler.allPlayers[playerGameID].ContainsKey(playerID));
 
@@ -276,7 +275,6 @@ public class PlayerManager : NetworkBehaviour {
     {
         yield return new WaitForSeconds(1);
         RpcGetPlayerObject();
-
     }
 
     public void CreatePlayerUI()

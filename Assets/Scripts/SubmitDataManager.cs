@@ -37,8 +37,8 @@ public class SubmitDataManager : NetworkBehaviour
     {
         foreach (GameObject player in GameHandler.allGames[playerData.GetGameID()].GetPlayerList().Values)
         {
-            player.GetComponent<ContractManager>().EvaluateContracts();
-            player.GetComponent<ContractManager>().RpcEvaluateContracts();
+            //player.GetComponent<ContractManager>().EvaluateContracts();
+            //player.GetComponent<ContractManager>().RpcEvaluateContracts();
         }
 
     }

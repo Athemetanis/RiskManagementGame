@@ -70,7 +70,6 @@ public class FirmManager : NetworkBehaviour
     {
         if (GameHandler.allGames[gameID].TryToChangeFirmName(playerID, newFirmName, oldFirmName))
         {
-            Debug.Log("developerovo meno uspesne zmenene");
             CmdSetFirmsName(newFirmName);
         }
         else
@@ -90,8 +89,6 @@ public class FirmManager : NetworkBehaviour
 
     public void ChangeFirmDescription(string firmDescription)
     {
-        Debug.Log(firmName + " a " + firmDescription);
-
         CmdChangeFirmDescription(firmDescription);
         CmdSetFirmsDescription(firmDescription);
     }
@@ -99,18 +96,12 @@ public class FirmManager : NetworkBehaviour
     [Command]
     public void CmdChangeFirmDescription(string firmDescription)
     {
-        Debug.Log("SERVER: " + firmName + " a " + firmDescription);
         GameHandler.allGames[gameID].UpdateFirmDescription(firmName, firmDescription);
     }
-
-
-
-
-
+          
     //---------HOOKS-------------------------///
     public void OnChangeFirmName(string firmName)
     {
-        Debug.Log("nastavujem meno firmy na klientovi");
         this.firmName = firmName;
         if (firmUIHandler != null)
         {
@@ -123,7 +114,6 @@ public class FirmManager : NetworkBehaviour
     }
     public void OnChangeFirmDescription(string firmDescription)
     {
-        Debug.Log("nastavujem popis firmy na klientovi");
         this.firmDescription = firmDescription;
         if (firmUIHandler != null)
         {

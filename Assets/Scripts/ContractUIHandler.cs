@@ -7,8 +7,8 @@ public class ContractUIHandler : MonoBehaviour
 {   
     //VARIABLES
 
-    public GameObject contractListContent;
-    public GameObject rejectedContractListContent;
+    public GameObject currentcontractListContent;
+    public GameObject contractHistoryListContent;
     public GameObject contractUIComponentPrefab;
     public GameObject contractPreviewUIPrefab;
     public GameObject contractContentUI;
@@ -66,11 +66,13 @@ public class ContractUIHandler : MonoBehaviour
             GenerateDeveloperDropdownOptions();
             UpdateDeveloperFirmList(GameHandler.allGames[contractManager.GetGameID()].GetListDeveloperFirmNameDescription());
             UpdateUIContractListsContents();
+            UpdateResultContractListContent();
             UpdateContractOverview();
         }
         else  //som developer
         {
             UpdateUIContractListsContents();
+            UpdateResultContractListContent();
         }
     }
 
@@ -109,8 +111,7 @@ public class ContractUIHandler : MonoBehaviour
             StartCoroutine(Wait5SecondsAndDisable());
         }
     }
-
-    public void ContractNotificationOFF() //trigered by UI when contractTabActivated or ked je contract tab aktivne a vyprsi urcity casovy limit? 
+    public void ContractNotificationOFF() //trigered by UI when contractTabActivated or ked je contract tab aktivne a vyprsi urcity casovy limit
     {
         if (NotificationImage.activeSelf == true)
         {
@@ -118,7 +119,6 @@ public class ContractUIHandler : MonoBehaviour
         }
 
     }
-
     IEnumerator Wait5SecondsAndDisable()
     {
         yield return new WaitForSeconds(5);
@@ -151,8 +151,6 @@ public class ContractUIHandler : MonoBehaviour
    
     public void UpdateDeveloperFirmList(Dictionary<string, string> developerFirmNameDescription)
     {
-        Debug.Log("idem updatovat developerov");
-
         foreach(Transform child in developerListContent.transform)
         {
             GameObject.Destroy(child.gameObject);
@@ -160,7 +158,6 @@ public class ContractUIHandler : MonoBehaviour
 
         foreach (KeyValuePair<string, string> developerFirm in developerFirmNameDescription)
         {
-            Debug.Log("vytvaram prveho developera");
             GameObject developerUIComponent = Instantiate(developerUIComponentPrefab);
             developerUIComponent.transform.SetParent(developerListContent.transform, false);
             DeveloperUIComponentHandler developerUIComponentHandler = developerUIComponent.GetComponent<DeveloperUIComponentHandler>();
@@ -182,7 +179,6 @@ public class ContractUIHandler : MonoBehaviour
             createContractButton.interactable = false;
         }
     }
-
     public void UpdateContractOverview()
     {   
         foreach(Transform child in overviewContractListContent.transform)
@@ -207,16 +203,15 @@ public class ContractUIHandler : MonoBehaviour
 
     public void UpdateUIContractListsContents()
     {
-        Debug.Log("ResetingContractUIList");
         Dictionary<string, Contract> myContracts = contractManager.GetMyContracts();
 
-        foreach (Transform child in contractListContent.transform)
+        foreach (Transform child in currentcontractListContent.transform)
         { GameObject.Destroy(child.gameObject); }
 
         foreach (Contract contract in myContracts.Values)
         {   
             GameObject contractUIComponent = Instantiate(contractUIComponentPrefab);
-            contractUIComponent.transform.SetParent(contractListContent.transform, false);
+            contractUIComponent.transform.SetParent(currentcontractListContent.transform, false);
             ContractUIComponentHandler contractUIComponentHandler = contractUIComponent.GetComponent<ContractUIComponentHandler>();
             contractUIComponentHandler.SetContractUIHandler(this);
             contractUIComponentHandler.SetContractIDText(contract.GetContractID());
@@ -225,8 +220,6 @@ public class ContractUIHandler : MonoBehaviour
             //PROVIDER
             if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
             {
-                //Debug.Log(contractManager.GetPlayerRole());
-                //Debug.Log(contract.GetContractTrun());
                 contractUIComponentHandler.SetPartnersNameText(contractManager.GetFirmName(contract.GetDeveloperID()));
               
                 if (contract.GetContractTurn() % 2 == 0)  //providers turn
@@ -243,9 +236,6 @@ public class ContractUIHandler : MonoBehaviour
             }
             else //DEVELOPER
             {
-                //Debug.Log(contractManager.GetPlayerRole());
-                //Debug.Log(contract.GetContractTrun());
-                //Debug.Log(contract.GetProviderID());
                 contractUIComponentHandler.SetPartnersNameText(contractManager.GetFirmName(contract.GetProviderID()));
                
                 if (contract.GetContractTurn() % 2 == 0) //providers turn
@@ -259,13 +249,42 @@ public class ContractUIHandler : MonoBehaviour
                     contractUIComponentHandler.DisableDetailButton();
                 }
             }
-            if (contract.GetContractState() == ContractState.Accepted || contract.GetContractState() == ContractState.Done || contract.GetContractState() == ContractState.Rejected)
+            if (contract.GetContractState() == ContractState.Accepted || contract.GetContractState() == ContractState.Terminated || contract.GetContractState() == ContractState.Completed || contract.GetContractState() == ContractState.Rejected)
             {
                 contractUIComponentHandler.DisableEditButton();
                 contractUIComponentHandler.EnableDetailButtton();
                 contractUIComponentHandler.SetPlayerTurnText("none");
 
             }
+        }
+    }
+    public void UpdateResultContractListContent()
+    {
+        Dictionary<string, Contract> myContractsHistory = contractManager.GetMyContractsHistory();
+
+        foreach (Transform child in contractHistoryListContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
+        foreach (Contract contract in myContractsHistory.Values)
+        {
+            GameObject contractUIComponent = Instantiate(contractUIComponentPrefab);
+            contractUIComponent.transform.SetParent(contractHistoryListContent.transform, false);
+            ContractUIComponentHandler contractUIComponentHandler = contractUIComponent.GetComponent<ContractUIComponentHandler>();
+            contractUIComponentHandler.SetContractUIHandler(this);
+            contractUIComponentHandler.SetContractIDText(contract.GetContractID());
+            contractUIComponentHandler.SetStatus(contract.GetContractState().ToString());
+            if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
+            {
+                contractUIComponentHandler.SetPartnersNameText(contractManager.GetFirmName(contract.GetDeveloperID()));
+            }
+            else //DEVELOPER
+            {
+                contractUIComponentHandler.SetPartnersNameText(contractManager.GetFirmName(contract.GetProviderID()));
+            }
+            contractUIComponentHandler.DisableEditButton();
+            contractUIComponentHandler.DisableDetailButton();
+            contractUIComponentHandler.EnableResultsButton();
+            contractUIComponentHandler.SetPlayerTurnText("none");
         }
     }
 
@@ -303,6 +322,8 @@ public class ContractUIHandler : MonoBehaviour
             }
         }
         else { contractPreviewUIHandler.DisableScheduleInfoText(); }
+        contractPreviewUIHandler.EnableNegotiationContainer();
+        contractPreviewUIHandler.DisableResultContainer();
     }
     public void GenerateContractEditPreview(string contractID)
     {
@@ -350,6 +371,32 @@ public class ContractUIHandler : MonoBehaviour
             }
         }
         else { contractPreviewUIHandler.DisableScheduleInfoText(); }
+        contractPreviewUIHandler.EnableNegotiationContainer();
+        contractPreviewUIHandler.DisableResultContainer();
+    }
+    public void GeneteContractResultsPreview(string contractID)
+    {
+        Contract contract = contractManager.GetMyContracts()[contractID];
+        GameObject contractPreviewUI = Instantiate(contractPreviewUIPrefab);
+        contractPreviewUI.transform.SetParent(contractContentUI.transform, false);
+        ContractPreviewUIHandler contractPreviewUIHandler = contractPreviewUI.GetComponent<ContractPreviewUIHandler>();
+        contractPreviewUIHandler.SetContractUIHandler(this);
+        contractPreviewUIHandler.SetContractIDText(contract.GetContractID());
+        contractPreviewUIHandler.SetDeveloperFirmText(contractManager.GetFirmName(contract.GetDeveloperID()));
+        contractPreviewUIHandler.SetProviderFirmText(contractManager.GetFirmName(contract.GetProviderID()));
+        contractPreviewUIHandler.SetFeatureText(contract.GetContractFeature().nameID);
+        contractPreviewUIHandler.SetState(contract.GetContractState());
+        contractPreviewUIHandler.GenerateHistoryRecord(contract.GetContractHistory());
+        contractPreviewUIHandler.SetAgreedPriceText(contract.GetContractPrice());
+        contractPreviewUIHandler.SetAgreedDeliveryText(contract.GetContractDelivery());
+        contractPreviewUIHandler.SetAgreedRiskSharingFee(contract.GetRiskSharingFeePaid());
+        contractPreviewUIHandler.SetActualDelivery(contract.GetTrueDevelopmentTime());
+        contractPreviewUIHandler.SetRiskSharingFeePaid(contract.GetRiskSharingFeePaid());
+        contractPreviewUIHandler.SetTerminationFeePaid(contract.GetTerminationFeePaid());
+        contractPreviewUIHandler.EnadleResultContainer();
+        contractPreviewUIHandler.DisableNegotiationContainer();
+
+  
     }
 
 

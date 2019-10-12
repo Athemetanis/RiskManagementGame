@@ -48,9 +48,8 @@ public class ScheduleUIHandler : MonoBehaviour
         foreach (Transform child in scheduleListContent.transform)
         { GameObject.Destroy(child.gameObject); }
 
-        Debug.Log("schedule contains " + scheduleManager.GetSchedule().Count + " features");
         int previousFeatureEnd = 0;
-        for(int i = 1; i <= scheduleManager.GetScheduledFeatures().Count; i++)
+        for(int i = 1; i < scheduleManager.GetScheduledFeatures().Count; i++)
         { 
             if (scheduleManager.GetSchedule().ContainsKey(i))
             {

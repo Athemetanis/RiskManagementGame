@@ -12,6 +12,8 @@ public class ContractUIComponentHandler : MonoBehaviour
     public Text statusText;
     public Button editButton;
     public Button detailButton;
+    public Button resultButton;
+
 
     private ContractUIHandler contractUIHandler;
 
@@ -43,6 +45,14 @@ public class ContractUIComponentHandler : MonoBehaviour
     {
         editButton.gameObject.SetActive(true);
     }
+    public void EnableResultsButton()
+    {
+        resultButton.gameObject.SetActive(true);
+    }
+    public void DisableResultsButton()
+    {
+        resultButton.gameObject.SetActive(false);
+    }
 
     public void GenerateContractPreview()
     {
@@ -52,6 +62,9 @@ public class ContractUIComponentHandler : MonoBehaviour
     {
         contractUIHandler.GenerateContractEditPreview(contractIDText.text);
     }
-
+    public void GenerateContractResultsPreview()
+    {
+        contractUIHandler.GeneteContractResultsPreview(contractIDText.text);
+    }
 
 }

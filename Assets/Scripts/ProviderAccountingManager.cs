@@ -258,10 +258,10 @@ public class ProviderAccountingManager : NetworkBehaviour
         }
         endCashBalance = ComputeEndCashBalance();
     }
+
     [Server]
     public void UpdateContractPaymentsServer()
     {
-        Debug.LogWarning("UpdatingContractPayments");
         contractPayments = 0;
         foreach (Contract contract in contractManager.GetMyContracts().Values)
         {

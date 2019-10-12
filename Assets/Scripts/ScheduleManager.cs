@@ -176,9 +176,8 @@ public class ScheduleManager : NetworkBehaviour
 
         minDevelopmentDays = (int)System.Math.Round(((float)overallDevelopmentTime * 0.8), System.MidpointRounding.AwayFromZero);
         maxDevelopmentDays = (int)System.Math.Round(((float)overallDevelopmentTime * 1.2), System.MidpointRounding.AwayFromZero);
-        //Debug.LogWarning(programmers + " , " + uiSpecialists + " , " + integrabilitySpecialists);
-        //Debug.LogWarning(functionDevelopmentTime + " , " + uiDevelopmetTime + " , " + integrabilityDevelopmentTime);
-        //Debug.LogError( " overall: " + overallDevelopmentTime + " min: " + minDevelopmentDays  + "max: " + maxDevelopmentDays);
+
+        Debug.Log("overallDevelopmentTime: " + overallDevelopmentTime);
         if (feature.difficulty == 1)   // y = ax+ b; a=  100/ dayrange; b = -1 * a * minimumdays;   y = percentage; x = day 
         {
             if (overallDevelopmentTime > 48)
@@ -202,7 +201,16 @@ public class ScheduleManager : NetworkBehaviour
                     }
                 }
             }
-            else if (overallDevelopmentTime <= 1)   //what should happen?  connstant development time? 
+            else if(overallDevelopmentTime  < 0)
+            {
+                graphPoints.Add(new Vector3(0, 0));
+                graphPoints.Add(new Vector3(11 * xAxisScale, 0));
+                for (int i = 0; i <= 10; i++)
+                {
+                    graphDays[i] = i;
+                }
+            }
+            else if (overallDevelopmentTime == 1 || overallDevelopmentTime == 0)   //what should happen?  connstant development time? YES: 1 day
             {
                 graphPoints.Add(new Vector3(0, 0));
                 graphPoints.Add(new Vector3(1 * xAxisScale, 0));
@@ -425,4 +433,81 @@ public class ScheduleManager : NetworkBehaviour
             }
         }
     }
+
+    public void EvaluateTrueDevelopmentTime()
+    {
+        int previousFetureEnd = 0;
+        for (int i = 1; i < scheduledFeatures.Count; i++)
+        {
+            if (scheduleOrder.ContainsKey(i))
+            {   
+                Feature feature = scheduledFeatures[scheduleOrder[i]].GetFeature();
+                string contractID = scheduledFeatures[scheduleOrder[i]].GetContractID();
+                //contractManager.GetMyContracts()[contractID].SetStartDevelopmentDay(previousFetureEnd);
+                int averageDevelopmentTime = feature.timeCost;
+                int functionality = feature.functionality;
+                int userfriendliness = feature.userfriendliness;
+                int integrability = feature.integrability;
+
+                float unitComplexity = averageDevelopmentTime / (functionality + userfriendliness + integrability);
+                float functionComplexity = unitComplexity * functionality;
+                float uiComplexity = unitComplexity * userfriendliness;
+                float integrationComplexity = unitComplexity * integrability;
+
+                int programmers = humanRecourcesManager.GetProgrammersCount();
+                int uiSpecialists = humanRecourcesManager.GetUISPecialistsCount();
+                int integrabilitySpecialists = humanRecourcesManager.GetIntegrabilitySpecialistsCount();
+
+                int functionDevelopmentTime = (int)System.Math.Round(functionComplexity / (programmers + uiSpecialists + integrabilitySpecialists), System.MidpointRounding.AwayFromZero);
+                int uiDevelopmetTime = (int)System.Math.Round(uiComplexity / (programmers + uiSpecialists * 2 + integrabilitySpecialists), System.MidpointRounding.AwayFromZero);
+                int integrabilityDevelopmentTime = (int)System.Math.Round(integrationComplexity / (programmers + uiSpecialists + integrabilitySpecialists * 2), System.MidpointRounding.AwayFromZero);
+
+                int overallDevelopmentTime = functionDevelopmentTime + uiDevelopmetTime + integrabilityDevelopmentTime;
+
+                //int xAxisScale = 20;
+                int minDevelopmentDays;
+                int maxDevelopmentDays;
+
+                int trueDevelopmentTime = 0;
+                int truDevelopmentEnd = 0;                //List<Vector3> graphPoints = new List<Vector3>();
+                ///int[] graphDays = new int[11] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+                minDevelopmentDays = (int)System.Math.Round(((float)overallDevelopmentTime * 0.8), System.MidpointRounding.AwayFromZero);
+                maxDevelopmentDays = (int)System.Math.Round(((float)overallDevelopmentTime * 1.2), System.MidpointRounding.AwayFromZero);
+
+                if (feature.difficulty == 1)   // y = ax+ b; a=  100/ dayrange; b = -1 * a * minimumdays;   y = percentage; x = day 
+                {   
+                    if(previousFetureEnd >= 60)  //development canceled
+                    {
+                        trueDevelopmentTime = 0;
+                        truDevelopmentEnd = 0;
+                    }
+                    else if (overallDevelopmentTime < 0) //imposible development 
+                    {
+                        trueDevelopmentTime = 0;
+                        truDevelopmentEnd = 0;
+                    }
+                    if (overallDevelopmentTime == 1 || overallDevelopmentTime == 0)  //very shor development time 
+                    {
+                        trueDevelopmentTime = 1;
+                        truDevelopmentEnd = previousFetureEnd + trueDevelopmentTime;
+                    }
+                    else  
+                    {
+                        int percentage = Random.Range(1, 101);
+                        int o = (maxDevelopmentDays - minDevelopmentDays) / 100;
+                        int h = minDevelopmentDays;
+                        trueDevelopmentTime = o * percentage + h;
+                        truDevelopmentEnd = previousFetureEnd + trueDevelopmentTime;
+                    }
+                }
+                Contract myContract = contractManager.GetMyContracts()[contractID];
+                myContract.SetTrueDevelopmentTime(truDevelopmentEnd);
+                previousFetureEnd = truDevelopmentEnd;
+            }            
+        }
+    }
+
+
+
 }

@@ -58,15 +58,12 @@ public class HumanResourcesManager : NetworkBehaviour
 
     private void Awake()
     {
-       developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
-        /*Debug.LogWarning("AWAKE snazim sa ziskat developerAccounting Manager s vysledkom: " );
-        Debug.LogWarning(developerAccountingManager == null);
-        */
-        
+               
     }
 
     public override void OnStartServer()
     {
+        developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
         scheduleManager = this.gameObject.GetComponent<ScheduleManager>();
         developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
 
@@ -74,7 +71,6 @@ public class HumanResourcesManager : NetworkBehaviour
         {
             SetupDefaultValues();
         }
-
     }
 
     public override void OnStartClient()

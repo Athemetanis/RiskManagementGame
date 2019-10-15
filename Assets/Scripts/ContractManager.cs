@@ -18,6 +18,7 @@ public class ContractManager : NetworkBehaviour
     private ScheduleManager scheduleManager;
     private CustomersManager customersManager;
     private FeatureManager featureManager;
+    private PlayerData playerData;
 
 
     //GETTERS & SETTERS
@@ -34,6 +35,7 @@ public class ContractManager : NetworkBehaviour
 
     void Start() //both server & client
     {
+        playerData = this.gameObject.GetComponent<PlayerData>();
         playerRole = this.gameObject.GetComponent<PlayerData>().GetPlayerRole();
         gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
         playerID = this.gameObject.GetComponent<PlayerData>().GetPlayerID();
@@ -41,6 +43,7 @@ public class ContractManager : NetworkBehaviour
         scheduleManager = this.gameObject.GetComponent<ScheduleManager>();
         customersManager = this.gameObject.GetComponent<CustomersManager>();
         featureManager = this.gameObject.GetComponent<FeatureManager>();
+
     }
 
 
@@ -476,7 +479,13 @@ public class ContractManager : NetworkBehaviour
             string contractID = contract.GetContractID();
             if (contract.GetContractState() != ContractState.Accepted)
             {
-                RejectContractDuringEvaluationServer(contractID);
+                ContractManager developerCM = GameHandler.allGames[gameID].GetDeveloper(myContracts[contractID].GetDeveloperID()).GetComponent<ContractManager>();
+                ContractManager providerCM = GameHandler.allGames[gameID].GetProvider(myContracts[contractID].GetProviderID()).GetComponent<ContractManager>();
+                myContracts[contractID].SetContractState(ContractState.Rejected);
+                string message = "Contract was automaticlly rejected during quarter evaluation.";
+                myContracts[contractID].AddHistoryRecord(message);
+                developerCM.RpcRejectContractEvaluation(contractID, message);
+                providerCM.RpcRejectContractEvaluation(contractID, message);
             }
         }
         if (scheduleManager != null)
@@ -489,12 +498,55 @@ public class ContractManager : NetworkBehaviour
         }
         foreach (Contract contract in myContracts.Values)
         {
+            string contractID = contract.GetContractID();
             if (contract.GetContractState() == ContractState.Accepted)
             {
-                EvaluateAcceptedContract(contract.GetContractID());
+                ContractManager developerCM = GameHandler.allGames[gameID].GetDeveloper(myContracts[contractID].GetDeveloperID()).GetComponent<ContractManager>();
+                ContractManager providerCM = GameHandler.allGames[gameID].GetProvider(myContracts[contractID].GetProviderID()).GetComponent<ContractManager>();
+                if (contract.GetTrueDeliveryTime() == 0)
+                {
+                    contract.AssignTerminationFeePaid();
+                    string message = "Contract was terminated by developer due unfeasible development. Termination fee was paid by developer.";
+                    contract.SetContractState(ContractState.Terminated);
+                    developerCM.RpcEvaluateTerminatedContract(contract.GetContractID(), message, contract.GetTrueDeliveryTime(), contract.GetRiskSharingFeePaid());
+                    providerCM.RpcEvaluateTerminatedContract(contract.GetContractID(), message, contract.GetTrueDeliveryTime(), contract.GetRiskSharingFeePaid());
+                    providerCM.GetFeatureManager().RemoveFeatureInDevelopmentServer(contract.GetContractFeature().nameID);
+                    providerCM.GetFeatureManager().AddFeatureToAvailableServer(contract.GetContractFeature().nameID);
+                }
+                else
+                if (contract.GetTrueDeliveryTime() > contract.GetContractDelivery())
+                {
+                    int deliveryDelay = contract.GetTrueDeliveryTime() - contract.GetContractDelivery();
+                    contract.SetRiskSharingFeePaid(deliveryDelay * contract.GetContractRiskSharingFee());
+                    string message = "Delivery time was not fulfilled. Risk sahring fee was paid by developer.";
+                    contract.SetContractState(ContractState.Completed);
+                    developerCM.RpcEvaluateCompletedContract(contract.GetContractID(), message, contract.GetTrueDeliveryTime(), contract.GetRiskSharingFeePaid());
+                    providerCM.RpcEvaluateCompletedContract(contract.GetContractID(), message, contract.GetTrueDeliveryTime(), contract.GetRiskSharingFeePaid());
+                    providerCM.GetFeatureManager().RemoveFeatureInDevelopmentServer(contract.GetContractFeature().nameID);
+                    providerCM.GetFeatureManager().AddFeatureToDoneServer(contract.GetContractFeature().nameID);
+
+                }
+                else
+                if (contract.GetTrueDeliveryTime() <= contract.GetContractDelivery())
+                {
+                    string message = "Delivery time was fulfilled. No risk sharing fee has been paid by developer.";
+                    contract.SetContractState(ContractState.Completed);
+                    developerCM.RpcEvaluateCompletedContract(contract.GetContractID(), message, contract.GetTrueDeliveryTime(), contract.GetRiskSharingFeePaid());
+                    providerCM.RpcEvaluateCompletedContract(contract.GetContractID(), message, contract.GetTrueDeliveryTime(), contract.GetRiskSharingFeePaid());
+                    providerCM.GetFeatureManager().RemoveFeatureInDevelopmentServer(contract.GetContractFeature().nameID);
+                    providerCM.GetFeatureManager().AddFeatureToDoneServer(contract.GetContractFeature().nameID);
+                }
             }
         }
+        //Now all conctract are evaluated and I can update other manager accordingly;
+        if(playerRole == PlayerRoles.Developer)
+        {
+            playerData.UpdateCurrentQuarterDataDeveloper();
+            GameHandler.allGames[gameID].AddDeveloperToEvaluated();
+        }
     }
+
+
     [Server]
     public void RejectContractDuringEvaluationServer(string contractID)
     {
@@ -505,12 +557,6 @@ public class ContractManager : NetworkBehaviour
         myContracts[contractID].AddHistoryRecord(message);
         developerCM.RpcRejectContractEvaluation(contractID, message);
         providerCM.RpcRejectContractEvaluation(contractID, message);
-    }
-    [ClientRpc]
-    public void RpcRejectContractEvaluation(string contractID, string message)
-    {
-        myContracts[contractID].SetContractState(ContractState.Rejected);
-        myContracts[contractID].AddHistoryRecord(message);
     }
     [Server]
     public void EvaluateAcceptedContract(string contractID)
@@ -552,34 +598,45 @@ public class ContractManager : NetworkBehaviour
             providerCM.GetFeatureManager().AddFeatureToDoneServer(contract.GetContractFeature().nameID);
         }
     }
+
+    [ClientRpc]
+    public void RpcRejectContractEvaluation(string contractID, string message)
+    {
+        Debug.Log(contractID);
+        myContracts[contractID].SetContractState(ContractState.Rejected);
+        myContracts[contractID].AddHistoryRecord(message);
+    }
+
     [ClientRpc]
     public void RpcEvaluateTerminatedContract(string contractID, string message, int trueDevelopmentTime, int riskSharingFeePaid)
-    {   
+    {
+        Debug.Log(contractID);
         myContracts[contractID].SetContractState(ContractState.Terminated);
         myContracts[contractID].AddHistoryRecord(message);
         myContracts[contractID].SetTrueDeliveryTime(trueDevelopmentTime);
         myContracts[contractID].SetRiskSharingFeePaid(riskSharingFeePaid);
         myContracts[contractID].AssignTerminationFeePaid();
-        if(featureManager != null)
+        if (contractUIHandler != null)
         {
-            featureManager.RemoveFeatureInDevelopmentClient(myContracts[contractID].GetContractFeature().nameID);
-            featureManager.AddFeatureToAvailableClient(myContracts[contractID].GetContractFeature().nameID);
-            
+            contractUIHandler.UpdateUIContractListsContents();
         }
     }
     [ClientRpc]
     public void RpcEvaluateCompletedContract(string contractID, string message, int trueDevelopmentTime, int riskSharingFeePaid)
     {
+        Debug.Log(contractID);
+        Debug.Log("true developmetn time " + trueDevelopmentTime);
         myContracts[contractID].SetContractState(ContractState.Completed);
         myContracts[contractID].AddHistoryRecord(message);
         myContracts[contractID].SetTrueDeliveryTime(trueDevelopmentTime);
         myContracts[contractID].SetRiskSharingFeePaid(riskSharingFeePaid);
-        if (featureManager != null)
+        if(contractUIHandler != null)
         {
-            featureManager.RemoveFeatureInDevelopmentClient(myContracts[contractID].GetContractFeature().nameID);
-            featureManager.AddFeatureToDoneClient(myContracts[contractID].GetContractFeature().nameID);
+            contractUIHandler.UpdateUIContractListsContents();
         }
     }
+
+
     //CONTRACT EVALUATION METHODS END
 
     [Server]
@@ -599,15 +656,21 @@ public class ContractManager : NetworkBehaviour
     {
         foreach (Contract contract in myContracts.Values)
         {
-            if (contract.GetContractState() == ContractState.Accepted)
+            if (contract.GetContractState() == ContractState.Terminated || contract.GetContractState() == ContractState.Completed)
             {
                 myContractsHistory.Add(contract.GetContractID(), contract);
             }
         }
-        myContracts.Clear();
+
+        //myContracts.Clear();
         if (contractUIHandler != null)
         {
             contractUIHandler.UpdateResultContractListContent();
+            contractUIHandler.UpdateUIContractListsContents();
+            if(playerRole == PlayerRoles.Provider)
+            {
+                contractUIHandler.UpdateContractOverview();
+            }
         }
     }
 

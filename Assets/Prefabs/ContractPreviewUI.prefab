@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1920289933445405100
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2154,7 +2154,7 @@ GameObject:
   - component: {fileID: 2621132542854340286}
   - component: {fileID: 2691582343782295078}
   m_Layer: 5
-  m_Name: PriceText
+  m_Name: AgreedPriceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2445,7 +2445,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000030517578}
+  m_AnchoredPosition: {x: 0, y: 0.0003899494}
   m_SizeDelta: {x: 0, y: 525.2}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &9175644803082220264
@@ -2936,7 +2936,7 @@ GameObject:
   - component: {fileID: 296671873981574933}
   - component: {fileID: 7633289580865138755}
   m_Layer: 5
-  m_Name: RiskSharingFee
+  m_Name: RiskSharingFeePaid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4475,7 +4475,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3401571765878349216
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5253,14 +5253,14 @@ MonoBehaviour:
   cancelProposingButton: {fileID: 8538087990241744658}
   scheduleInfoText: {fileID: 4955224774029628751}
   warningText: {fileID: 2811560940759507783}
-  agreedPriceText: {fileID: 0}
-  agreedDeliveryText: {fileID: 0}
-  agreedRiskSharingFeeText: {fileID: 0}
-  actualDeliveryText: {fileID: 0}
-  riskSharingFeePaidText: {fileID: 0}
-  terminationFeePaidText: {fileID: 0}
-  negotiationContainer: {fileID: 0}
-  resultContianer: {fileID: 0}
+  agreedPriceText: {fileID: 2691582343782295078}
+  agreedDeliveryText: {fileID: 2147153361963845319}
+  agreedRiskSharingFeeText: {fileID: 4222359867223181363}
+  actualDeliveryText: {fileID: 6547694278329500118}
+  riskSharingFeePaidText: {fileID: 7633289580865138755}
+  terminationFeePaidText: {fileID: 7915321301856742794}
+  negotiationContainer: {fileID: 141762873366677545}
+  resultContianer: {fileID: 5555548700976762918}
   historyTextUIComponentPrefab: {fileID: 4706807553187024980, guid: 7ca7658701e7f4f4ea09391a5404b883,
     type: 3}
 --- !u!1 &6768827211922327097
@@ -5275,7 +5275,7 @@ GameObject:
   - component: {fileID: 4644239778050224193}
   - component: {fileID: 7915321301856742794}
   m_Layer: 5
-  m_Name: RiskSharingFee
+  m_Name: TerminationSharingFeePaid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5640,7 +5640,7 @@ GameObject:
   - component: {fileID: 5118130821311206544}
   - component: {fileID: 4222359867223181363}
   m_Layer: 5
-  m_Name: RiskSharingFee
+  m_Name: AgreedRiskSharingFee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -29,7 +29,7 @@ public class SubmitDataUIHandler : MonoBehaviour
 
    public void SubmitData()
     {
-        submitDataManager.MoveToNextQuarter();
+        submitDataManager.SubmitData();
     }
 
 

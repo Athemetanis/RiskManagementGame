@@ -150,7 +150,7 @@ public class FeatureUIHandler : MonoBehaviour
             featureUIComponentHandler.SetUserExperienceText(feature.Value.userfriendliness.ToString());
             featureUIComponentHandler.SetTimeCostsText(feature.Value.timeCost.ToString());
             featureUIComponentHandler.SetFeatureUIHandler(this);
-            featureUIComponentHandler.SetCheckedForOutsourcing(true);
+            //featureUIComponentHandler.SetCheckedForOutsourcing(true);
             featureUIComponent.SetActive(true);
         }
     }

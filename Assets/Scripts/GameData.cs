@@ -25,6 +25,8 @@ public class GameData : NetworkBehaviour
     //private int readyPlayersCount;
 
     private SyncListString readyPlayers = new SyncListString();
+
+    private int developersEvaluatedCount;
            
     //--------------<playerID, GameObject player>-----------------//  Q: How am I syncing this? A: When script playerData starts on client/server it requests adding its game object into these lists. 
     private Dictionary<string, GameObject> playerList;
@@ -374,17 +376,30 @@ public class GameData : NetworkBehaviour
         if (readyPlayers.Count == playerList.Count)
         {
             EvaluateGameRoundServer();
+            //MoveToNextRound();
         }
     }
     [Server]
     public void EvaluateGameRoundServer()
     {
-        foreach(GameObject playerGO in playerList.Values)
+        foreach(GameObject developerGO in developerList.Values)
         {
-            playerGO.GetComponent<PlayerData>().MoveToNextQuarter();
+            developerGO.GetComponent<PlayerData>().EvaluateContracts();
         }
     }
 
+    [Server]
+    public void AddDeveloperToEvaluated()
+    {
+        developersEvaluatedCount++;
+        if (developersEvaluatedCount == developersCount)
+        {
+            foreach(GameObject providerGo in providerList.Values)
+            {
+                providerGo.GetComponent<PlayerData>().UpdateCurrentQuarterDataProvider();
+            }
+        }
+    }
     [Server]
     public void MoveToNextRound()
     {

@@ -9,6 +9,10 @@ public class MarketingManager : NetworkBehaviour
     //STORED VALUES FOR Q1, Q2, Q3, Q4, on corresponding indexes: 0 1 2 3 4...
     private SyncListInt advertismenetCoverageQuarters = new SyncListInt() { };
 
+    private SyncListInt individualPriceQ = new SyncListInt() { };
+    private SyncListInt businessPriceQ = new SyncListInt() { };
+    private SyncListInt enterprisePriceQ = new SyncListInt() { };
+
     [SyncVar(hook = "OnChangeAdvertisement")]
     private int advertisementCoverage;   //0,25,50,75,100,
     [SyncVar(hook = "OnChangeIndividualPrice")]
@@ -45,6 +49,7 @@ public class MarketingManager : NetworkBehaviour
     public int GetAdvertisement50Price() { return advertisement50Price; }
     public int GetAdvertisement75Price() { return advertisement75Price; }
     public int GetAdvertisement100Price() { return advertisement100Price; }
+
     public int GetAdvertismenetCoverageQuarters(int quarter) { return advertismenetCoverageQuarters[quarter]; }
 
     public override void OnStartServer()
@@ -58,8 +63,8 @@ public class MarketingManager : NetworkBehaviour
             SetUpDefaultValues();
         }
         LoadQuarterData(currentQuarter);
-        customerManager.UpdateAdverisementCustomersInfluence();
     }
+
     public override void OnStartClient()
     {
         providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
@@ -67,6 +72,9 @@ public class MarketingManager : NetworkBehaviour
     public void SetUpDefaultValues()
     {
         advertismenetCoverageQuarters.Insert(0, 0);
+        individualPriceQ.Insert(0, 8);
+        businessPriceQ.Insert(0, 25);
+        enterprisePriceQ.Insert(0, 60);
         advertisementCoverage = 0;
         individualPrice = 8;
         businessPrice = 25;
@@ -79,8 +87,14 @@ public class MarketingManager : NetworkBehaviour
             for (int i = advertismenetCoverageQuarters.Count + 1; i < quarter; i++)
             {
                 advertismenetCoverageQuarters.Insert(i, advertismenetCoverageQuarters[i - 1]);
+                individualPriceQ.Insert(i, individualPriceQ[i - 1]);
+                businessPriceQ.Insert(i, businessPriceQ[i - 1]);
+                enterprisePriceQ.Insert(i, enterprisePriceQ[i - 1]);
             }
         }
+        individualPrice = individualPriceQ[quarter - 1];
+        businessPrice = businessPriceQ[quarter - 1];
+        enterprisePrice = enterprisePriceQ[quarter - 1];
         advertisementCoverage = advertismenetCoverageQuarters[quarter - 1];
     }
     //METHODS
@@ -167,5 +181,28 @@ public class MarketingManager : NetworkBehaviour
         }
     }
 
+   [Server]
+   public void MoveToNextQuarter()
+   {
+        LoadNextQUarterData(currentQuarter);
+   }
 
+    [Server]
+    public void SaveCurrentQuarterData()
+    {
+        advertismenetCoverageQuarters.Insert(currentQuarter, advertisementCoverage);
+        individualPriceQ.Insert(currentQuarter, individualPrice);
+        businessPriceQ.Insert(currentQuarter, businessPrice);
+        enterprisePriceQ.Insert(currentQuarter, enterprisePrice);
+    }
+    [Server]
+    public void LoadNextQUarterData(int currentQuarter)
+    {
+        LoadQuarterData(currentQuarter + 1);
+    }
+
+    private void Start()
+    {
+
+    }
 }

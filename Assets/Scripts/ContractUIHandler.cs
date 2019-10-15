@@ -203,6 +203,8 @@ public class ContractUIHandler : MonoBehaviour
 
     public void UpdateUIContractListsContents()
     {
+        myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
+        contractManager = myPlayerDataObject.GetComponent<ContractManager>();
         Dictionary<string, Contract> myContracts = contractManager.GetMyContracts();
 
         foreach (Transform child in currentcontractListContent.transform)
@@ -226,11 +228,13 @@ public class ContractUIHandler : MonoBehaviour
                 {
                     contractUIComponentHandler.SetPlayerTurnText("Your turn");
                     contractUIComponentHandler.DisableDetailButton();
+                    contractUIComponentHandler.DisableResultsButton();
                 }
                 else
                 {
                     contractUIComponentHandler.SetPlayerTurnText("Developers turn");
                     contractUIComponentHandler.DisableEditButton();
+                    contractUIComponentHandler.DisableResultsButton();
                 }
                 
             }
@@ -242,19 +246,29 @@ public class ContractUIHandler : MonoBehaviour
                 {
                     contractUIComponentHandler.SetPlayerTurnText("ProvidersTurn");
                     contractUIComponentHandler.DisableEditButton();
+                    contractUIComponentHandler.DisableResultsButton();
                 }
                 else
                 {
                     contractUIComponentHandler.SetPlayerTurnText("Your Turn");
                     contractUIComponentHandler.DisableDetailButton();
+                    contractUIComponentHandler.DisableResultsButton();
                 }
             }
-            if (contract.GetContractState() == ContractState.Accepted || contract.GetContractState() == ContractState.Terminated || contract.GetContractState() == ContractState.Completed || contract.GetContractState() == ContractState.Rejected)
+            if (contract.GetContractState() == ContractState.Accepted || contract.GetContractState() == ContractState.Rejected)
             {
                 contractUIComponentHandler.DisableEditButton();
                 contractUIComponentHandler.EnableDetailButtton();
+                contractUIComponentHandler.DisableResultsButton();
                 contractUIComponentHandler.SetPlayerTurnText("none");
 
+            }
+            if (contract.GetContractState() == ContractState.Terminated || contract.GetContractState() == ContractState.Completed)
+            {
+                contractUIComponentHandler.SetPlayerTurnText("none");
+                contractUIComponentHandler.DisableEditButton();
+                contractUIComponentHandler.DisableDetailButton();
+                contractUIComponentHandler.EnableResultsButton();
             }
         }
     }

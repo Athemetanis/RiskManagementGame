@@ -49,7 +49,7 @@ public class ScheduleUIHandler : MonoBehaviour
         { GameObject.Destroy(child.gameObject); }
 
         int previousFeatureEnd = 0;
-        for(int i = 1; i < scheduleManager.GetScheduledFeatures().Count; i++)
+        for(int i = 1; i <= scheduleManager.GetScheduledFeatures().Count; i++)
         { 
             if (scheduleManager.GetSchedule().ContainsKey(i))
             {

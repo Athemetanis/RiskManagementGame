@@ -103,11 +103,11 @@ public class FeatureForPlanningUIComponentHandler : MonoBehaviour
 
     public void GenerateGraph(List<Vector3> graphpoints)
     {
-        Vector2 lastPoint = new Vector2(0,0);
+        Vector2 lastPoint = new Vector2(0,-100);
         for(int i = 0; i < graphpoints.Count; i++)
         {   
             Vector2 currentPoint = graphpoints[i];
-            if (lastPoint != new Vector2(0, 0))
+            if (lastPoint != new Vector2(0, -100))
             {
                 
                 GameObject connectingLine = new GameObject("line", typeof(Image));

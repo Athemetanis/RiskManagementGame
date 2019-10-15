@@ -4,11 +4,11 @@ using UnityEngine;
 using Mirror;
 
 public class ProductManager : NetworkBehaviour
-{   
+{
 
-    private SyncListInt functionalityQ;
-    private SyncListInt userFriendlinessQ;
-    private SyncListInt integrabilityQ;
+    private SyncListInt functionalityQ =  new SyncListInt() { };
+    private SyncListInt userFriendlinessQ = new SyncListInt() { };
+    private SyncListInt integrabilityQ = new SyncListInt() { };
 
     //VARIABLES
     [SyncVar(hook = "OnChangeFunctionality")]
@@ -18,7 +18,8 @@ public class ProductManager : NetworkBehaviour
     [SyncVar(hook = "OnChangeIntergrability")]
     private int integrability;
 
-   
+    private string gameID;
+    private int currentQuarter;
     //REFERENCES
     private ProductUIHandler productUIHandler;
     private ContractManager contractManager;
@@ -29,25 +30,51 @@ public class ProductManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-       if(functionality == 0)
-       {
-            SetupDefaultValues();
-       }
+        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         contractManager = this.gameObject.GetComponent<ContractManager>();
         featureManager = this.gameObject.GetComponent<FeatureManager>();
+        
+        if (functionality == 0)
+        {
+            SetupDefaultValues();
+        }
+        LoadQuarterData(currentQuarter);
+
     }
 
     [Server]
     public void SetupDefaultValues()
     {
-        functionality = 10;
-        userFriendliness = 10;
-        integrability = 10;
+        functionalityQ.Insert(0, 10);
+        userFriendlinessQ.Insert(0, 10);
+        integrabilityQ.Insert(0, 10);
+
     }
-    
+    [Server]
+    public void LoadQuarterData(int quarter)
+    {
+        if(functionalityQ.Count != quarter)
+        {
+            for(int i  = functionalityQ.Count; i < quarter; i++)
+            {
+                functionalityQ.Insert(i, functionalityQ[i - 1]);
+                userFriendlinessQ.Insert(i, userFriendlinessQ[i - 1]);
+                integrabilityQ.Insert(i, integrabilityQ[i - 1]);
+            }
+
+        }
+        functionality = functionalityQ[quarter - 1];
+        integrability = integrabilityQ[quarter - 1];
+        userFriendliness = userFriendlinessQ[quarter - 1];
+
+    }
+
+
     [Server]
     public void ComputeProductParameters()
     {
+        Debug.Log("Computing ProductParameters from done features: " + featureManager.GetDoneFeatures().Count);
         foreach (Feature feature in featureManager.GetDoneFeatures().Values)
         {
             functionality += feature.functionality;
@@ -90,12 +117,29 @@ public class ProductManager : NetworkBehaviour
         SetupDefaultValues();
         ComputeProductParameters();
     }
-
-
+    
     [Server]
     public void MoveToNextQuarter()
     {
+        LoadCurrentQuarterData(currentQuarter);
+    }
+
+    [Server]
+    public void SaveCurrentQuarterData()
+    {
+        functionalityQ.Insert(currentQuarter, functionality);
+        integrabilityQ.Insert(currentQuarter, integrability);
+        userFriendlinessQ.Insert(currentQuarter, userFriendliness);
 
     }
 
+    public void LoadCurrentQuarterData(int curentQuarter)
+    {
+        LoadQuarterData(currentQuarter + 1);
+    }
+
+    private void Start()
+    {
+
+    }
 }

@@ -337,10 +337,11 @@ public class FeatureManager : NetworkBehaviour
     }
    
 
-    public void OnChangeFeatureOutsourced(SyncDictionaryFeatures.Operation op, string key, Feature feature) //here update all gui elements if they exist
+    public void OnChangeFeatureOutsourced(SyncDictionaryFeatures.Operation op, string key, Feature feature) 
     {
         if (featureUIHandler != null)
         {
+            Debug.Log("outsourced feature list changed");
             featureUIHandler.UpdateOutsourcedFeatureUIList();
             featureUIHandler.UpdateFeatureUIList();
         }
@@ -366,12 +367,14 @@ public class FeatureManager : NetworkBehaviour
             featureUIHandler.UpdateFeatureUIList();
             featureUIHandler.UpdateOutsourcedFeatureUIList();
         }
+        Debug.Log("featureDoneListChanged " + doneFeatures.Count);
     }
 
     // NEXT QUARTER EVALUATION METHODS...
 
     public void UpdateCurrentQuarterData()
     {
+        Debug.Log(doneFeatures.Count);
         if (featureUIHandler != null)
         {
             featureUIHandler.UpdateFeatureUIList();
@@ -380,5 +383,8 @@ public class FeatureManager : NetworkBehaviour
 
     }
 
+    private void Start()
+    {
 
+    }
 }

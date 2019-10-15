@@ -177,7 +177,7 @@ public class ScheduleManager : NetworkBehaviour
         minDevelopmentDays = (int)System.Math.Round(((float)overallDevelopmentTime * 0.8), System.MidpointRounding.AwayFromZero);
         maxDevelopmentDays = (int)System.Math.Round(((float)overallDevelopmentTime * 1.2), System.MidpointRounding.AwayFromZero);
 
-        Debug.Log("overallDevelopmentTime: " + overallDevelopmentTime);
+        //Debug.Log("overallDevelopmentTime: " + overallDevelopmentTime);
         if (feature.difficulty == 1)   // y = ax+ b; a=  100/ dayrange; b = -1 * a * minimumdays;   y = percentage; x = day 
         {
             if (overallDevelopmentTime > 48)
@@ -204,10 +204,10 @@ public class ScheduleManager : NetworkBehaviour
             else if(overallDevelopmentTime  < 0)
             {
                 graphPoints.Add(new Vector3(0, 0));
-                graphPoints.Add(new Vector3(11 * xAxisScale, 0));
+                graphPoints.Add(new Vector3(11 * xAxisScale, 66));
                 for (int i = 0; i <= 10; i++)
                 {
-                    graphDays[i] = i;
+                    graphDays[i] = -1;
                 }
             }
             else if (overallDevelopmentTime == 1 || overallDevelopmentTime == 0)   //what should happen?  connstant development time? YES: 1 day
@@ -437,7 +437,7 @@ public class ScheduleManager : NetworkBehaviour
     public void EvaluateTrueDevelopmentTime()
     {
         int previousFetureEnd = 0;
-        for (int i = 1; i < scheduledFeatures.Count; i++)
+        for (int i = 1; i <= scheduledFeatures.Count; i++)
         {
             if (scheduleOrder.ContainsKey(i))
             {   
@@ -505,6 +505,31 @@ public class ScheduleManager : NetworkBehaviour
                 myContract.SetTrueDeliveryTime(truDevelopmentEnd);
                 previousFetureEnd = truDevelopmentEnd;
             }            
+        }
+    }
+
+
+
+
+    [Server]
+    public void MoveToNextQuarter()
+    {
+        scheduledFeatures.Clear();
+        scheduleOrder.Clear();
+        scheduleDevelopmentEndDay.Clear();
+        RpcScheduleClearance();
+    }
+
+    [ClientRpc]
+    public void RpcScheduleClearance()
+    {
+        scheduledFeatures.Clear();
+        scheduleOrder.Clear();
+        scheduleDevelopmentEndDay.Clear();
+        if(scheduleUIHandler != null)
+        {
+            scheduleUIHandler.UpdateFeatureListContent();
+            scheduleUIHandler.UpdateSchedeleListContent();
         }
     }
 

@@ -29,8 +29,9 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
     private ProductManager productManager;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        Debug.Log("provider accounting component start " + correspondingAccountingQuarter);
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
@@ -78,7 +79,12 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
             this.gameObject.SetActive(false);
         }
     }
-    
+
+    public void OnEnable()
+    {
+        Debug.Log("provider accounting ui component for " + correspondingAccountingQuarter);
+    }
+
     //METHODS FOR UPDATING UI ELEMENTS
     public void UpdateAllElements()
     {

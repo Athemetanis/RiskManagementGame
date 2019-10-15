@@ -101,7 +101,7 @@ public class ProviderAccountingManager : NetworkBehaviour
         {
             SetupDefaultValues();
         }
-        LoagQuarterData(currentQuarter);
+        LoadQuarterData(currentQuarter);
     }
     void Start()
     {
@@ -130,7 +130,7 @@ public class ProviderAccountingManager : NetworkBehaviour
         endCashBalanceQuarters.Insert(0, 2000000);
     }
     [Server]
-    public void LoagQuarterData(int quarter)
+    public void LoadQuarterData(int quarter)
     {
         if (endCashBalanceQuarters.Count != quarter)
         {
@@ -158,6 +158,10 @@ public class ProviderAccountingManager : NetworkBehaviour
             }
         }
         beginningCashBalance = endCashBalanceQuarters[quarter - 1];
+        UpdateRevenueServer();
+        UpdateEstimatedContractPaymentsServer();
+        UpdateAdvertisementCostServer();
+        ComputeEndCashBalance();
     }
     
     public (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue,int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int terminationFeeReceived, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) GetCorrespondingQuarterData(int correspondingQuarter)
@@ -284,7 +288,9 @@ public class ProviderAccountingManager : NetworkBehaviour
                 contractPayments += contract.GetContractPrice();
             }
         }
-       
+        riskSharingFeesReceived = 0;
+        terminationFeeReceived = 0;
+
     }
     [Server]
     public void UpdateRealContractPaymentsServer()
@@ -431,4 +437,79 @@ public class ProviderAccountingManager : NetworkBehaviour
         UpdateRevenueServer();
         UpdateRealContractPaymentsServer();
     }
+
+    [Server]
+    public void MoveToNextQuarter()
+    {
+        SetNewReferences();
+        LoadNextQuarterData();
+    }
+
+    [Server]
+    public void SaveCurrentQuarterData()
+    {
+        Debug.Log("prov. Acc. saving data " + beginningCashBalance + " , " + riskSharingFeesReceived + " , " + individualCustomersRevenue + " , " + endCashBalance);
+        beginningCashBalanceQuarters.Insert(currentQuarter, beginningCashBalance);
+        revenueQuarters.Insert(currentQuarter, revenue);
+        individualRevenueQuarters.Insert(currentQuarter, individualCustomersRevenue);
+        businessRevenueQuarters.Insert(currentQuarter, businessCustomersRevenue);
+        enterpriseRevenueQarters.Insert(currentQuarter, enterpriseCustomersRevenue);
+        advertisementCostQuarters.Insert(currentQuarter, advertisementCost);
+        contractPaymentsQuarters.Insert(currentQuarter, contractPayments);
+        riskSharingFeesReceivedQuarters.Insert(currentQuarter, riskSharingFeesReceived);
+        terminationFeeReceivedQuarters.Insert(currentQuarter, terminationFeeReceived);
+        marketingResearchQuarters.Insert(currentQuarter, marketingResearch);
+        borrowEmergencyLoanQuarters.Insert(currentQuarter, borrowEmergencyLoan);
+        repayEmergencyLoanQuarters.Insert(currentQuarter, repayEmergencyLoan);
+        endCashBalanceQuarters.Insert(currentQuarter, endCashBalance);
+    }
+
+    [Server]
+    public void SetNewReferences()
+    {
+        Debug.Log("setting new references server");
+        RpcSetNewReferences();
+    }
+
+    [ClientRpc]
+    public void RpcSetNewReferences()
+    {
+        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+        Debug.Log("current quarter for reference" + currentQuarter);
+        if (providerAccountingUIComponentHandlerCurrent != null)
+        {
+            Debug.Log("setting new references client");
+            if (currentQuarter == 1)
+            {
+                Debug.Log("setting active 2. quarter");
+                providerAccountingUIComponentHandlerCurrent = providerAccountingUIComponentHandlerQ2;
+                providerAccountingUIComponentHandlerQ2.gameObject.SetActive(true);
+                providerAccountingUIComponentHandlerQ2.UpdateAllElements();
+                
+            }
+            if (currentQuarter == 2)
+            {
+                providerAccountingUIComponentHandlerCurrent = providerAccountingUIComponentHandlerQ3;
+                providerAccountingUIComponentHandlerQ3.gameObject.SetActive(true);
+                providerAccountingUIComponentHandlerQ3.UpdateAllElements();
+            }
+            if (currentQuarter == 3)
+            {
+                providerAccountingUIComponentHandlerCurrent = providerAccountingUIComponentHandlerQ4;
+                providerAccountingUIComponentHandlerQ4.gameObject.SetActive(true);
+                providerAccountingUIComponentHandlerQ4.UpdateAllElements();
+            }
+        }       
+    }
+
+    [Server]
+    public void LoadNextQuarterData()
+    {
+        Debug.Log("loading new data");
+        LoadQuarterData(currentQuarter + 1);
+    }
+
+
+
 }

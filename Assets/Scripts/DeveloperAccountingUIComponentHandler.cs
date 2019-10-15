@@ -29,8 +29,9 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
     //private HumanResourcesManager humanResourcesManager;
 
     // Start is called before the first frame update
-    void Start()
-    {     
+    void Awake()
+    {
+        Debug.Log("provider accounting component start " + correspondingAccountingQuarter);
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
@@ -78,7 +79,7 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
             this.gameObject.SetActive(false);
         }    
     }
-
+    
     //METHODS FOR UPDATING UI ELEMENTS
     public void UpdateAllElements()
     {

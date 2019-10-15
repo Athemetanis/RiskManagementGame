@@ -45,11 +45,28 @@ public class PlayerData : NetworkBehaviour {
     public PlayerRoles GetPlayerRole() { return playerRole; }
 
     public void SetPlayerUI(GameObject playerUI) { this.playerUI = playerUI; }
-    public GameObject GetPlayerUI() { return playerUI;  }
+    public GameObject GetPlayerUI() { return playerUI; }
 
     //METHODS
+    /* public override void OnStartClient()
+     {   
+         if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
+         {
+             Debug.Log("player registered to all players: " + playerID);
+             GameHandler.allPlayers[gameID].Add(playerID, this.gameObject);
+         }
+
+         if (GameHandler.allGames[gameID] == true)
+         {
+             Debug.Log("player tries to be added into game " + gameID);
+             GameHandler.allGames[gameID].AddPlayerToGame(this.gameObject);
+
+         }
+
+     }*/
+
     void Start()
-    {   
+    {
         if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
         {
             Debug.Log("player registered to all players: " + playerID);
@@ -60,7 +77,7 @@ public class PlayerData : NetworkBehaviour {
         {
             Debug.Log("player tries to be added into game " + gameID);
             GameHandler.allGames[gameID].AddPlayerToGame(this.gameObject);
-            
+
         }
 
         contractMamanger = this.gameObject.GetComponent<ContractManager>();
@@ -75,29 +92,123 @@ public class PlayerData : NetworkBehaviour {
         providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
         developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
 
+        if (playerRole == PlayerRoles.Provider)
+        {
+            featureManager.enabled = true;
+            productManager.enabled = true;
+            marketingManager.enabled = true;
+            customerManager.enabled = true;
+            contractMamanger.enabled = true;
+            providerAccountingManager.enabled = true;
+            riskManager.enabled = true;
+
+        }
+        else //developer
+        {
+            featureManager.enabled = true;
+            humanResourcesManager.enabled = true;
+            contractMamanger.enabled = true;
+            scheduleManager.enabled = true;
+            developerAccountingManager.enabled = true;
+            riskManager.enabled = true;
+        }
     }
 
-
+    [Server]
     public void MoveToNextQuarter()
     {
         //1. akutalizuj realne data na zaklade kontrakt managera
         //2.posun sa do noveho kvartalu v gameData????
         //2. prirad nove reference na objekty nadchadzajuceho Q a aktualizuj ich?
-        if(playerRole == PlayerRoles.Developer)
+        EvaluateContracts();
+        //UpdateCurrentQuarterDataDeveloper();
+       // UpdateCurrentQuarterDataProvider();
+        //SaveCurretnQuarterData();
+
+        // SaveCurretnQuarterData();
+        // MoveOtherManagerToNextQuarter();
+
+    }
+
+    [Server]
+    public void EvaluateContracts()
+    {
+        if (playerRole == PlayerRoles.Developer)
         {
             contractMamanger.EvaluateContractsServer();
-            developerAccountingManager.UpdateCurrentQuarterDataServer(); 
         }
-        else //provider
+    }
+    [Server]
+    public void UpdateCurrentQuarterDataProvider()
+    {
+        if (playerRole == PlayerRoles.Provider)
         {
             featureManager.UpdateCurrentQuarterData();
             productManager.UpdateCurrentQuarterData();
             customerManager.UpdateCurrentQuarterData();
             providerAccountingManager.UpdateCurrentQuarterData();
-
         }
-
+        SaveCurretnQuarterDataProvider();
 
     }
-
+    [Server]
+    public void UpdateCurrentQuarterDataDeveloper()
+    {
+        if (playerRole == PlayerRoles.Developer)
+        {
+            developerAccountingManager.UpdateCurrentQuarterDataServer();
+        }
+        SaveCurretnQuarterDataDeveloper();
+    }
+    [Server]
+    public void SaveCurretnQuarterDataDeveloper()
+    {
+        if (playerRole == PlayerRoles.Developer)
+        {
+            humanResourcesManager.SaveCurrentQuarterData();
+            developerAccountingManager.SaveCurrentQuarterDataServer();
+            riskManager.SaveCurrentQuarterData();
+        }
+        MoveOtherManagerToNextQuarterDeveloper();
+    }
+    [Server]
+    public void SaveCurretnQuarterDataProvider()
+    {
+        if (playerRole == PlayerRoles.Provider)
+        {
+            productManager.SaveCurrentQuarterData();
+            marketingManager.SaveCurrentQuarterData();
+            customerManager.SaveCurrentQuarterData();
+            providerAccountingManager.SaveCurrentQuarterData();
+            riskManager.SaveCurrentQuarterData();
+        }
+        MoveOtherManagerToNextQuarterProvider();
+    }
+    [Server]
+    public void MoveOtherManagerToNextQuarterDeveloper()
+    {
+        if (playerRole == PlayerRoles.Developer)
+        {
+            contractMamanger.MoveToNextQuarter();
+            scheduleManager.MoveToNextQuarter();
+            humanResourcesManager.MoveToNextQuarter();
+            developerAccountingManager.MoveToNextQuarter();
+            riskManager.MoveToTheNextQuarter();
+            submitDataManager.MoveToNextQuarter();
+        }
+    }
+    [Server]
+    public void MoveOtherManagerToNextQuarterProvider()
+    {
+        if (playerRole == PlayerRoles.Provider)
+        {
+            contractMamanger.MoveToNextQuarter();
+            productManager.MoveToNextQuarter();
+            marketingManager.MoveToNextQuarter();
+            customerManager.MoveToNextQuarter();
+            providerAccountingManager.MoveToNextQuarter();
+            riskManager.MoveToTheNextQuarter();
+            submitDataManager.MoveToNextQuarter();
+        }
+    }
 }

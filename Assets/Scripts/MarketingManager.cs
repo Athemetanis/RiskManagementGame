@@ -190,6 +190,8 @@ public class MarketingManager : NetworkBehaviour
     [Server]
     public void SaveCurrentQuarterData()
     {
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+
         advertismenetCoverageQuarters.Insert(currentQuarter, advertisementCoverage);
         individualPriceQ.Insert(currentQuarter, individualPrice);
         businessPriceQ.Insert(currentQuarter, businessPrice);

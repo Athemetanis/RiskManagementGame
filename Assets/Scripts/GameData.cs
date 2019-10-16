@@ -25,6 +25,7 @@ public class GameData : NetworkBehaviour
     //private int readyPlayersCount;
 
     private SyncListString readyPlayers = new SyncListString();
+    private int playerEvaluated;
 
     private int developersEvaluatedCount;
            
@@ -376,9 +377,9 @@ public class GameData : NetworkBehaviour
         if (readyPlayers.Count == playerList.Count)
         {
             EvaluateGameRoundServer();
-            //MoveToNextRound();
         }
     }
+
     [Server]
     public void EvaluateGameRoundServer()
     {
@@ -398,13 +399,26 @@ public class GameData : NetworkBehaviour
             {
                 providerGo.GetComponent<PlayerData>().UpdateCurrentQuarterDataProvider();
             }
+
         }
     }
+    [Server]
+    public void AddPlayerToEvaluated()
+    {
+        playerEvaluated++;
+        if(playerEvaluated == playersCount)
+        {
+            MoveToNextRound();
+        }
+    }
+
     [Server]
     public void MoveToNextRound()
     {
         gameRound = gameRound + 1;
         readyPlayers.Clear();
+        playerEvaluated = 0;
+        developersEvaluatedCount = 0;
 
     }
 

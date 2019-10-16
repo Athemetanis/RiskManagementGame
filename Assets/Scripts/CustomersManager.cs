@@ -261,7 +261,7 @@ public class CustomersManager : NetworkBehaviour
 
         foreach (Contract contract in contractManager.GetMyContracts().Values)
         {
-            if (contract.GetContractState() == ContractState.Completed)
+            if (contract.GetContractState() == ContractState.Completed && contract.GetTrueDeliveryTime() < 60)
             {
                 Debug.Log("GetTrueDeliveryTime " + contract.GetTrueDeliveryTime());
                 int individualCustomersAll = contract.GetContractFeature().individualCustomers;
@@ -282,6 +282,16 @@ public class CustomersManager : NetworkBehaviour
                 enterpriseCustomersAddEndQ += enterpriseCustomersEndQ;
                 businessCustomersAddEndQ += businessCustomersEndQ;
                 individualCustomersAddEndQ += individualCustomersEndQ;
+            }
+            else if(contract.GetContractState() == ContractState.Completed && contract.GetTrueDeliveryTime() > 60)
+            {
+                enterpriseCustomersAddDuringQ = 0;
+                individualCustomersAddDuringQ = 0;
+                businessCustomersAddDuringQ = 0;
+
+                enterpriseCustomersAddEndQ = contract.GetContractFeature().enterpriseCustomers;
+                businessCustomersAddEndQ = contract.GetContractFeature().businessCustomers;
+                individualCustomersAddEndQ = contract.GetContractFeature().individualCustomers;
             }
         }
         endEnterpriseCustomers = ComputeEndEnterpriseCutomers();

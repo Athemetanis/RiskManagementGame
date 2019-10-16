@@ -21,6 +21,9 @@ public class ProviderAccountingManager : NetworkBehaviour
     private SyncListInt repayEmergencyLoanQuarters = new SyncListInt() { };
     private SyncListInt endCashBalanceQuarters = new SyncListInt() { };
 
+    [SyncVar(hook = "OnChangeHistorySaved")]
+    private bool historySaved;
+
     //CURRENT VALUES
     [SyncVar(hook = "OnChangeBeginningCashBalance")]
     private int beginningCashBalance;
@@ -58,12 +61,9 @@ public class ProviderAccountingManager : NetworkBehaviour
     private ContractManager contractManager;
     private CustomersManager customersManager;
     private MarketingManager marketingManager;
+    private PlayerData playerData;
 
-    private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ1;
-    private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ2;
-    private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ3;
-    private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ4;
-
+    private ProviderAccountingUIHandler providerAccountingUIHandler;
     private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerCurrent;
 
     //GETTERS & SETTERS
@@ -81,34 +81,52 @@ public class ProviderAccountingManager : NetworkBehaviour
     public int GetRepayEmergencyLoan() { return repayEmergencyLoan; }
     public int GetEndCashBalance() { return endCashBalance; }
 
-    public void SetProviderAccountingUIComponentHandlerQ1(ProviderAccountingUIComponentHandler providerAccountingUIComponentHandler) { this.providerAccountingUIComponentHandlerQ1 = providerAccountingUIComponentHandler; }
-    public void SetProviderAccountingUIComponentHandlerQ2(ProviderAccountingUIComponentHandler providerAccountingUIComponentHandler) { this.providerAccountingUIComponentHandlerQ2 = providerAccountingUIComponentHandler; }
-    public void SetProviderAccountingUIComponentHandlerQ3(ProviderAccountingUIComponentHandler providerAccountingUIComponentHandler) { this.providerAccountingUIComponentHandlerQ3 = providerAccountingUIComponentHandler; }
-    public void SetProviderAccountingUIComponentHandlerQ4(ProviderAccountingUIComponentHandler providerAccountingUIComponentHandler) { this.providerAccountingUIComponentHandlerQ4 = providerAccountingUIComponentHandler; }
-
+    public void SetProviderAccountingUIHandler(ProviderAccountingUIHandler providerAccountingUIHandler) { this.providerAccountingUIHandler = providerAccountingUIHandler; }
     public void SetCurrentProviderAccountingUIHandler(ProviderAccountingUIComponentHandler providerAccountingUIHandler) { this.providerAccountingUIComponentHandlerCurrent = providerAccountingUIHandler; }
 
     // Start is called before the first frame update
     public override void OnStartServer()
     {
+        playerData = this.gameObject.GetComponent<PlayerData>();
         gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         productManager = this.gameObject.GetComponent<ProductManager>();
         contractManager = this.gameObject.GetComponent<ContractManager>();
         customersManager = this.gameObject.GetComponent<CustomersManager>();
         marketingManager = this.gameObject.GetComponent<MarketingManager>();
-        if(beginningCashBalanceQuarters.Count == 0)
+
+
+
+        if (beginningCashBalanceQuarters.Count == 0)
         {
             SetupDefaultValues();
         }
         LoadQuarterData(currentQuarter);
     }
-    void Start()
+
+    public override void OnStartClient()
     {
+        playerData = this.gameObject.GetComponent<PlayerData>();
         productManager = this.gameObject.GetComponent<ProductManager>();
         contractManager = this.gameObject.GetComponent<ContractManager>();
         customersManager = this.gameObject.GetComponent<CustomersManager>();
         marketingManager = this.gameObject.GetComponent<MarketingManager>();
+        beginningCashBalanceQuarters.Callback += OnBeginningCashHisotryChanged;
+        revenueQuarters.Callback += OnRevenueHistoryChanged;
+        endCashBalanceQuarters.Callback += OnEndCashHistoryChanged;
+    }
+
+    public void OnBeginningCashHisotryChanged(SyncList<int>.Operation op, int index, int value)
+    {
+        Debug.Log("BC history changed on index " + index + " on value " + value);
+    }
+    public void OnRevenueHistoryChanged(SyncList<int>.Operation op, int index, int value)
+    {
+        Debug.Log("Revenue history changed on index " + index + " on value " + value);
+    }
+    public void OnEndCashHistoryChanged(SyncList<int>.Operation op, int index, int value)
+    {
+        Debug.Log("EC history changed on index " + index + " on value " + value);
     }
 
     //METHODS
@@ -162,10 +180,12 @@ public class ProviderAccountingManager : NetworkBehaviour
         UpdateEstimatedContractPaymentsServer();
         UpdateAdvertisementCostServer();
         ComputeEndCashBalance();
+        historySaved = false;
     }
     
     public (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue,int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int terminationFeeReceived, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) GetCorrespondingQuarterData(int correspondingQuarter)
     {
+        Debug.Log(currentQuarter);
         return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], enterpriseRevenueQarters[correspondingQuarter], businessRevenueQuarters[correspondingQuarter], individualRevenueQuarters[correspondingQuarter], advertisementCostQuarters[correspondingQuarter], contractPaymentsQuarters[correspondingQuarter], riskSharingFeesReceivedQuarters[correspondingQuarter], terminationFeeReceivedQuarters[correspondingQuarter], marketingResearchQuarters[correspondingQuarter], borrowEmergencyLoanQuarters[correspondingQuarter], repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter]);
     }
 
@@ -430,6 +450,14 @@ public class ProviderAccountingManager : NetworkBehaviour
         }
     }
 
+    public void OnChangeHistorySaved(bool historySaved)
+    {
+        Debug.Log("history changed on " + historySaved);
+        if (historySaved  && hasAuthority)
+        {
+            playerData.CmdMoveToNextQuarter();
+        }
+    }
     // NEXT QUARTER EVALUATION METHODS...
     [Server]
     public void UpdateCurrentQuarterData()
@@ -437,6 +465,7 @@ public class ProviderAccountingManager : NetworkBehaviour
         UpdateRevenueServer();
         UpdateRealContractPaymentsServer();
     }
+
 
     [Server]
     public void MoveToNextQuarter()
@@ -448,6 +477,8 @@ public class ProviderAccountingManager : NetworkBehaviour
     [Server]
     public void SaveCurrentQuarterData()
     {
+         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+
         Debug.Log("prov. Acc. saving data " + beginningCashBalance + " , " + riskSharingFeesReceived + " , " + individualCustomersRevenue + " , " + endCashBalance);
         beginningCashBalanceQuarters.Insert(currentQuarter, beginningCashBalance);
         revenueQuarters.Insert(currentQuarter, revenue);
@@ -462,6 +493,9 @@ public class ProviderAccountingManager : NetworkBehaviour
         borrowEmergencyLoanQuarters.Insert(currentQuarter, borrowEmergencyLoan);
         repayEmergencyLoanQuarters.Insert(currentQuarter, repayEmergencyLoan);
         endCashBalanceQuarters.Insert(currentQuarter, endCashBalance);
+
+        historySaved = true;
+
     }
 
     [Server]
@@ -477,29 +511,9 @@ public class ProviderAccountingManager : NetworkBehaviour
         gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         Debug.Log("current quarter for reference" + currentQuarter);
-        if (providerAccountingUIComponentHandlerCurrent != null)
+        if (providerAccountingUIHandler != null)
         {
-            Debug.Log("setting new references client");
-            if (currentQuarter == 1)
-            {
-                Debug.Log("setting active 2. quarter");
-                providerAccountingUIComponentHandlerCurrent = providerAccountingUIComponentHandlerQ2;
-                providerAccountingUIComponentHandlerQ2.gameObject.SetActive(true);
-                providerAccountingUIComponentHandlerQ2.UpdateAllElements();
-                
-            }
-            if (currentQuarter == 2)
-            {
-                providerAccountingUIComponentHandlerCurrent = providerAccountingUIComponentHandlerQ3;
-                providerAccountingUIComponentHandlerQ3.gameObject.SetActive(true);
-                providerAccountingUIComponentHandlerQ3.UpdateAllElements();
-            }
-            if (currentQuarter == 3)
-            {
-                providerAccountingUIComponentHandlerCurrent = providerAccountingUIComponentHandlerQ4;
-                providerAccountingUIComponentHandlerQ4.gameObject.SetActive(true);
-                providerAccountingUIComponentHandlerQ4.UpdateAllElements();
-            }
+            providerAccountingUIHandler.SetReferences(currentQuarter + 1);
         }       
     }
 
@@ -508,6 +522,7 @@ public class ProviderAccountingManager : NetworkBehaviour
     {
         Debug.Log("loading new data");
         LoadQuarterData(currentQuarter + 1);
+
     }
 
 

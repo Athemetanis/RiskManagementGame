@@ -390,7 +390,7 @@ public class ContractUIHandler : MonoBehaviour
     }
     public void GeneteContractResultsPreview(string contractID)
     {
-        Contract contract = contractManager.GetMyContracts()[contractID];
+        Contract contract = contractManager.GetMyContractsHistory()[contractID];
         GameObject contractPreviewUI = Instantiate(contractPreviewUIPrefab);
         contractPreviewUI.transform.SetParent(contractContentUI.transform, false);
         ContractPreviewUIHandler contractPreviewUIHandler = contractPreviewUI.GetComponent<ContractPreviewUIHandler>();

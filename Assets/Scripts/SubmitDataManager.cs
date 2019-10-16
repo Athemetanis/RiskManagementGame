@@ -62,8 +62,8 @@ public class SubmitDataManager : NetworkBehaviour
     [Server]
     public void MoveToNextQuarter()
     {
+        GameHandler.allGames[gameID].AddPlayerToEvaluated();
         submitData = false;
-
     }
     
     

@@ -14,6 +14,8 @@ public class FirmManager : NetworkBehaviour
     private string firmName;
     [SyncVar(hook = "OnChangeFirmDescription")]
     private string firmDescription;
+    [SyncVar(hook = "OnChangeFirmNameChanged")]
+    private bool firmNameChanged;
 
     private string playerID;
     private string gameID;
@@ -34,7 +36,6 @@ public class FirmManager : NetworkBehaviour
             playerID = this.gameObject.GetComponent<PlayerData>().GetPlayerID();
             firmName = playerID;
             firmDescription = "default_description";
-
             GameHandler.allGames[gameID].AddFirmName(playerID, firmName);
             GameHandler.allGames[gameID].UpdateFirmDescription(firmName, firmDescription);
         }
@@ -48,10 +49,12 @@ public class FirmManager : NetworkBehaviour
 
     //METHODS
 
-    [Command]  //this command updates Local Gui 
+    [Command]  
     public void CmdSetFirmsName(string newFirmName)
     {
         this.firmName = newFirmName;
+        firmNameChanged = true;
+
     }
     [Command]
     public void CmdSetFirmsDescription(string firmDescription)
@@ -104,7 +107,7 @@ public class FirmManager : NetworkBehaviour
     {
         this.firmName = firmName;
         if (firmUIHandler != null)
-        {
+        {            
             firmUIHandler.SetUIFirmName(this.firmName);
             if (firmUIHandler.errorMessageText.IsActive())
             {
@@ -121,11 +124,20 @@ public class FirmManager : NetworkBehaviour
         }
     }
 
-
+    public void OnChangeFirmNameChanged(bool firmNameChanged)
+    {
+        this.firmNameChanged = firmNameChanged;
+        if(firmUIHandler != null)
+        {
+            if (firmNameChanged)
+            {
+                firmUIHandler.DisableChangingName();
+            }
+        }
+    }
 
     public List<string> GetDeveloperList()
     {
         return GameHandler.allGames[gameID].GetDevelopersFirms();
     }
-
 }

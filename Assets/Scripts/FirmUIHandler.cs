@@ -9,6 +9,8 @@ public class FirmUIHandler : MonoBehaviour
     public InputField firmDescriptionIF;
     public Text errorMessageText;
 
+    public Button confirmNameChangeButton;
+
 
     private FirmManager firmManager;
 
@@ -53,6 +55,14 @@ public class FirmUIHandler : MonoBehaviour
         Debug.Log("nastavujem stare meno");
         firmNameIF.text = oldFirmName;
         errorMessageText.gameObject.SetActive(true);        
+    }
+
+
+    public void DisableChangingName()
+    {
+        firmNameIF.interactable = false;
+        confirmNameChangeButton.gameObject.SetActive(false);
+
     }
 
 

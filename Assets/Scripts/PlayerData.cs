@@ -115,7 +115,7 @@ public class PlayerData : NetworkBehaviour {
     }
 
     [Server]
-    public void MoveToNextQuarter()
+    public void EvaluateQuarter()
     {
         //1. akutalizuj realne data na zaklade kontrakt managera
         //2.posun sa do noveho kvartalu v gameData????
@@ -169,8 +169,19 @@ public class PlayerData : NetworkBehaviour {
             developerAccountingManager.SaveCurrentQuarterDataServer();
             riskManager.SaveCurrentQuarterData();
         }
+    }
+
+    [Command]
+    public void CmdMoveToNextQuarter()
+    {
+        MoveOtherManagerToNextQuarterProvider();
         MoveOtherManagerToNextQuarterDeveloper();
     }
+
+
+
+
+
     [Server]
     public void SaveCurretnQuarterDataProvider()
     {
@@ -182,7 +193,6 @@ public class PlayerData : NetworkBehaviour {
             providerAccountingManager.SaveCurrentQuarterData();
             riskManager.SaveCurrentQuarterData();
         }
-        MoveOtherManagerToNextQuarterProvider();
     }
     [Server]
     public void MoveOtherManagerToNextQuarterDeveloper()
@@ -197,6 +207,8 @@ public class PlayerData : NetworkBehaviour {
             submitDataManager.MoveToNextQuarter();
         }
     }
+
+
     [Server]
     public void MoveOtherManagerToNextQuarterProvider()
     {

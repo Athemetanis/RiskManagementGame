@@ -322,6 +322,8 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     [Server]
     public void SaveCurrentQuarterData()
     {
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound(); 
+
         risk1DescriptionQuarters.Insert(currentQuarter, risk1Description);
         risk1ImpactActionQuarters.Insert(currentQuarter,  risk1ImpactAction);
         risk2DescriptionQuarters.Insert(currentQuarter, risk2Description);

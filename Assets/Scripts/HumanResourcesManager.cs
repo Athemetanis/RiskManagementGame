@@ -385,6 +385,8 @@ public class HumanResourcesManager : NetworkBehaviour
     [Server]
     public void SaveCurrentQuarterData()
     {
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+
         endProgrammersCountQ.Insert(currentQuarter, programmersCurrentCount + hireProgrammersCount);
         endIntegrabilitySpecialistsCountQ.Insert(currentQuarter, integrabilitySpecialistsCurrentCount + hireIntegrabilitySpecialistsCount);
         endUISpecialistsCountQ.Insert(currentQuarter, userInterfaceSpecialistsCurrentCount + hireUISpecialistsCount);

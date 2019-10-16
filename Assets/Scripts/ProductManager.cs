@@ -127,6 +127,8 @@ public class ProductManager : NetworkBehaviour
     [Server]
     public void SaveCurrentQuarterData()
     {
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+
         functionalityQ.Insert(currentQuarter, functionality);
         integrabilityQ.Insert(currentQuarter, integrability);
         userFriendlinessQ.Insert(currentQuarter, userFriendliness);

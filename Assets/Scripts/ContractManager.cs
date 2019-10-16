@@ -660,9 +660,9 @@ public class ContractManager : NetworkBehaviour
             {
                 myContractsHistory.Add(contract.GetContractID(), contract);
             }
-        }
 
-        //myContracts.Clear();
+        }
+        myContracts.Clear();
         if (contractUIHandler != null)
         {
             contractUIHandler.UpdateResultContractListContent();

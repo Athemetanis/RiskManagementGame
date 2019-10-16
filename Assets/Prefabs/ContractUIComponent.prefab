@@ -248,7 +248,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5962489713229172794}
-        m_MethodName: GenerateContractPreview
+        m_MethodName: GenerateContractResultsPreview
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

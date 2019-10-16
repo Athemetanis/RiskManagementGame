@@ -26,64 +26,33 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
     private int currentQuarter;
     private GameObject myPlayerDataObject;
     private ProviderAccountingManager providerAccountingManager;
-    private ProductManager productManager;
 
-    // Start is called before the first frame update
-    void Awake()
+    public void Init()
     {
-        Debug.Log("provider accounting component start " + correspondingAccountingQuarter);
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         providerAccountingManager = myPlayerDataObject.GetComponent<ProviderAccountingManager>();
-        
-        switch (correspondingAccountingQuarter)
-        {
-            case 1:
-                providerAccountingManager.SetProviderAccountingUIComponentHandlerQ1(this);
-                break;
-            case 2:
-                providerAccountingManager.SetProviderAccountingUIComponentHandlerQ2(this);
-                break;
-            case 3:
-                providerAccountingManager.SetProviderAccountingUIComponentHandlerQ3(this);
-                break;
-            case 4:
-                providerAccountingManager.SetProviderAccountingUIComponentHandlerQ4(this);
-                break;
-        }
-        if(correspondingAccountingQuarter < currentQuarter)
-        {
-            (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue, int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int terminationFeeReceived,int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) = providerAccountingManager.GetCorrespondingQuarterData(correspondingAccountingQuarter);
-            beginningCashBalanceText.text = beginningCashBalance.ToString("n0");
-            revenueText.text = revenue.ToString("n0");
-            enterpriseRevenueText.text = enterpriseRevenue.ToString("n0");
-            businessRevenueText.text = businessRevenue.ToString("n0");
-            individualRevenueText.text = individualRevenue.ToString("n0");
-            advertisementText.text = advertismenentCost.ToString("n0");
-            contractPaymentsText.text = contractPayments.ToString("n0");
-            riskSharingFeesReceivedText.text = riskSharingFeeReceived.ToString("n0");
-            terminationFeeReceivedText.text = terminationFeeReceived.ToString("n0");
-            marketingResearchText.text = marketingResearch.ToString("n0");
-            borrowEmergencyLoanText.text = borrowEmergencyLoan.ToString("n0");
-            repayEmergencyLoanText.text = repayEmergencyLoan.ToString("n0");
-            endCashBalanceText.text = endCashBalance.ToString("n0");
-        }
-        if(correspondingAccountingQuarter == currentQuarter)
-        {
-            providerAccountingManager.SetCurrentProviderAccountingUIHandler(this);
-            UpdateAllElements();
-        }
-        if(correspondingAccountingQuarter > currentQuarter)
-        {
-            this.gameObject.SetActive(false);
-        }
     }
 
-    public void OnEnable()
+    public void GetHistoryData()
     {
-        Debug.Log("provider accounting ui component for " + correspondingAccountingQuarter);
+        (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue, int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int terminationFeeReceived, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) = providerAccountingManager.GetCorrespondingQuarterData(correspondingAccountingQuarter);
+        beginningCashBalanceText.text = beginningCashBalance.ToString("n0");
+        revenueText.text = revenue.ToString("n0");
+        enterpriseRevenueText.text = enterpriseRevenue.ToString("n0");
+        businessRevenueText.text = businessRevenue.ToString("n0");
+        individualRevenueText.text = individualRevenue.ToString("n0");
+        advertisementText.text = advertismenentCost.ToString("n0");
+        contractPaymentsText.text = contractPayments.ToString("n0");
+        riskSharingFeesReceivedText.text = riskSharingFeeReceived.ToString("n0");
+        terminationFeeReceivedText.text = terminationFeeReceived.ToString("n0");
+        marketingResearchText.text = marketingResearch.ToString("n0");
+        borrowEmergencyLoanText.text = borrowEmergencyLoan.ToString("n0");
+        repayEmergencyLoanText.text = repayEmergencyLoan.ToString("n0");
+        endCashBalanceText.text = endCashBalance.ToString("n0");
     }
+
 
     //METHODS FOR UPDATING UI ELEMENTS
     public void UpdateAllElements()
@@ -100,6 +69,7 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
         marketingResearchText.text = providerAccountingManager.GetMarketingResearch().ToString("n0");
         borrowEmergencyLoanText.text = providerAccountingManager.GetBorrowEmergencyLoan().ToString("n0");
         repayEmergencyLoanText.text = providerAccountingManager.GetRepayEmergencyLoan().ToString("n0");
+        endCashBalanceText.text = providerAccountingManager.GetEndCashBalance().ToString("n0");
     }
 
     public void UpdateBeginingCashBalanceText(int beginingCashBalance)

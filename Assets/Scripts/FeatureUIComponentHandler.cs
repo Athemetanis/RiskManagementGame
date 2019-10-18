@@ -70,6 +70,10 @@ public class FeatureUIComponentHandler : MonoBehaviour
         stateText.color = color;
     }
 
-
+    public void DisabeOutsourcingToggleInteraction()
+    {
+        checkedForOutsourcingToggle.interactable = false;
+    }
+    
 
 }

@@ -4388,7 +4388,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 114813593214700312}
-        m_MethodName: TrySignIn
+        m_MethodName: SentPasswordRessetEmail
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

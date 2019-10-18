@@ -51,7 +51,8 @@ public class AuthenticationManager : MonoBehaviour {
     private void Start()
     {
         InitializeFirebase();
-        //auth.SignOut(); //remove if not playing in editor
+
+        auth.SignOut(); //remove if not playing from editor / multiple instances of game
     }
 
 
@@ -193,7 +194,7 @@ public class AuthenticationManager : MonoBehaviour {
 
     public void ShowUserName()
     {   
-        authForm.UserName.text = user.Email;
+        authForm.UserName.text = auth.CurrentUser.Email;
     }
 
     public void SentPasswordRessetEmail()
@@ -229,4 +230,5 @@ public class AuthenticationManager : MonoBehaviour {
         }
     }
     
+
 }

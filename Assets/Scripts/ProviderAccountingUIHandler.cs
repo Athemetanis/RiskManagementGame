@@ -35,10 +35,10 @@ public class ProviderAccountingUIHandler : MonoBehaviour
         providerAccountingUIComponentHandlerQ3.Init();
         providerAccountingUIComponentHandlerQ4.Init();
 
-        SetReferences(currentQuarter);
+        EnableCorrespondingQuarterUI(currentQuarter);
     }
 
-    public void SetReferences(int quarter)
+    public void EnableCorrespondingQuarterUI(int quarter)
     {
         switch (quarter)
         {

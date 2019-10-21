@@ -9,6 +9,8 @@ public class ContractManager : NetworkBehaviour
     private Dictionary<string, Contract> myContractsHistory = new Dictionary<string, Contract>();
     private int myContractsCount;
 
+    private SyncListInt reliabilityQurters = new SyncListInt() { };
+
     private PlayerRoles playerRole;
     private string playerID;
     private string gameID;
@@ -31,8 +33,16 @@ public class ContractManager : NetworkBehaviour
     public string GetGameID() { return gameID; }
     public Dictionary<string, Contract> GetMyContracts() { return myContracts; }
     public Dictionary<string, Contract> GetMyContractsHistory() { return myContractsHistory; }
+    public int GetReliabilityQuater(int quater) { return reliabilityQurters[quater]; }
 
 
+    public override void OnStartServer()
+    {
+       if(reliabilityQurters.Count == 0)
+        {
+            reliabilityQurters.Insert(0, 0);
+        }
+    }
     void Start() //both server & client
     {
         playerData = this.gameObject.GetComponent<PlayerData>();
@@ -538,8 +548,9 @@ public class ContractManager : NetworkBehaviour
                 }
             }
         }
+        ComputeRealiability();
         //Now all conctract are evaluated and I can update other manager accordingly;
-        if(playerRole == PlayerRoles.Developer)
+        if (playerRole == PlayerRoles.Developer)
         {
             playerData.UpdateCurrentQuarterDataDeveloper();
             GameHandler.allGames[gameID].AddDeveloperToEvaluated();
@@ -635,9 +646,45 @@ public class ContractManager : NetworkBehaviour
             contractUIHandler.UpdateUIContractListsContents();
         }
     }
-
-
+    
     //CONTRACT EVALUATION METHODS END
+    
+    public void ComputeRealiability()
+    {
+        int currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+        int contractEvaluatedCount = 0;
+        int contractDoneInTimeCount = 0;
+        int reliability = 0;
+        foreach(Contract contract in myContracts.Values)
+        {
+            if(contract.GetContractState() == ContractState.Completed)
+            {
+                contractEvaluatedCount++;
+                if(contract.GetTrueDeliveryTime() <= contract.GetContractDelivery())
+                {
+                    contractDoneInTimeCount++;
+                }
+            }
+            else if(contract.GetContractState() == ContractState.Terminated)
+            {
+                contractEvaluatedCount++;
+            }
+
+        }
+        if (contractEvaluatedCount > 0)
+        {
+            reliability = (contractDoneInTimeCount / contractEvaluatedCount) * 100;
+            reliabilityQurters.Insert(currentQuarter, reliability);
+        }
+        else
+        {
+            reliabilityQurters.Insert(currentQuarter, 100);
+        }
+        
+    }
+
+
+
 
     [Server]
     public void MoveToNextQuarter() //this fucntion mus be called on all developers and providers in the game before new quadrant starts.

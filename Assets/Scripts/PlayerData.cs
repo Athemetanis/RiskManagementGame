@@ -170,18 +170,6 @@ public class PlayerData : NetworkBehaviour {
             riskManager.SaveCurrentQuarterData();
         }
     }
-
-    [Command]
-    public void CmdMoveToNextQuarter()
-    {
-        MoveOtherManagerToNextQuarterProvider();
-        MoveOtherManagerToNextQuarterDeveloper();
-    }
-
-
-
-
-
     [Server]
     public void SaveCurretnQuarterDataProvider()
     {
@@ -193,6 +181,13 @@ public class PlayerData : NetworkBehaviour {
             providerAccountingManager.SaveCurrentQuarterData();
             riskManager.SaveCurrentQuarterData();
         }
+    }
+
+    [Command]
+    public void CmdMoveToNextQuarter()
+    {
+        MoveOtherManagerToNextQuarterProvider();
+        MoveOtherManagerToNextQuarterDeveloper();
     }
     [Server]
     public void MoveOtherManagerToNextQuarterDeveloper()
@@ -207,8 +202,6 @@ public class PlayerData : NetworkBehaviour {
             submitDataManager.MoveToNextQuarter();
         }
     }
-
-
     [Server]
     public void MoveOtherManagerToNextQuarterProvider()
     {

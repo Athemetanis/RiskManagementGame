@@ -30,9 +30,9 @@ public class GameData : NetworkBehaviour
     private int developersEvaluatedCount;
            
     //--------------<playerID, GameObject player>-----------------//  Q: How am I syncing this? A: When script playerData starts on client/server it requests adding its game object into these lists. 
-    private Dictionary<string, GameObject> playerList;
-    private Dictionary<string, GameObject> developerList;
-    private Dictionary<string, GameObject> providerList;
+    private Dictionary<string, GameObject> playerList = new Dictionary<string, GameObject>() { };
+    private Dictionary<string, GameObject> developerList = new Dictionary<string, GameObject>() { };
+    private Dictionary<string, GameObject> providerList = new Dictionary<string, GameObject>() { };
 
     private int developersCount;
     private int providersCount;
@@ -70,6 +70,7 @@ public class GameData : NetworkBehaviour
     public int GetProvidersCount() { return providersCount; }
     public Dictionary<string, GameObject> GetPlayerList() { return playerList; }
     public Dictionary<string, GameObject> GetProviderList() { return providerList; }
+    public Dictionary<string, GameObject> GetDeveloperList() { return developerList; }
 
     public void SetGameUIHandler(GameUIHandler gameUIHandler) { this.gameUIHandler = gameUIHandler; }
     
@@ -366,7 +367,6 @@ public class GameData : NetworkBehaviour
     
 
     //METHODS FOR VALUATING GAMES AND MOVING TO NEXT QUARTER
-
     [Server]
     public void TryToAddPlayersToReadyServer(string playerID)
     {

@@ -27,6 +27,9 @@ public class ProductManager : NetworkBehaviour
 
     //GETTERS & SETTERS
     public void SetProductUIHandler(ProductUIHandler productUIHandler) { this.productUIHandler = productUIHandler; }
+    public int GetFunctionality() { return functionality; }
+    public int GetIntegrability() { return integrability; }
+    public int GetUserFrienliness() { return userFriendliness; }
 
     public override void OnStartServer()
     {

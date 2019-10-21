@@ -89,6 +89,8 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
 
     public override void OnStartClient()
     {
+        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         // syncDict is already populated with anything the server set up
         // but we can subscribe to the callback in case it is updated later on
         riskLikelihood.Callback += OnLikelihoodChange;
@@ -383,9 +385,11 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     {
         RpcSetNewReferences();
     }
+
     [ClientRpc]
     public void RpcSetNewReferences()
     {
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         if (riskUIHandler != null)
         {
             riskUIHandler.EnableCorrespondingUI(currentQuarter + 1);

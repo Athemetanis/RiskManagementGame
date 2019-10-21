@@ -56,6 +56,7 @@ public class GameHandler : NetworkBehaviour {
         allGamesUI = new Dictionary<string, GameObject>();
     }
 
+
     // Use this for initialization
     void Start() {
 
@@ -148,7 +149,7 @@ public class GameHandler : NetworkBehaviour {
         GamePasswordVerificator.GetComponent<GamePasswordVerification>().SetGameData(GameHandler.allGames[gameID.GetComponent<Text>().text].GetComponent<GameData>());
     }
        
-
+    [Server]
     public void CreateGame(string name, string password)
     {
         Debug.Log("creating game");
@@ -170,30 +171,9 @@ public class GameHandler : NetworkBehaviour {
         
     }
 
-    /*public void CreateGame()
-    {
-        CreateGame(gameName, gamePassword);
-        //RefreshGamesList();
-
-        if (isServer)
-        {
-            GameObject game = Instantiate(gamePrefab);
-            GameData gameData = game.GetComponent<GameData>();
-
-            gameData.SetGameID(GenerateUniqueID());
-            gameData.SetGameName(gameName);
-            gameData.SetGameRound(1);
-            gameData.SetPassoword(gamePassword);
-            gameData.SetPlayersCount(0);
-            gameData.SetProvidersCount(0);
-            gameData.SetDevelopersCount(0);
-            game.SetActive(true);
-        }
-    }*/
-
     public void DeleteGame(string name)  ///DO I want this? 
     {
-
+        Debug.LogError("Deleting game not implemented");
     }
         
     public string GenerateUniqueID()

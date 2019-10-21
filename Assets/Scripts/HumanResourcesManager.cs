@@ -57,9 +57,9 @@ public class HumanResourcesManager : NetworkBehaviour
     public int GetUISpecialistSalary() { return uiSpecialistSalary; }
     public int GetIntegrabilitySpecialistSalary() { return integrabilitySpecialistSalary; }
     public int GetProgrammersAvailableCount() { return programmersAvailableCount; }
-    //public int GetSpecialistsAvailableCount() { return specialistsAvailableCount; }
     public int GetUISpecialsitsAvailableCount() { return userInterfaceSpecialistsAvailableCount; }
     public int GetIntegrabilitySpecialistsAvailableCount() { return integrabilitySpecialistsAvailableCount; }
+    public int GetEmployeesCountQuater(int quater) { return endProgrammersCountQ[quater] + endUISpecialistsCountQ[quater] + endIntegrabilitySpecialistsCountQ[quater]; }
 
     private void Awake()
     {

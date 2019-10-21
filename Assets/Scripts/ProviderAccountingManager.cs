@@ -513,7 +513,7 @@ public class ProviderAccountingManager : NetworkBehaviour
         Debug.Log("current quarter for reference" + currentQuarter);
         if (providerAccountingUIHandler != null)
         {
-            providerAccountingUIHandler.SetReferences(currentQuarter + 1);
+            providerAccountingUIHandler.EnableCorrespondingQuarterUI(currentQuarter + 1);
         }       
     }
 

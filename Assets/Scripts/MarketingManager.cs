@@ -197,6 +197,7 @@ public class MarketingManager : NetworkBehaviour
         businessPriceQ.Insert(currentQuarter, businessPrice);
         enterprisePriceQ.Insert(currentQuarter, enterprisePrice);
     }
+
     [Server]
     public void LoadNextQUarterData(int currentQuarter)
     {

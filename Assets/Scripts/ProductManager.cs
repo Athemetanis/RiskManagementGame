@@ -31,6 +31,10 @@ public class ProductManager : NetworkBehaviour
     public int GetIntegrability() { return integrability; }
     public int GetUserFrienliness() { return userFriendliness; }
 
+    public int GetFunctionalityQuarter(int quarter) { return functionalityQ[quarter]; }
+    public int GetIntegrabilityQuarter(int quarter) { return integrabilityQ[quarter]; }
+    public int GetUserFriendlinessQuarter(int quarter) { return userFriendlinessQ[quarter]; }
+
     public override void OnStartServer()
     {
         gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();

@@ -274,11 +274,11 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     }
     public void OnRisksChange(SyncListString.Operation op, int index, string riskID)
     {
-        Debug.Log("like" + riskLikelihood.ContainsKey(riskID) + "," + riskImpact.ContainsKey(riskID) + "," + riskMonitor.ContainsKey(riskID));
+        //Debug.Log("like" + riskLikelihood.ContainsKey(riskID) + "," + riskImpact.ContainsKey(riskID) + "," + riskMonitor.ContainsKey(riskID));
         if (riskUIHandler != null & riskLikelihood.ContainsKey(riskID) & riskImpact.ContainsKey(riskID) & riskColor.ContainsKey(riskID))
         {
-            Debug.Log("updating points" + risks.Count);
-            Debug.Log(riskLikelihood.Values.ToString());
+            //Debug.Log("updating points" + risks.Count);
+           // Debug.Log(riskLikelihood.Values.ToString());
             riskUIHandler.UpdateGraphPoints();
         }
 

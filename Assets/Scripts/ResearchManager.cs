@@ -38,22 +38,27 @@ public class ResearchManager : NetworkBehaviour
     private SyncListInt advertisementMin = new SyncListInt() { };
     private SyncListInt advertisementMax = new SyncListInt() { };
 
+    /*   GET THIS INFORMATIONS FROM OTHER MANAGERS WHERE HISTORY IS ALSO AVAILABLE
     //   ----------< firmName, Count>-----------
-    public SyncDictionaryStringInt developersEmployees = new SyncDictionaryStringInt() { };
+    public SyncDictionaryStringInt developersEmployees = new SyncDictionaryStringInt() { };    
     //   ----------< firmName, Value>-----------
     public SyncDictionaryStringInt providerProductFunctionality = new SyncDictionaryStringInt() { };
     public SyncDictionaryStringInt providerProductIntegrability = new SyncDictionaryStringInt() { };
     public SyncDictionaryStringInt providerProductUI = new SyncDictionaryStringInt() { };
 
     public SyncDictionaryStringInt partnersReliabilities = new SyncDictionaryStringInt() { };
+    */
 
-    [SyncVar(hook ="OnChangeBuyCompetitorsResearch")]
+    [SyncVar (hook = "OnChangeBuyCompetitorsResearch")]
     private bool buyCompetitorsResearch;
     [SyncVar(hook = "OnChangeBuyPossiblePartnersResearch")]
     private bool buyPossiblePartnersResearch;
 
+    private SyncListBool buyCompetitorsResearchQuarters = new SyncListBool() { };
+    private SyncListBool buyPossiblePartnersResearchQuarters = new SyncListBool() { };
     private string gameID;
     private PlayerData playerData;
+    private int currentQuarter;
     private ProviderResearchUIHandler providerResearchUIHandler;
     private DeveloperResearchUIHandler developerResearchUIHandler;
     
@@ -61,26 +66,26 @@ public class ResearchManager : NetworkBehaviour
     public void SetProviderResearchUIHandler(ProviderResearchUIHandler providerResearchUIHandler) { this.providerResearchUIHandler = providerResearchUIHandler; }
     public void SetDeveloperResearchUIHandler(DeveloperResearchUIHandler developerResearchUIHandler) { this.developerResearchUIHandler = developerResearchUIHandler; }
 
+    public bool GetBuyCompertitorsResearchQuarter(int quarter) { return buyCompetitorsResearchQuarters[quarter]; }
+    public bool GetBuyPossiblePartnersResearchQuarter(int quarter) { return buyPossiblePartnersResearchQuarters[quarter]; }
 
 
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
+    void Start() { }
     public override void OnStartServer()
-    {
+    {  
         playerData = this.gameObject.GetComponent<PlayerData>();
         gameID = playerData.GetGameID();
-
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+        SetUpDefaultValues();
+        LoadDefaultValues(currentQuarter);
     }
 
     public override void OnStartClient()
     {
         playerData = this.gameObject.GetComponent<PlayerData>();
         gameID = playerData.GetGameID();
-
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
     }
 
     [Server]
@@ -101,7 +106,78 @@ public class ResearchManager : NetworkBehaviour
         reliabilityAverage.Insert(0, 0); ;
         reliabilityMax.Insert(0, 0);
         reliabilityMin.Insert(0, 0);
+
+        enterprisePriceAverage.Insert(0, 0);
+        enterprisePriceMax.Insert(0, 0);
+        enterprisePriceMin.Insert(0, 0);
+
+        businessPriceAverage.Insert(0, 0);
+        businessPriceMax.Insert(0, 0);
+        businessPriceMin.Insert(0, 0);
+
+        individualPriceAverage.Insert(0, 0);
+        individualPriceMax.Insert(0, 0);
+        individualPriceMin.Insert(0, 0);
+
+        advertisementAverage.Insert(0, 0);
+        advertisementMax.Insert(0, 0);
+        advertisementMin.Insert(0, 0);
+
+        buyCompetitorsResearchQuarters.Insert(0, false);
+        buyPossiblePartnersResearchQuarters.Insert(0, false);
+
+        buyCompetitorsResearch = false;
+        buyPossiblePartnersResearch = false;
+
     }
+
+    [Server]
+    public void LoadDefaultValues(int quarter)
+    {
+        if(programmersSalaryAverage.Count != quarter)
+        {
+            for (int i = programmersSalaryAverage.Count + 1; i < quarter; i++)
+            {
+                programmersSalaryAverage.Insert(i, 0);
+                programmersSalaryMax.Insert(i, 0);
+                programmersSalaryMin.Insert(i, 0);
+
+                uiSpecialistsSalaryAverage.Insert(i, 0);
+                uiSpecialistsSalaryMax.Insert(i, 0); ;
+                uiSpecialistsSalaryMin.Insert(i, 0);
+
+                integrabilitySpecialistsSalaryAverage.Insert(i, 0); ;
+                integrabilitySpecialistsSalaryMax.Insert(i, 0);
+                integrabilitySpecialistsSalaryMin.Insert(i, 0);
+
+                reliabilityAverage.Insert(i, 0); ;
+                reliabilityMax.Insert(i, 0);
+                reliabilityMin.Insert(i, 0);
+
+                enterprisePriceAverage.Insert(i, 0);
+                enterprisePriceMax.Insert(i, 0);
+                enterprisePriceMin.Insert(i, 0);
+
+                businessPriceAverage.Insert(i, 0);
+                businessPriceMax.Insert(i, 0);
+                businessPriceMin.Insert(i, 0);
+
+                individualPriceAverage.Insert(i, 0);
+                individualPriceMax.Insert(i, 0);
+                individualPriceMin.Insert(i, 0);
+
+                advertisementAverage.Insert(i, 0);
+                advertisementMax.Insert(i, 0);
+                advertisementMin.Insert(i, 0);
+
+                buyCompetitorsResearchQuarters.Insert(0, false);
+                buyPossiblePartnersResearchQuarters.Insert(0, false);
+            }
+        }
+        buyCompetitorsResearch = false;
+        buyPossiblePartnersResearch = false;
+    }
+
 
     public (int enterprisePriceAverage, int enterprisePriceMin, int enterprisePriceMax, int businessPriceAverage, int businessPriceMin, int businessPriceMax, int individualPriceAverage, int individualPriceMin, int individualPriceMax, int advertisementAverage, int advertisementMin, int advertisementMax) GetCorrespondingQuarterDataDeveloper(int correspondingQuarter) { return (enterprisePriceAverage[correspondingQuarter], enterprisePriceMin[correspondingQuarter], enterprisePriceMax[correspondingQuarter], businessPriceAverage[correspondingQuarter], businessPriceMin[correspondingQuarter], businessPriceMax[correspondingQuarter], individualPriceAverage[correspondingQuarter], individualPriceMin[correspondingQuarter], individualPriceMax[correspondingQuarter], advertisementAverage[correspondingQuarter], advertisementMin[correspondingQuarter], advertisementMax[correspondingQuarter]); }
 
@@ -227,7 +303,7 @@ public class ResearchManager : NetworkBehaviour
         this.reliabilityMin.Insert(currentQuarter, reliabilityMin);
         this.reliabilityMax.Insert(currentQuarter, reliabilityMax);
     }
-    [Server]
+    /*[Server]
     public void ComputeDevelopersEmployees()
     {
         int currentQuarter = GameHandler.allGames[gameID].GetGameRound();
@@ -239,7 +315,7 @@ public class ResearchManager : NetworkBehaviour
             developersEmployees.Add(firmName, employeeCount);
         }
 
-    }
+    }*/
     [Server]
     public void ComputeAdvertisement()
     {
@@ -342,28 +418,28 @@ public class ResearchManager : NetworkBehaviour
         this.individualPriceMax.Insert(currentQuarter, individualPriceMax);
         this.individualPriceMin.Insert(currentQuarter, individualPriceMin);
     }
-    [Server]
-    public void ComputeProductStats()
-    {
-        int currentQuarter = GameHandler.allGames[gameID].GetGameRound();
-        List<GameObject> providers = new List<GameObject>(GameHandler.allGames[gameID].GetProviderList().Values);
-        int providerCount = providers.Count;
+
+    /*[Server]
+   public void ComputeProductStats()
+   {
+       int currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+       List<GameObject> providers = new List<GameObject>(GameHandler.allGames[gameID].GetProviderList().Values);
+       int providerCount = providers.Count;
 
 
-        foreach (GameObject provider in providers)
-        {         
-            int productFunctionality = provider.GetComponent<ProductManager>().GetFunctionality();
-            int productIntegrability = provider.GetComponent<ProductManager>().GetIntegrability();
-            int productUI = provider.GetComponent<ProductManager>().GetUserFrienliness();
-            string firmName = provider.GetComponent<FirmManager>().GetFirmName();
+       foreach (GameObject provider in providers)
+       {         
+           int productFunctionality = provider.GetComponent<ProductManager>().GetFunctionality();
+           int productIntegrability = provider.GetComponent<ProductManager>().GetIntegrability();
+           int productUI = provider.GetComponent<ProductManager>().GetUserFrienliness();
+           string firmName = provider.GetComponent<FirmManager>().GetFirmName();
 
-            providerProductFunctionality.Add(firmName, productFunctionality);
-            providerProductIntegrability.Add(firmName, productIntegrability);
-            providerProductUI.Add(firmName, productUI);
-        }
-    }
-
-    public void ComputePartnersReliabilities()
+           providerProductFunctionality.Add(firmName, productFunctionality);
+           providerProductIntegrability.Add(firmName, productIntegrability);
+           providerProductUI.Add(firmName, productUI);
+       }
+    }*/
+    /* public void ComputePartnersReliabilities()
     {
         int currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         List<GameObject> developers = new List<GameObject>(GameHandler.allGames[gameID].GetDeveloperList().Values);
@@ -376,39 +452,49 @@ public class ResearchManager : NetworkBehaviour
             partnersReliabilities.Add(firmName, reliability);
         }
 
-    }
+    }*/
 
-    public void OnChangeBuyPossiblePartnersResearch(bool buyPossiblePartnersResearch)
+    public void OnChangeBuyPossiblePartnersResearch( bool buyPossiblePartnersResearch)
     {
-        this.buyPossiblePartnersResearch = buyPossiblePartnersResearch;
     }
     public void OnChangeBuyCompetitorsResearch(bool buyCompetitorsResearch)
     {
-        this.buyCompetitorsResearch = buyCompetitorsResearch;
     }
 
     //NEXT QUARTER METHODS
     [Server]
     public void SaveCurrentQuaterData()
     {
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         ComputeSalaryValues();
         ComputeReliability();
-        ComputeDevelopersEmployees();
+        //ComputeDevelopersEmployees();
+        //ComputeProductStats();
         ComputeAdvertisement();
         ComputePrice();
-        ComputeProductStats();
+
+        buyPossiblePartnersResearchQuarters.Insert(currentQuarter, buyPossiblePartnersResearch);
+        buyCompetitorsResearchQuarters.Insert(currentQuarter, buyCompetitorsResearch);
     }
     [Server]
-    public void MoveToNextGuarter()
+    public void MoveToNextQuarter()
     {
-        if(playerData.GetPlayerRole() == PlayerRoles.Provider)
+        RpcEnableCorrespondingUI();
+    }
+    [ClientRpc]
+    public void RpcEnableCorrespondingUI()
+    {
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+        if (playerData.GetPlayerRole() == PlayerRoles.Provider)
         {
-            //providerResearchUIHandler.EnableCorrespondingQuarterUI();
+            if (providerResearchUIHandler != null)
+            {
+                providerResearchUIHandler.EnableCorrespondingQuarterUI(currentQuarter + 1);
+            }
         }
         if (playerData.GetPlayerRole() == PlayerRoles.Developer)
         {
             //developerResearchUIHandler.EnableCorrespondingQuarterUI();
         }
     }
-
 }

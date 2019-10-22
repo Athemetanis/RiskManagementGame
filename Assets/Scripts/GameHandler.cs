@@ -138,9 +138,11 @@ public class GameHandler : NetworkBehaviour {
     }
 
     public void DestroyGameListUI()
-    {
-        Destroy(gameListUIGameObject);
-        generatedGameList = false;
+    {   if(gameListUIGameObject != null)
+        {
+            Destroy(gameListUIGameObject);
+            generatedGameList = false;
+        }       
     }
 
     public void GenerateGamePasswordVerificator(GameObject gameID)

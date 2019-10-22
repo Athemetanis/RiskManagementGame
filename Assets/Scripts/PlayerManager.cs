@@ -107,6 +107,7 @@ public class PlayerManager : NetworkBehaviour {
                 } 
                
             }
+            GameHandler.singleton.DestroyGameListUI();
             //CmdRemoveAuthority();
             myPlayerObject = null;
             myPlayerData = null;

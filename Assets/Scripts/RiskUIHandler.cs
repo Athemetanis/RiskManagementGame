@@ -11,6 +11,7 @@ public class RiskUIHandler : MonoBehaviour
     public GameObject riskQ2Container;
     public GameObject riskQ3Container;
     public GameObject riskQ4Container;
+    public GameObject riskQ5Container;
 
     public GameObject riskGraphContentQ3;
     public GameObject riskGraphContentQ4;
@@ -52,7 +53,8 @@ public class RiskUIHandler : MonoBehaviour
         riskQ2Container.SetActive(false);
         riskQ3Container.SetActive(false);
         riskQ4Container.SetActive(false);
-        if(currentQuarter == 1)
+        riskQ5Container.SetActive(false);
+        if (currentQuarter == 1)
         {
            riskQ1Container.SetActive(true);
         }
@@ -64,11 +66,17 @@ public class RiskUIHandler : MonoBehaviour
         {
             riskGraphContent = riskGraphContentQ3;
             riskQ3Container.SetActive(true);
+            UpdateGraphPoints();
         }
         if (currentQuarter == 4)
         {
             riskGraphContent = riskGraphContentQ4;
             riskQ4Container.SetActive(true);
+            UpdateGraphPoints();
+        }
+        if(currentQuarter == 5)
+        {
+            riskQ5Container.SetActive(true);
         }
     }
 
@@ -91,8 +99,8 @@ public class RiskUIHandler : MonoBehaviour
             Image pointI = riskGraphImage.GetComponent<Image>();
             graphImagePoints.Add(riskID, graphPointRT);
             allGraphImages.Add(riskID, pointI);
-            Debug.Log("L" + riskManager.GetLikelihood(riskID));
-            Debug.Log(riskManager.GetImpact(riskID));
+            //Debug.Log("L" + riskManager.GetLikelihood(riskID));
+           // Debug.Log(riskManager.GetImpact(riskID));
             riskGraphImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(riskManager.GetLikelihood(riskID) * xAxisScaler, riskManager.GetImpact(riskID) * yAxisScaler);
             pointI.color = riskManager.GetColor(riskID);
         }

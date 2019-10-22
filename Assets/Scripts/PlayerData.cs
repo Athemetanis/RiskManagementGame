@@ -30,6 +30,7 @@ public class PlayerData : NetworkBehaviour {
     private HumanResourcesManager humanResourcesManager; //developer only
     private RiskManager riskManager;
     private SubmitDataManager submitDataManager;
+    private ResearchManager researchManager;
     private ProviderAccountingManager providerAccountingManager;    //provider only
     private DeveloperAccountingManager developerAccountingManager; //developer only
 
@@ -91,6 +92,7 @@ public class PlayerData : NetworkBehaviour {
         submitDataManager = this.gameObject.GetComponent<SubmitDataManager>();
         providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
         developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
+        researchManager = this.gameObject.GetComponent<ResearchManager>();
 
         if (playerRole == PlayerRoles.Provider)
         {
@@ -101,6 +103,8 @@ public class PlayerData : NetworkBehaviour {
             contractMamanger.enabled = true;
             providerAccountingManager.enabled = true;
             riskManager.enabled = true;
+            researchManager.enabled = true;
+            
 
         }
         else //developer
@@ -110,7 +114,8 @@ public class PlayerData : NetworkBehaviour {
             contractMamanger.enabled = true;
             scheduleManager.enabled = true;
             developerAccountingManager.enabled = true;
-            riskManager.enabled = true;
+            //riskManager.enabled = true;
+            //researchManager.enabled = true;
         }
     }
 
@@ -168,6 +173,7 @@ public class PlayerData : NetworkBehaviour {
             humanResourcesManager.SaveCurrentQuarterData();
             developerAccountingManager.SaveCurrentQuarterDataServer();
             riskManager.SaveCurrentQuarterData();
+           // researchManager.SaveCurrentQuaterData();
         }
     }
     [Server]
@@ -180,6 +186,7 @@ public class PlayerData : NetworkBehaviour {
             customerManager.SaveCurrentQuarterData();
             providerAccountingManager.SaveCurrentQuarterData();
             riskManager.SaveCurrentQuarterData();
+            researchManager.SaveCurrentQuaterData();
         }
     }
 
@@ -198,8 +205,10 @@ public class PlayerData : NetworkBehaviour {
             scheduleManager.MoveToNextQuarter();
             humanResourcesManager.MoveToNextQuarter();
             developerAccountingManager.MoveToNextQuarter();
+            //researchManager.MoveToNextQuarter();
             riskManager.MoveToTheNextQuarter();
             submitDataManager.MoveToNextQuarter();
+           
         }
     }
     [Server]
@@ -212,6 +221,7 @@ public class PlayerData : NetworkBehaviour {
             marketingManager.MoveToNextQuarter();
             customerManager.MoveToNextQuarter();
             providerAccountingManager.MoveToNextQuarter();
+            researchManager.MoveToNextQuarter();
             riskManager.MoveToTheNextQuarter();
             submitDataManager.MoveToNextQuarter();
         }

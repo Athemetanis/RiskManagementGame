@@ -9,7 +9,7 @@ public class ProviderResearchUIHandler : MonoBehaviour
     public Toggle buyCompetitorsResearchToggle;
     public Toggle buyPossiblePartnersResearchToggle;
 
-    public TextMeshProUGUI aviabilityInfoText;
+    public TextMeshProUGUI availabilityInfoText;
 
     public GameObject researchQ1Container;
     public GameObject researchQ2Container;
@@ -35,57 +35,51 @@ public class ProviderResearchUIHandler : MonoBehaviour
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         researchManager = myPlayerDataObject.GetComponent<ResearchManager>();
         researchManager.SetProviderResearchUIHandler(this);
-        aviabilityInfoText.gameObject.SetActive(false);
+        availabilityInfoText.gameObject.SetActive(false);
         EnableCorrespondingQuarterUI(currentQuarter);
     }
 
-public void EnableCorrespondingQuarterUI (int quarter)
-    {   
+    public void EnableCorrespondingQuarterUI (int quarter)
+    {
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         switch (quarter)
         {
             case 1:
-                aviabilityInfoText.gameObject.SetActive(true);
+                availabilityInfoText.gameObject.SetActive(true);
+                researchQ4Container.SetActive(false);
+                researchQ3Container.SetActive(false);
+                researchQ2Container.SetActive(false);
+                researchQ1Container.SetActive(false);
+
                 return;
                 
             case 2:
-                if (buyCompetitorsResearchToggle.isOn || buyPossiblePartnersResearchToggle.isOn)
-                {
-                    researchQ1Container.SetActive(true);
-                }
-                else
-                {
-                    aviabilityInfoText.gameObject.SetActive(true);
-                }           
+                researchQ1Container.SetActive(true);
+                providerResearchUIComponentHandlerQ1.SetUpProviderResearchUIComponent();
                 return;
             case 3:
-                if (buyCompetitorsResearchToggle.isOn || buyPossiblePartnersResearchToggle.isOn)
-                {
-                    researchQ2Container.SetActive(true);
-                }
-                else
-                {
-                    aviabilityInfoText.gameObject.SetActive(true);
-                }
+                researchQ2Container.SetActive(true);
+                researchQ1Container.SetActive(true);
+                providerResearchUIComponentHandlerQ1.SetUpProviderResearchUIComponent();
+                providerResearchUIComponentHandlerQ2.SetUpProviderResearchUIComponent();
                 return;
             case 4:
-                if (buyCompetitorsResearchToggle.isOn || buyPossiblePartnersResearchToggle.isOn)
-                {
-                    researchQ3Container.SetActive(true);
-                }
-                else
-                {
-                    aviabilityInfoText.gameObject.SetActive(true);
-                }
+                researchQ3Container.SetActive(true);
+                researchQ2Container.SetActive(true);
+                researchQ1Container.SetActive(true);
+                providerResearchUIComponentHandlerQ1.SetUpProviderResearchUIComponent();
+                providerResearchUIComponentHandlerQ2.SetUpProviderResearchUIComponent();
+                providerResearchUIComponentHandlerQ3.SetUpProviderResearchUIComponent();
                 return;
             case 5:
-                if (buyCompetitorsResearchToggle.isOn || buyPossiblePartnersResearchToggle.isOn)
-                {
-                    researchQ4Container.SetActive(true);
-                }
-                else
-                {
-                    aviabilityInfoText.gameObject.SetActive(true);
-                }
+                researchQ4Container.SetActive(true);
+                researchQ3Container.SetActive(true);
+                researchQ2Container.SetActive(true);
+                researchQ1Container.SetActive(true);
+                providerResearchUIComponentHandlerQ1.SetUpProviderResearchUIComponent();
+                providerResearchUIComponentHandlerQ2.SetUpProviderResearchUIComponent();
+                providerResearchUIComponentHandlerQ3.SetUpProviderResearchUIComponent();
+                providerResearchUIComponentHandlerQ4.SetUpProviderResearchUIComponent();
                 return;
         }
 
@@ -98,6 +92,11 @@ public void EnableCorrespondingQuarterUI (int quarter)
     public void ChangeBuyPossiblePartnersResearch()
     {
         researchManager.SetBuyPossiblePartnersResearch(buyPossiblePartnersResearchToggle.isOn);
+    }
+
+    public void SetAvailabilityText(string text)
+    {
+        availabilityInfoText.text += "\\n " + text;
     }
 
   

@@ -23,7 +23,7 @@ public class RiskMatrixUIComponentHandler : MonoBehaviour
 
 
     //METHODS
-    public void OnStart() //on clients only because its UI
+    public void Start() //on clients only because its UI
     {
         if (this.gameObject.activeSelf)
         {
@@ -87,6 +87,14 @@ public class RiskMatrixUIComponentHandler : MonoBehaviour
         if (riskUIHandler != null)
         {
             riskUIHandler.HighlightRisk(riskID);
+        }
+    }
+
+    public void EndHighLighRisk()
+    {
+        if (riskUIHandler != null)
+        {
+            riskUIHandler.EndHighlightRisk();
         }
     }
    

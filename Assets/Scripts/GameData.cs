@@ -42,7 +42,6 @@ public class GameData : NetworkBehaviour
     
     private SyncDictionaryStringString developersFirms = new SyncDictionaryStringString();
     private SyncDictionaryStringString providersFirms = new SyncDictionaryStringString();
-
     //-------------------<firmName, description>---------------------------------------//
     private SyncDictionaryStringString allFirmDescriptions = new SyncDictionaryStringString();
 
@@ -162,6 +161,11 @@ public class GameData : NetworkBehaviour
     public GameObject GetProvider(string providerID)
     {
         return providerList[providerID];
+    }
+
+    public GameObject GetPlayer(string playerID)
+    {
+        return playerList[playerID];
     }
     
     //GAME HOOKS
@@ -296,7 +300,10 @@ public class GameData : NetworkBehaviour
     {
         return providersFirms[firmsName];
     }
-
+    public string GetFirmPlayerID(string firmName)
+    {
+        return allFirms[firmName];
+    }
 
     public void RecreateAllFirmsReverse()
     {
@@ -376,8 +383,18 @@ public class GameData : NetworkBehaviour
         }
         if (readyPlayers.Count == playerList.Count)
         {
-            EvaluateGameRoundServer();
+            InvokeGameEvents();
+            
         }
+    }
+    [Server]
+    public void InvokeGameEvents()
+    {
+        foreach (GameObject playerGO in playerList.Values)
+        {
+            playerGO.GetComponent<EventManager>().InvokeGameEvent();
+        }
+        EvaluateGameRoundServer();
     }
 
     [Server]

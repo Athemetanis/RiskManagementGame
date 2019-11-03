@@ -49,7 +49,9 @@ public class MarketingManager : NetworkBehaviour
     public int GetAdvertisement50Price() { return advertisement50Price; }
     public int GetAdvertisement75Price() { return advertisement75Price; }
     public int GetAdvertisement100Price() { return advertisement100Price; }
-
+    public int GetIndividualPriceQuarter(int quarter) { return individualPriceQ[quarter];  }
+    public int GetBusinessPriceQuarter(int quarter) { return businessPriceQ[quarter]; }
+    public int GetEnterprisePriceQuarter(int quarter) { return enterprisePriceQ[quarter]; }
     public int GetAdvertismenetCoverageQuarters(int quarter) { return advertismenetCoverageQuarters[quarter]; }
 
     public override void OnStartServer()

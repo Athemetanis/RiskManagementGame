@@ -269,10 +269,10 @@ public class PlayerManager : NetworkBehaviour {
         //NetworkServer.SpawnWithClientAuthority(myPlayerObject, gameObject);
         Debug.Log("new playerdataobject spawned with gameID:" + myPlayerData.GetGameID() + " & playerID: " + myPlayerData.GetPlayerID());
 
-        StartCoroutine(function1());
+        StartCoroutine(Function1());
     }
    
-    private IEnumerator function1 ()
+    private IEnumerator Function1 ()
     {
         yield return new WaitForSeconds(1);
         RpcGetPlayerObject();

@@ -34,6 +34,7 @@ public class FeatureUIHandler : MonoBehaviour
     //METHODS
     public void AddFeatureForOutsourcing(string name)
     {
+        Debug.Log("pridana featura skrz UI");
         featureManager.AddFeatureForOutsourcing(name);
     }
     public void RemoveFeatureForOutsourcing(string name)
@@ -150,7 +151,8 @@ public class FeatureUIHandler : MonoBehaviour
             featureUIComponentHandler.SetUserExperienceText(feature.Value.userfriendliness.ToString());
             featureUIComponentHandler.SetTimeCostsText(feature.Value.timeCost.ToString());
             featureUIComponentHandler.SetFeatureUIHandler(this);
-            featureUIComponentHandler.SetCheckedForOutsourcing(true);
+            featureUIComponentHandler.HideToggle();
+            //featureUIComponentHandler.SetCheckedForOutsourcing(true);
             featureUIComponentHandler.DisabeOutsourcingToggleInteraction();
             featureUIComponent.SetActive(true);
         }

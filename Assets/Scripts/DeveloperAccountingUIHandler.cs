@@ -14,7 +14,7 @@ public class DeveloperAccountingUIHandler : MonoBehaviour
     public DeveloperAccountingUIComponentHandler developerAccountingUIComponentHandlerQ3;
     public DeveloperAccountingUIComponentHandler developerAccountingUIComponentHandlerQ4;
 
-    private DeveloperAccountingUIComponentHandler developerAccountingUIComponentHandlerCurrent;
+   // private DeveloperAccountingUIComponentHandler developerAccountingUIComponentHandlerCurrent;
 
     private string gameID;
     private int currentQuarter;

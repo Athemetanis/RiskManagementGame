@@ -2,23 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class DeveloperAccountingUIComponentHandler : MonoBehaviour
 {
     //VARIABLES
-    public Text beginningCashBalanceText;
-    public Text revenueText;
-    public Text salariesText;
-    public Text programmersSalariesText;
-    public Text uiSpecialistsSalariesText;
-    public Text integrabilitySpecialistsSalariesText;
-    public Text riskSharingFeePaidText;
-    public Text terminationFeePaidText;
-    public Text marketingResearchText;
-    public Text borrowEmergencyLoanText;
-    public Text repayEmergencyLoanText;
-    public Text endCashBalanceText;
+    public TextMeshProUGUI beginningCashBalanceText;
+    public TextMeshProUGUI revenueText;
+    public TextMeshProUGUI salariesText;
+    public TextMeshProUGUI programmersSalariesText;
+    public TextMeshProUGUI uiSpecialistsSalariesText;
+    public TextMeshProUGUI integrabilitySpecialistsSalariesText;
+    public TextMeshProUGUI riskSharingFeePaidText;
+    public TextMeshProUGUI terminationFeePaidText;
+    public TextMeshProUGUI marketingResearchText;
+    public TextMeshProUGUI borrowEmergencyLoanText;
+    //public Text repayEmergencyLoanText;
+    public TextMeshProUGUI endCashBalanceText;
+    
+    public TextMeshProUGUI emergencyLoanInterestsText;
+    public TMP_InputField repayEmergencyLoanIF;
 
+    private bool initialized;
     public int correspondingAccountingQuarter; //must be set in editor manually
 
     //REFERENCES 
@@ -36,8 +41,8 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
     }
 
     public void GetHistoryData()
-    {
-        (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int terminationFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) = developerAccountingManager.GetCorrecpondingQuarterData(correspondingAccountingQuarter);
+    { 
+        (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int terminationFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance, int emergencyLoanInterests) = developerAccountingManager.GetCorrecpondingQuarterData(correspondingAccountingQuarter);
         beginningCashBalanceText.text = beginningCashBalance.ToString("n0");
         revenueText.text = revenue.ToString("n0");
         salariesText.text = salaries.ToString("n0");
@@ -48,14 +53,25 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
         terminationFeePaidText.text = terminationFeePaid.ToString("n0");
         marketingResearchText.text = marketingResearch.ToString("n0");
         borrowEmergencyLoanText.text = borrowEmergencyLoan.ToString("n0");
-        repayEmergencyLoanText.text = repayEmergencyLoan.ToString("n0");
+        emergencyLoanInterestsText.text = emergencyLoanInterests.ToString("n0");
+        //repayEmergencyLoanText.text = repayEmergencyLoan.ToString("n0");
+        repayEmergencyLoanIF.enabled = false;
         endCashBalanceText.text = endCashBalance.ToString("n0");
+    }
+
+    public void ChangeRepayEmergencyLoan() //triggered by UI
+    {
+        if (initialized)
+        {
+            developerAccountingManager.ChangeEmergencyLoanRepay(int.Parse(repayEmergencyLoanIF.text));
+        }
     }
 
 
     //METHODS FOR UPDATING UI ELEMENTS
     public void UpdateAllElements()
     {
+        initialized = false;
         beginningCashBalanceText.text = developerAccountingManager.GetBeginningCashBalance().ToString("n0");
         revenueText.text = developerAccountingManager.GetRevenue().ToString("n0");
         salariesText.text = developerAccountingManager.GetSalaries().ToString("n0");
@@ -66,8 +82,10 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
         terminationFeePaidText.text = developerAccountingManager.GetTerminationFeePaid().ToString("n0");
         marketingResearchText.text = developerAccountingManager.GetMarketingResearch().ToString("n0");
         borrowEmergencyLoanText.text = developerAccountingManager.GetBorrowEmergencyLoan().ToString("n0");
-        repayEmergencyLoanText.text = developerAccountingManager.GetRepayEmergencyLoan().ToString("n0");
+        repayEmergencyLoanIF.text = developerAccountingManager.GetRepayEmergencyLoan().ToString("n0");
+        emergencyLoanInterestsText.text = developerAccountingManager.GetEmergencyLoanInterests().ToString("n0");
         endCashBalanceText.text = developerAccountingManager.GetEndCashBalance().ToString("n0");
+        initialized = true;
     }
 
     public void UpdateBeginingCashBalanceText(int beginingCashBalance)
@@ -112,11 +130,20 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
     }
     public void UpdateRepayEmergencyLoan(int repayEmergencyLoan)
     {
-        repayEmergencyLoanText.text = repayEmergencyLoan.ToString("n0");
+        //repayEmergencyLoanText.text = repayEmergencyLoan.ToString("n0");
+        repayEmergencyLoanIF.text = repayEmergencyLoan.ToString("n0");
     }
     public void UpdateEndCashBalanceText(int endCashBalance)
     {
         endCashBalanceText.text = endCashBalance.ToString("n0");
     }
+
+    public void UpdateEmergencyLoanInterests(int emergencyLoanInterests)
+    {
+        emergencyLoanInterestsText.text = emergencyLoanInterests.ToString("n0");
+    }
+
+
+
 
 }

@@ -339,14 +339,18 @@ public class ContractManager : NetworkBehaviour
     [Command]
     public void CmdAcceptContract(string contractID)
     {
+        Debug.Log("Contract accepted");
         ContractManager developerCM = GameHandler.allGames[gameID].GetDeveloper(myContracts[contractID].GetDeveloperID()).GetComponent<ContractManager>();
         ContractManager providerCM = GameHandler.allGames[gameID].GetProvider(myContracts[contractID].GetProviderID()).GetComponent<ContractManager>();
         myContracts[contractID].SetContractState(ContractState.Accepted);
 
         if (providerCM.GetFeatureManager() != null)
         {
-            providerCM.GetFeatureManager().AddFeatureInDevelopmentServer(myContracts[contractID].GetContractFeature().nameID);
+            Debug.Log("feature removed from outsourced");
             providerCM.GetFeatureManager().RemoveFeatureForOutsourcingServer(myContracts[contractID].GetContractFeature().nameID);
+            Debug.Log("feature added to in development");
+            providerCM.GetFeatureManager().AddFeatureInDevelopmentServer(myContracts[contractID].GetContractFeature().nameID);
+
         }
 
         string message = firmManager.GetFirmName() + " accepted contract. ";
@@ -408,6 +412,12 @@ public class ContractManager : NetworkBehaviour
     {
         ContractManager developerCM = GameHandler.allGames[gameID].GetDeveloper(myContracts[contractID].GetDeveloperID()).GetComponent<ContractManager>();
         ContractManager providerCM = GameHandler.allGames[gameID].GetProvider(myContracts[contractID].GetProviderID()).GetComponent<ContractManager>();
+
+        if (providerCM.GetFeatureManager() != null)
+        {
+            providerCM.GetFeatureManager().RemoveFeatureInDevelopmentServer(myContracts[contractID].GetContractFeature().nameID);
+            providerCM.GetFeatureManager().AddFeatureForOutsourcingServer(myContracts[contractID].GetContractFeature().nameID);
+        }
         myContracts[contractID].SetContractState(ContractState.Rejected);
         string message = firmManager.GetFirmName() + " rejected contract. ";
         myContracts[contractID].AddHistoryRecord(message);

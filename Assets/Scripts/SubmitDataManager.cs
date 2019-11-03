@@ -19,7 +19,7 @@ public class SubmitDataManager : NetworkBehaviour
     public void SetSubmitData(bool submitData) { this.submitData = submitData; }
     public bool GetSubmitData() { return submitData; }
 
-
+    private void Start() { }
 
     // Start is called before the first frame update
     public override void OnStartServer()
@@ -57,8 +57,7 @@ public class SubmitDataManager : NetworkBehaviour
             //cover my screeen with image and text abut wating for other player .... bla bla bla 
         }
     }
-
-
+    
     [Server]
     public void MoveToNextQuarter()
     {

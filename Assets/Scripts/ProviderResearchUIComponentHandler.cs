@@ -34,7 +34,7 @@ public class ProviderResearchUIComponentHandler : MonoBehaviour
     public TextMeshProUGUI advertisementAverage;
     public TextMeshProUGUI advertisementMine;
 
-    public int correspondinqResearchQuarter;
+    public int correspondingResearchQuarter;
 
     private string gameID;
     private int currentQuarter;
@@ -43,15 +43,16 @@ public class ProviderResearchUIComponentHandler : MonoBehaviour
     private MarketingManager marketingManager;
     private ProviderResearchUIHandler providerResearchUIHandler;
 
-    void Awake()
+    public void SerProviderResearchUIHandler(ProviderResearchUIHandler providerResearchUIHandler) { this.providerResearchUIHandler = providerResearchUIHandler; }
+
+    public void Initialization()
     {
 
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         researchManager = myPlayerDataObject.GetComponent<ResearchManager>();
-        providerResearchUIHandler = this.GetComponent<ProviderResearchUIHandler>();
-        Debug.LogWarning(myPlayerDataObject + " , " +  gameID + " , " + currentQuarter + " , " + researchManager + " , " + providerResearchUIHandler);
+        marketingManager = myPlayerDataObject.GetComponent<MarketingManager>();
     }
 
     public void SetUpProviderResearchUIComponent()
@@ -62,88 +63,85 @@ public class ProviderResearchUIComponentHandler : MonoBehaviour
         GenerateProductList();
         GenerateReliabilitiesList();
 
-        if (researchManager.GetBuyCompertitorsResearchQuarter(correspondinqResearchQuarter))
+        if (researchManager.GetBuyCompertitorsResearchQuarter(correspondingResearchQuarter))
         {
-            partnersResearchContainer.SetActive(true);
-            
+            partnersResearchContainer.SetActive(true);            
         }
         else
         {   
-            providerResearchUIHandler.SetAvailabilityText("Research on possible partners not bought for quarter " + currentQuarter + ".");
+            providerResearchUIHandler.SetAvailabilityText("Research on possible partners not bought for this quarter " + currentQuarter + ".");
         }
-        if (researchManager.GetBuyPossiblePartnersResearchQuarter(correspondinqResearchQuarter))
+        if (researchManager.GetBuyPossiblePartnersResearchQuarter(correspondingResearchQuarter))
         {
             competitorsResearchContainer.SetActive(true);
         }
         else
         {   
-            providerResearchUIHandler.SetAvailabilityText("Research on competitors not bought for quarter " + currentQuarter + ".");
+            providerResearchUIHandler.SetAvailabilityText("Research on competitors not bought for this quarter " + currentQuarter + ".");
         }
-
     }
 
     public void GetHistoryData()
     {
         Debug.Log(researchManager);
-        (int enterprisePriceAverage, int enterprisePriceMin, int enterprisePriceMax, int businessPriceAverage, int businessPriceMin, int businessPriceMax, int individualPriceAverage, int individualPriceMin, int individualPriceMax, int advertisementAverage, int advertisementMin, int advertisementMax) = researchManager.GetCorrespondingQuarterDataDeveloper(correspondinqResearchQuarter);
-        this.enterprisePriceAverage.text = enterprisePriceAverage.ToString();
-        this.enterprisePriceMin.text = enterprisePriceMin.ToString();
-        this.enterprisePriceMax.text = enterprisePriceMax.ToString();
-        this.businessPriceAverage.text = businessPriceAverage.ToString();
-        this.businessPriceMax.text = businessPriceMax.ToString();
-        this.businessPriceMin.text = businessPriceMin.ToString();
-        this.individualPriceAverage.text = individualPriceAverage.ToString();
-        this.individualPriceMin.text = individualPriceMin.ToString();
-        this.individualPriceMax.text = individualPriceMax.ToString();
-        this.advertisementAverage.text = advertisementAverage.ToString();
-        this.advertisementMin.text = advertisementMin.ToString();
-        this.advertisementMax.text = advertisementMax.ToString();   
+        (int enterprisePriceAverage, int enterprisePriceMin, int enterprisePriceMax, int businessPriceAverage, int businessPriceMin, int businessPriceMax, int individualPriceAverage, int individualPriceMin, int individualPriceMax, int advertisementAverage, int advertisementMin, int advertisementMax) = researchManager.GetCorrespondingQuarterDataProvider(correspondingResearchQuarter);
+        this.enterprisePriceAverage.text = enterprisePriceAverage.ToString("n0");
+        this.enterprisePriceMin.text = enterprisePriceMin.ToString("n0");
+        this.enterprisePriceMax.text = enterprisePriceMax.ToString("n0");
+        this.businessPriceAverage.text = businessPriceAverage.ToString("n0");
+        this.businessPriceMax.text = businessPriceMax.ToString("n0");
+        this.businessPriceMin.text = businessPriceMin.ToString("n0");
+        this.individualPriceAverage.text = individualPriceAverage.ToString("n0");
+        this.individualPriceMin.text = individualPriceMin.ToString("n0");
+        this.individualPriceMax.text = individualPriceMax.ToString("n0");
+        this.advertisementAverage.text = advertisementAverage.ToString("n0");
+        this.advertisementMin.text = advertisementMin.ToString("n0");
+        this.advertisementMax.text = advertisementMax.ToString("n0");
+        enterprisePriceMine.text = marketingManager.GetEnterprisePriceQuarter(correspondingResearchQuarter).ToString("n0");
+        businessPriceMine.text = marketingManager.GetBusinessPriceQuarter(correspondingResearchQuarter).ToString("n0");
+        individualPriceMine.text = marketingManager.GetIndividualPriceQuarter(correspondingResearchQuarter).ToString("n0");
     }
 
     public void GenerateProductList()
     {
-        //currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+        foreach (Transform child in competitorsProductListContentContainer.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
         List<GameObject> providers = new List<GameObject>(GameHandler.allGames[gameID].GetProviderList().Values);
-        int providerCount = providers.Count;
 
         foreach (GameObject provider in providers)
         {
-            int productFunctionality = provider.GetComponent<ProductManager>().GetFunctionalityQuarter(correspondinqResearchQuarter);
-            int productIntegrability = provider.GetComponent<ProductManager>().GetIntegrabilityQuarter(correspondinqResearchQuarter);
-            int productUI = provider.GetComponent<ProductManager>().GetUserFriendlinessQuarter(correspondinqResearchQuarter);
+            int productFunctionality = provider.GetComponent<ProductManager>().GetFunctionalityQuarter(correspondingResearchQuarter);
+            int productIntegrability = provider.GetComponent<ProductManager>().GetIntegrabilityQuarter(correspondingResearchQuarter);
+            int productUI = provider.GetComponent<ProductManager>().GetUserFriendlinessQuarter(correspondingResearchQuarter);
             string firmName = provider.GetComponent<FirmManager>().GetFirmName();
                        
             GameObject competitorsProductUIComponent = Instantiate(competitorsProductUIComponentPrefab);
             competitorsProductUIComponent.transform.SetParent(competitorsProductListContentContainer.transform, false);
-            ProviderResearchCompetitorsProductUIComponentHandler contractOverviewUIComponentHandler = competitorsProductUIComponent.GetComponent<ProviderResearchCompetitorsProductUIComponentHandler>();
+            ResearchProductUIComponentHandler researchProductUIComponentHandler = competitorsProductUIComponent.GetComponent<ResearchProductUIComponentHandler>();
 
-            contractOverviewUIComponentHandler.SetUpProviderResearchUIComponent(firmName, productFunctionality, productIntegrability, productUI);
+            researchProductUIComponentHandler.SetUpProviderResearchUIComponent(firmName, productFunctionality, productIntegrability, productUI);
         }
-
     }
 
     public void GenerateReliabilitiesList()
     {
-        //int currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+        foreach (Transform child in possiblePartnersReliabilityListContentContainer.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
         List<GameObject> developers = new List<GameObject>(GameHandler.allGames[gameID].GetDeveloperList().Values);
-        int developersCount = developers.Count;
-
+      
         foreach (GameObject developer in developers)
         {
-            int reliability = developer.GetComponent<ContractManager>().GetReliabilityQuater(correspondinqResearchQuarter);
+            int reliability = developer.GetComponent<ContractManager>().GetReliabilityQuater(correspondingResearchQuarter);
             string firmName = developer.GetComponent<FirmManager>().GetFirmName();
-
+            int employeesCount = developer.GetComponent<HumanResourcesManager>().GetEmployeesCountQuater(correspondingResearchQuarter);
             GameObject possiblePartnersReliability = Instantiate(possiblePartnersReliabilityComponentPrefab);
             possiblePartnersReliability.transform.SetParent(possiblePartnersReliabilityListContentContainer.transform, false);
             ProviderResearchPartnersReliabilityUIComponentHandler providerResearchPartnersReliabilityUIComponentHandler = possiblePartnersReliability.GetComponent<ProviderResearchPartnersReliabilityUIComponentHandler>();
-            providerResearchPartnersReliabilityUIComponentHandler.SetUpProviderResearchPartnersReliability(firmName, reliability);
+            providerResearchPartnersReliabilityUIComponentHandler.SetUpProviderResearchPartnersReliability(firmName, reliability, employeesCount);
         }
-
-
     }
-
-
-
-
-
 }

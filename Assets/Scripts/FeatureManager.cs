@@ -149,14 +149,25 @@ public class FeatureManager : NetworkBehaviour
         }
     }
 
-    [Client]
+   [Client]
     public void AddFeatureForOutsourcing(string name)
     {
+        Debug.Log("CLIENT > feature added to outsourced" + name);
         CmdAddFeatureForOutsourcing(name);
     }
     [Command]
     public void CmdAddFeatureForOutsourcing(string name)
     {
+        Debug.Log("SERVER > feature added to outsourced " + name);
+        if (outsourcedFeatures.ContainsKey(name) == false)
+        {
+            outsourcedFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
+        }
+    }
+    [Server]
+    public void AddFeatureForOutsourcingServer(string name)
+    {
+        Debug.Log("SERVER DIRECT > feature added to outsourced");
         if (outsourcedFeatures.ContainsKey(name) == false)
         {
             outsourcedFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
@@ -165,25 +176,28 @@ public class FeatureManager : NetworkBehaviour
     [Server]
     public void RemoveFeatureForOutsourcingServer(string name)
     {
+        Debug.Log("SERVER DIRECT > feature removed from outsourced");
         if (outsourcedFeatures.ContainsKey(name) == true)
         {
             outsourcedFeatures.Remove(name);
         }
     }
-    [Client]
+   [Client]
     public void RemoveFeatureForOutsourcing(string name)
     {
+        Debug.Log("CLIENT > feature removed from outsourced");
         CmdRemoveFeatureForOutsourcing(name);
     }
     [Command]
     public void CmdRemoveFeatureForOutsourcing(string name)
     {
+        Debug.Log("SERVER > feature removed from outsourced");
         if (outsourcedFeatures.ContainsKey(name))
         {
             outsourcedFeatures.Remove(allFeatures[name].nameID);
         }
     }
-    [Client]
+    /*[Client]
     public void AddFeatureInDevelopment(string name)
     {
         CmdAddFeatureInDevelopment(name);
@@ -196,8 +210,8 @@ public class FeatureManager : NetworkBehaviour
             inDevelopmentFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
         }
 
-    }
-    [Client]
+    }*/
+   /* [Client]
     public void RemoveFeatureInDevelopment(string name)
     {
         CmdRemoveFeatureInDevelopmet(name);
@@ -209,9 +223,9 @@ public class FeatureManager : NetworkBehaviour
         {
             inDevelopmentFeatures.Remove(name);
         }
-    }
+    }*/
     
-    [Client]
+   /* [Client]
     public void AddFeatureToDone(string name)
     {
         if(doneFeatures.ContainsKey(name) == false)
@@ -226,9 +240,8 @@ public class FeatureManager : NetworkBehaviour
         {
             doneFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
         }
-    }
-
-
+    }*/
+    
     [Server]
     public void AddFeatureInDevelopmentServer(string name)  //call only from server
     {
@@ -265,7 +278,7 @@ public class FeatureManager : NetworkBehaviour
         }
     }
 
-    [Client]
+   /* [Client]
     public void RemoveFeatureInDevelopmentClient(string name)
     {
         if (inDevelopmentFeatures.ContainsKey(name) == true)
@@ -289,10 +302,7 @@ public class FeatureManager : NetworkBehaviour
         {
             availableFeatures.Add(allFeatures[name].nameID, allFeatures[name]);
         }
-    }
-
-
-    
+    }*/    
     public void UpdateAviableFeatures()
     {
         List<Feature> temp = new List<Feature>(availableFeatures.Values);
@@ -331,17 +341,20 @@ public class FeatureManager : NetworkBehaviour
     {
         if (featureUIHandler != null)
         {
+            Debug.Log("Available f. count: " + availableFeatures.Count);
             featureUIHandler.UpdateFeatureUIList();
             featureUIHandler.UpdateOutsourcedFeatureUIList();
         }
     }
-   
 
-    public void OnChangeFeatureOutsourced(SyncDictionaryFeatures.Operation op, string key, Feature feature) 
+
+    public void OnChangeFeatureOutsourced(SyncDictionaryFeatures.Operation op, string key, Feature feature)
     {
         if (featureUIHandler != null)
         {
             Debug.Log("outsourced feature list changed");
+            Debug.Log(feature.nameID);
+            Debug.Log("Outsourced f. count: " + outsourcedFeatures.Count);
             featureUIHandler.UpdateOutsourcedFeatureUIList();
             featureUIHandler.UpdateFeatureUIList();
         }
@@ -353,10 +366,17 @@ public class FeatureManager : NetworkBehaviour
 
     public void OnChangeFeatureInDevelopmet(SyncDictionaryFeatures.Operation op, string key, Feature feature)
     {
+        Debug.Log("InDevelopment feature list changed");
+        Debug.Log("InDevelopment f. count: " + inDevelopmentFeatures.Count);
+        Debug.Log(feature);
         if (featureUIHandler != null)
         {
             featureUIHandler.UpdateFeatureUIList();
             featureUIHandler.UpdateOutsourcedFeatureUIList();
+        }
+        if (contractUIHandler != null)
+        {
+            contractUIHandler.UpdateFeatureDropdownOptions(new List<string>(outsourcedFeatures.Keys));
         }
     }
 

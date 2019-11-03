@@ -58,7 +58,6 @@ public class HumanResourcesUIHandler : MonoBehaviour
         humanResourcesManager.SetHumanResourcesUIHandler(this);
         UpdateAllElements();
     }
-
     
     public void AdditonOfOne(InputField inputfield)
     {
@@ -99,11 +98,11 @@ public class HumanResourcesUIHandler : MonoBehaviour
         humanResourcesManager.HireIntegrabilitySpecialistsNextQuarter(Int32.Parse(hireIntegrabilitySpecialists.text));
     }
 
-    public void ChangeProgrammmerSalary()
+    public void ChangeProgrammmerSalary() //triggered by UI
     {
         if (initialized)
         {
-            humanResourcesManager.ChangeProgrammmerSalary((int)programmerSalarySlider.value);
+            humanResourcesManager.ChangeProgrammmerSalaryMonth((int)programmerSalarySlider.value);
             programmerSalaryText.text = programmerSalarySlider.value.ToString();
         }
     }
@@ -111,7 +110,7 @@ public class HumanResourcesUIHandler : MonoBehaviour
     {
         if (initialized)
         {
-            humanResourcesManager.ChangeUISpecialistSalary((int)uiSpecialistSalarySlider.value);
+            humanResourcesManager.ChangeUISpecialistSalaryMonth((int)uiSpecialistSalarySlider.value);
             uiSpecialistSalaryText.text = uiSpecialistSalarySlider.value.ToString();
         }
     }
@@ -119,7 +118,7 @@ public class HumanResourcesUIHandler : MonoBehaviour
     {
         if (initialized)
         {
-            humanResourcesManager.ChangeIntegrabilitySpecialistSalary((int)integrabilitySpecialistSalarySlider.value);
+            humanResourcesManager.ChangeIntegrabilitySpecialistSalaryMonth((int)integrabilitySpecialistSalarySlider.value);
             integrabilitySpecialistsSalaryText.text = integrabilitySpecialistSalarySlider.value.ToString();
         }
     }
@@ -128,9 +127,9 @@ public class HumanResourcesUIHandler : MonoBehaviour
     public void UpdateAllElements()
     {
         initialized = false;
-        programmerSalarySlider.value = humanResourcesManager.GetProgrammerSalary();
-        uiSpecialistSalarySlider.value = humanResourcesManager.GetUISpecialistSalary();
-        integrabilitySpecialistSalarySlider.value = humanResourcesManager.GetIntegrabilitySpecialistSalary();
+        programmerSalarySlider.value = humanResourcesManager.GetProgrammerSalaryPerMonth();
+        uiSpecialistSalarySlider.value = humanResourcesManager.GetUISpecialistSalaryPerMonth();
+        integrabilitySpecialistSalarySlider.value = humanResourcesManager.GetIntegrabilitySpecialistSalaryPerMonth();
         
         UpdateProgramersCurrentCountText(humanResourcesManager.GetProgrammersCount());
         UpdateUserInterfaceSpecialistsCurrentCountText(humanResourcesManager.GetUISPecialistsCount());

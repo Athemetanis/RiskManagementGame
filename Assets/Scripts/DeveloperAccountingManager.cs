@@ -24,6 +24,8 @@ public class DeveloperAccountingManager : NetworkBehaviour
     private SyncListInt repayEmergencyLoanQuarters = new SyncListInt() { };
     private SyncListInt endCashBalanceQuarters = new SyncListInt() { };
 
+    private SyncListInt emergencyLoanInterestsQuarters = new SyncListInt() { };
+
     [SyncVar(hook = "OnChangeHistorySaved")]
     private bool historySaved;
     //CURRENT VALUES
@@ -52,6 +54,9 @@ public class DeveloperAccountingManager : NetworkBehaviour
     [SyncVar(hook = "OnChangeEndCashBalance")]
     private int endCashBalance;
 
+    [SyncVar(hook = "OnChangeEmergencyLoanInterests")]
+    private int emergencyLoanInterests;
+
     //REFERNCES
     private string gameID;
     private int currentQuarter;
@@ -76,6 +81,9 @@ public class DeveloperAccountingManager : NetworkBehaviour
     public int GetBorrowEmergencyLoan() { return borrowEmergencyLoan; }
     public int GetRepayEmergencyLoan() { return repayEmergencyLoan; }
     public int GetEndCashBalance() { return endCashBalance; }
+
+    public int GetEmergencyLoanInterests() { return emergencyLoanInterests; }
+
     public void SetDeveloperAccountingUIHandler(DeveloperAccountingUIHandler developerAccountingUIHandler) { this.developerAccountingUIHandler = developerAccountingUIHandler; }
     public void SetCurrentDeveloperAccountingUIHandler(DeveloperAccountingUIComponentHandler currentDeveloperAccountingUIHandler) { this.developerAccountingUIHandlerCurrent = currentDeveloperAccountingUIHandler; }
 
@@ -123,11 +131,6 @@ public class DeveloperAccountingManager : NetworkBehaviour
         Debug.Log("EC history changed on index " + index + " on value " + value);
     }
 
-    /*public override void OnStartAuthority()
-    {
-        UpdateSalaries();
-        UpdateRevenue();
-    }*/
 
     //METHODS
     [Server]
@@ -162,8 +165,9 @@ public class DeveloperAccountingManager : NetworkBehaviour
                 riskSharingFeesPaidQuarters.Insert(i, 0);
                 terminationFeePaidQuarters.Insert(i, 0);
                 marketingResearchQuarters.Insert(i, 0);
-                borrowEmergencyLoanQuarters.Insert(i, 0);
+                borrowEmergencyLoanQuarters.Insert(i, borrowEmergencyLoanQuarters[i-1] + emergencyLoanInterestsQuarters[i-1]);
                 repayEmergencyLoanQuarters.Insert(i, 0);
+                emergencyLoanInterestsQuarters.Insert(i, (int)System.Math.Round(((float)borrowEmergencyLoanQuarters[i] * 0.1), System.MidpointRounding.AwayFromZero));
                 endCashBalanceQuarters.Insert(i, beginningCashBalanceQuarters[i] - salariesQuarters[i]);
 
             }
@@ -175,27 +179,26 @@ public class DeveloperAccountingManager : NetworkBehaviour
         marketingResearch = 0;
         borrowEmergencyLoan = 0;
         repayEmergencyLoan = 0;
-        endCashBalance = ComputeEndCashBalance();
+        emergencyLoanInterests = 0;
+        ComputeEndCashBalance();
         historySaved = false;
     }
 
-    public (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int terminationFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) GetCorrecpondingQuarterData(int correspondingQuarter)
+    public (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int terminationFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance, int emergencyLoanInterests) GetCorrecpondingQuarterData(int correspondingQuarter)
     {
         Debug.Log(currentQuarter);
-        return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], salariesQuarters[correspondingQuarter], programmersSalariesQuarters[correspondingQuarter], uiSpecialistsSalariesQuarters[correspondingQuarter], integrabilitySpecialistsSalariesQuarters[correspondingQuarter], riskSharingFeesPaidQuarters[correspondingQuarter], terminationFeePaidQuarters[correspondingQuarter], marketingResearchQuarters[correspondingQuarter],borrowEmergencyLoanQuarters[correspondingQuarter],repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter]);
-
-
+        return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], salariesQuarters[correspondingQuarter], programmersSalariesQuarters[correspondingQuarter], uiSpecialistsSalariesQuarters[correspondingQuarter], integrabilitySpecialistsSalariesQuarters[correspondingQuarter], riskSharingFeesPaidQuarters[correspondingQuarter], terminationFeePaidQuarters[correspondingQuarter], marketingResearchQuarters[correspondingQuarter],borrowEmergencyLoanQuarters[correspondingQuarter],repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter], emergencyLoanInterestsQuarters[correspondingQuarter]);
     }
 
     [Server]
     public void UpdateSalariesServer()
     {
         int programmers = humanResourcesManager.GetProgrammersCount();
-        int programmerSalary = humanResourcesManager.GetProgrammerSalary();
+        int programmerSalary = humanResourcesManager.GetProgrammerSalaryPerQurter();
         int uiSpecialists = humanResourcesManager.GetUISPecialistsCount();
-        int uiSpecialistSalary = humanResourcesManager.GetUISpecialistSalary();
+        int uiSpecialistSalary = humanResourcesManager.GetUISpecialistSalaryPerQuarter();
         int integrabilitySpecialists = humanResourcesManager.GetIntegrabilitySpecialistsCount();
-        int integrabilitySpecialistSalary = humanResourcesManager.GetIntegrabilitySpecialistSalary();
+        int integrabilitySpecialistSalary = humanResourcesManager.GetIntegrabilitySpecialistSalaryPerQuarter();
 
 
         programmersSalaries = programmers * programmerSalary;
@@ -203,7 +206,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         integrabilitySpecialistsSalaries = integrabilitySpecialists * integrabilitySpecialistSalary;
         salaries = programmersSalaries + uiSpecialistsSalaries + integrabilitySpecialistsSalaries;
 
-        endCashBalance = ComputeEndCashBalance();
+        ComputeEndCashBalance();
     }
     [Server]
     public void UpdateEstimatedRevenueServer()
@@ -219,7 +222,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         revenue = contractPayments;
         riskSharingFeesPaid = 0;
         terminationFeePaid = 0;
-        endCashBalance = ComputeEndCashBalance();
+        ComputeEndCashBalance();
     }
     [Server]
     public void UpdateRealRevenueServer()
@@ -240,16 +243,34 @@ public class DeveloperAccountingManager : NetworkBehaviour
             }
         }
         revenue = contractPayments;
-        endCashBalance = ComputeEndCashBalance();
+        ComputeEndCashBalance();
     }
-
-    public int ComputeEndCashBalance()
+    [Server]
+    public void ComputeEndCashBalance()
     {
         int endCash = 0;
-        endCash = beginningCashBalance - salaries + revenue - riskSharingFeesPaid - terminationFeePaid - marketingResearch;
-        return endCash;
+        endCash = beginningCashBalance - salaries + revenue - riskSharingFeesPaid - terminationFeePaid - marketingResearch - repayEmergencyLoan;
+        endCashBalance = endCash;
+        if(endCashBalance < 0)
+        {
+            endCashBalance = 0;
+            borrowEmergencyLoan = endCash;
+            emergencyLoanInterests = (int)System.Math.Round(((float)borrowEmergencyLoan * 0.1), System.MidpointRounding.AwayFromZero);
+        }
     }
-   
+
+    public void ChangeEmergencyLoanRepay(int repayEmergencyLoan)
+    {
+        CmdChangeEmergencyLoanRepay(repayEmergencyLoan);
+    }
+    [Command]
+    public void CmdChangeEmergencyLoanRepay(int repayEmergencyLoan)
+    {
+        this.repayEmergencyLoan = repayEmergencyLoan;
+        ComputeEndCashBalance();
+    }
+
+
     //--------------HOOKS-----------------------------
     public void OnChangeBeginningCashBalance(int beginningCashBalance)
     {
@@ -350,7 +371,17 @@ public class DeveloperAccountingManager : NetworkBehaviour
             developerAccountingUIHandlerCurrent.UpdateRepayEmergencyLoan(this.repayEmergencyLoan);
         }
     }
-        
+    public void OnChangeEmergencyLoanInterests(int emergencyLoanInterests)
+    {
+        this.emergencyLoanInterests = emergencyLoanInterests;
+        if(developerAccountingUIHandlerCurrent != null)
+        {
+            developerAccountingUIHandlerCurrent.UpdateEmergencyLoanInterests(emergencyLoanInterests);
+        }
+    }
+
+
+
     public void OnChangeHistorySaved(bool historySaved)
     {
         Debug.Log("history changed on " + historySaved);
@@ -394,7 +425,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         borrowEmergencyLoanQuarters.Insert(currentQuarter, borrowEmergencyLoan);
         repayEmergencyLoanQuarters.Insert(currentQuarter, repayEmergencyLoan);
         endCashBalanceQuarters.Insert(currentQuarter, endCashBalance);
-
+        emergencyLoanInterestsQuarters.Insert(currentQuarter, emergencyLoanInterests);
         historySaved = true;
     }
 

@@ -7,11 +7,13 @@ public class ProviderResearchPartnersReliabilityUIComponentHandler : MonoBehavio
 {
     public TextMeshProUGUI possiblePartnerFirmNameText;
     public TextMeshProUGUI possiblePartnerReliabilityText;
+    public TextMeshProUGUI possiblePartnerEmployeesCount;
     
-    public void SetUpProviderResearchPartnersReliability(string firmName, int reliability)
+
+    public void SetUpProviderResearchPartnersReliability(string firmName, int reliability, int emplyeeCount)
     {
         possiblePartnerFirmNameText.text = firmName;
         possiblePartnerReliabilityText.text = reliability.ToString();
-
+        possiblePartnerEmployeesCount.text = emplyeeCount.ToString("n0");
     }
 }

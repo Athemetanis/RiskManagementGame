@@ -25,6 +25,8 @@ public class ScheduleManager : NetworkBehaviour
     public void SetScheduleUIHandler(ScheduleUIHandler scheduleUIHandler) { this.scheduleUIHandler = scheduleUIHandler; }
     public Dictionary<string,int> GetScheduleDevelopmentEndDay() { return scheduleDevelopmentEndDay; }
 
+    public int GetScheduledFeatureDevelopmentTime(string contractID) { return scheduledFeatures[contractID].GetDevelopmentTime(); }
+
     // Start is called before the first frame update
     void Start()
     {

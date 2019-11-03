@@ -40,6 +40,7 @@ public class ContractUIHandler : MonoBehaviour
     private FirmManager firmManager;
     private ScheduleManager scheduleManager;
     private MarketingManager marketingManager;
+    private DeveloperAccountingManager developerAccountingManager;
 
 
     // Start is called before the first frame update
@@ -52,6 +53,7 @@ public class ContractUIHandler : MonoBehaviour
 
         firmManager = myPlayerDataObject.GetComponent<FirmManager>();
         scheduleManager = myPlayerDataObject.GetComponent<ScheduleManager>();
+        developerAccountingManager = myPlayerDataObject.GetComponent<DeveloperAccountingManager>(); 
 
 
         if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
@@ -319,7 +321,7 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.GenerateHistoryRecord(contract.GetContractHistory());
         contractPreviewUIHandler.SetRiskSharingFee(contract.GetContractRiskSharingFee());
         contractPreviewUIHandler.PreviewContract();
-        if(scheduleManager != null) //Developer
+        if (scheduleManager != null) //Developer
         {
             if (scheduleManager.GetScheduleDevelopmentEndDay().ContainsKey(contractID))
             {
@@ -334,6 +336,19 @@ public class ContractUIHandler : MonoBehaviour
             {
                 contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Contract was not scheduled for development. ");
             }
+
+            if (developerAccountingManager != null)
+            {
+                int salaries = developerAccountingManager.GetSalaries();
+                int developmenyPerDay = (int)System.Math.Round(((float)salaries / 60), System.MidpointRounding.AwayFromZero);
+                int developmentOverallPrice = scheduleManager.GetScheduledFeatureDevelopmentTime(contractID) * developmenyPerDay;
+                int priceRecommendend = developmentOverallPrice * 3;
+                contractPreviewUIHandler.SetDevelopmentPricePerDay("Salary of employees is  " + developmenyPerDay + " per day." + "$");
+                contractPreviewUIHandler.SetDevelopmentPriceOverall("Price of overall development time of feature is " + developmentOverallPrice + "$");
+                contractPreviewUIHandler.SetDevelopmentPriceRecommended("Recommended price of feature is tripple of your development price. This corresponds to " + priceRecommendend + "$");
+
+            }
+            else { Debug.LogError("DeveloperAccountinManager in contractUIHandler is null!"); }
         }
         else { contractPreviewUIHandler.DisableScheduleInfoText(); }
         contractPreviewUIHandler.EnableNegotiationContainer();
@@ -383,6 +398,18 @@ public class ContractUIHandler : MonoBehaviour
             {
                 contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Contract was not scheduled for development. ");
             }
+            if (developerAccountingManager != null)
+            {
+                int salaries = developerAccountingManager.GetSalaries();
+                int developmenyPerDay = (int)System.Math.Round(((float)salaries / 60), System.MidpointRounding.AwayFromZero);
+                int developmentOverallPrice = scheduleManager.GetScheduledFeatureDevelopmentTime(contractID) * developmenyPerDay;
+                int priceRecommendend = developmentOverallPrice * 3;
+                contractPreviewUIHandler.SetDevelopmentPricePerDay("Salary of employees is  " + developmenyPerDay + " per day." + "$");
+                contractPreviewUIHandler.SetDevelopmentPriceOverall("Price of overall development time of feature is " + developmentOverallPrice + "$");
+                contractPreviewUIHandler.SetDevelopmentPriceRecommended("Recommended price of feature is tripple of your overall development price. This corresponds to " + priceRecommendend + "$");
+
+            }
+            else { Debug.LogError("DeveloperAccountinManager in contractUIHandler is null!"); }
         }
         else { contractPreviewUIHandler.DisableScheduleInfoText(); }
         contractPreviewUIHandler.EnableNegotiationContainer();

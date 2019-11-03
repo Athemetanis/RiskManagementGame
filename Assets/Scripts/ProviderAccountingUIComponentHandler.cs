@@ -19,6 +19,7 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
     public TextMeshProUGUI borrowEmergencyLoanText;
     public TextMeshProUGUI repayEmergencyLoanText;
     public TextMeshProUGUI endCashBalanceText;
+    public TextMeshProUGUI additionalExpensesText;
 
     public int correspondingAccountingQuarter;
 
@@ -37,7 +38,7 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
 
     public void GetHistoryData()
     {
-        (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue, int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int terminationFeeReceived, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) = providerAccountingManager.GetCorrespondingQuarterData(correspondingAccountingQuarter);
+        (int beginningCashBalance, int revenue, int enterpriseRevenue, int businessRevenue, int individualRevenue, int advertismenentCost, int contractPayments, int riskSharingFeeReceived, int terminationFeeReceived, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance, int additionalExpenses) = providerAccountingManager.GetCorrespondingQuarterData(correspondingAccountingQuarter);
         beginningCashBalanceText.text = beginningCashBalance.ToString("n0");
         revenueText.text = revenue.ToString("n0");
         enterpriseRevenueText.text = enterpriseRevenue.ToString("n0");
@@ -51,6 +52,7 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
         borrowEmergencyLoanText.text = borrowEmergencyLoan.ToString("n0");
         repayEmergencyLoanText.text = repayEmergencyLoan.ToString("n0");
         endCashBalanceText.text = endCashBalance.ToString("n0");
+        additionalExpensesText.text = additionalExpenses.ToString("n0");
     }
 
 
@@ -70,6 +72,7 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
         borrowEmergencyLoanText.text = providerAccountingManager.GetBorrowEmergencyLoan().ToString("n0");
         repayEmergencyLoanText.text = providerAccountingManager.GetRepayEmergencyLoan().ToString("n0");
         endCashBalanceText.text = providerAccountingManager.GetEndCashBalance().ToString("n0");
+        additionalExpensesText.text = providerAccountingManager.GetAdditionalExpenses().ToString("n0");
     }
 
     public void UpdateBeginingCashBalanceText(int beginingCashBalance)
@@ -124,7 +127,10 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
     {
         endCashBalanceText.text = endCashBalance.ToString("n0");
     }
-   
+    public void UpdateAdditionalExpensesText(int additionalExpenses)
+    {
+        additionalExpensesText.text = additionalExpenses.ToString("n0");
+    }
 
 
 }

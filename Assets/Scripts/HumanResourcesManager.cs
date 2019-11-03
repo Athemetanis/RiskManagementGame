@@ -10,15 +10,19 @@ public class HumanResourcesManager : NetworkBehaviour
     private SyncListInt endIntegrabilitySpecialistsCountQ = new SyncListInt() { };
     private SyncListInt endUISpecialistsCountQ = new SyncListInt() { };
 
+    private SyncListInt programmerSalaryQ = new SyncListInt() { };
+    private SyncListInt integrabilitySpecialistSalaryQ = new SyncListInt() { };
+    private SyncListInt uiSpecialistSalaryQ = new SyncListInt() { };
+
     [SyncVar(hook = "OnChangeProgrammersCount")]
     private int programmersCurrentCount;
     [SyncVar(hook = "OnChangeUISpecialistsCount")]
     private int userInterfaceSpecialistsCurrentCount;
     [SyncVar(hook = "OnChangeIntegrabilitySpecialistsCount")]
     private int integrabilitySpecialistsCurrentCount;
+
     [SyncVar(hook = "OnChangeProgrammersAvailableCount")]
     private int programmersAvailableCount;
-
     [SyncVar(hook = "OnChangeIntegrabilitySpecialistAvailableCount")]
     private int integrabilitySpecialistsAvailableCount;
     [SyncVar(hook = "OnChangeUISpecialistAvailableCount")]
@@ -31,20 +35,27 @@ public class HumanResourcesManager : NetworkBehaviour
     [SyncVar(hook = "OnChangeHireIntegrabilitySpecialistsCount")]
     private int hireIntegrabilitySpecialistsCount;
 
-    [SyncVar(hook = "OnChangeProgrammerSalary")]
-    private int programmerSalary;
-    [SyncVar(hook = "OnChangeUISpecialistSalary")]
-    private int uiSpecialistSalary;
-    [SyncVar(hook = "OnChangeIntegrabilitySpecialistSalary")]
-    private int integrabilitySpecialistSalary;
+    [SyncVar(hook = "OnChangeProgrammerSalaryQuarter")]
+    private int programmerSalaryPerQuarter;
+    [SyncVar(hook = "OnChangeUISpecialistSalaryQuarter")]
+    private int uiSpecialistSalaryPerQuarter;
+    [SyncVar(hook = "OnChangeIntegrabilitySpecialistSalaryQuarter")]
+    private int integrabilitySpecialistSalaryPerQuarter;
+
+    [SyncVar(hook = "OnChangeProgrammerSalaryMonth")]
+    private int programmerSalaryPerMonth;
+    [SyncVar(hook = "OnChangeUISpecialistSalaryMonth")]
+    private int uiSpecialistSalaryPerMonth;
+    [SyncVar(hook = "OnChangeIntegrabilitySpecialistSalaryMonth")]
+    private int integrabilitySpecialistSalaryPerMonth;
+
 
     private string gameID;
     private int currentQuarter;
     private HumanResourcesUIHandler humanResourcesUIHandler;
     private DeveloperAccountingManager developerAccountingManager;
     private ScheduleManager scheduleManager;
-
-
+    
     //GETTERS & SETTERS
     public void SetProgrammersCount(int count) { programmersCurrentCount = count; }
     public int GetProgrammersCount() { return programmersCurrentCount; }
@@ -53,13 +64,23 @@ public class HumanResourcesManager : NetworkBehaviour
     public void SetIntegrabilitySpecialistsCount(int count) { integrabilitySpecialistsCurrentCount = count; }
     public int GetIntegrabilitySpecialistsCount() { return integrabilitySpecialistsCurrentCount; }
     public void SetHumanResourcesUIHandler(HumanResourcesUIHandler humanResourcesUIHandler) { this.humanResourcesUIHandler = humanResourcesUIHandler; }
-    public int GetProgrammerSalary() { return programmerSalary; }
-    public int GetUISpecialistSalary() { return uiSpecialistSalary; }
-    public int GetIntegrabilitySpecialistSalary() { return integrabilitySpecialistSalary; }
+
+    public int GetProgrammerSalaryPerQurter() { return programmerSalaryPerQuarter; }
+    public int GetUISpecialistSalaryPerQuarter() { return uiSpecialistSalaryPerQuarter; }
+    public int GetIntegrabilitySpecialistSalaryPerQuarter() { return integrabilitySpecialistSalaryPerQuarter; }
+
+    public int GetProgrammerSalaryPerMonth() { return programmerSalaryPerMonth; }
+    public int GetUISpecialistSalaryPerMonth() { return uiSpecialistSalaryPerMonth; }
+    public int GetIntegrabilitySpecialistSalaryPerMonth() { return integrabilitySpecialistSalaryPerMonth; }
+
     public int GetProgrammersAvailableCount() { return programmersAvailableCount; }
     public int GetUISpecialsitsAvailableCount() { return userInterfaceSpecialistsAvailableCount; }
     public int GetIntegrabilitySpecialistsAvailableCount() { return integrabilitySpecialistsAvailableCount; }
+
     public int GetEmployeesCountQuater(int quater) { return endProgrammersCountQ[quater] + endUISpecialistsCountQ[quater] + endIntegrabilitySpecialistsCountQ[quater]; }
+    public int GetProgrammersSalaryQuarter(int quarter) { return programmerSalaryQ[quarter]; }
+    public int GetIntegrabilitySpecialistSalaryQuarter(int quarter) { return integrabilitySpecialistSalaryQ[quarter]; }
+    public int GetUISpecialistSalaryQuarter(int quarter) { return uiSpecialistSalaryQ[quarter]; }
 
     private void Awake()
     {
@@ -103,9 +124,13 @@ public class HumanResourcesManager : NetworkBehaviour
         hireIntegrabilitySpecialistsCount = 0;
         hireUISpecialistsCount = 0;
 
-        programmerSalary = 30000;
-        uiSpecialistSalary = 40000;
-        integrabilitySpecialistSalary = 40000;
+        programmerSalaryPerQuarter = 2000;
+        uiSpecialistSalaryPerQuarter = 3000;
+        integrabilitySpecialistSalaryPerQuarter = 3000;
+
+        programmerSalaryQ.Insert(0, 0);
+        integrabilitySpecialistSalaryQ.Insert(0, 0);
+        uiSpecialistSalaryQ.Insert(0, 0);
     }
 
     [Server]
@@ -118,6 +143,10 @@ public class HumanResourcesManager : NetworkBehaviour
                 endProgrammersCountQ.Insert(i, endProgrammersCountQ[i - 1]);
                 endIntegrabilitySpecialistsCountQ.Insert(i, endIntegrabilitySpecialistsCountQ[i-1]);
                 endUISpecialistsCountQ.Insert(i, endUISpecialistsCountQ[i - 1]);
+
+                programmerSalaryQ.Insert(i, programmerSalaryQ[i-1]);
+                integrabilitySpecialistSalaryQ.Insert(i, integrabilitySpecialistSalaryQ[i-1]);
+                uiSpecialistSalaryQ.Insert(i, uiSpecialistSalaryQ[i-1]);
             }
         }
         programmersCurrentCount = endProgrammersCountQ[quarter - 1];
@@ -239,25 +268,28 @@ public class HumanResourcesManager : NetworkBehaviour
     }
 
 
-    public void ChangeProgrammmerSalary(int programmerSalary) { CmdChangeProgrammerSalary(programmerSalary); }
-    public void ChangeUISpecialistSalary(int uiSpecialistSalary) { CmdChangeUISpecialistSalary(uiSpecialistSalary); }
-    public void ChangeIntegrabilitySpecialistSalary(int integrabilitySpecialistSalary) { CmdChangeIntegrabilitySpecialistSalary(integrabilitySpecialistSalary); }
+    public void ChangeProgrammmerSalaryMonth(int programmerSalary) { CmdChangeProgrammerSalary(programmerSalary); }
+    public void ChangeUISpecialistSalaryMonth(int uiSpecialistSalary) { CmdChangeUISpecialistSalary(uiSpecialistSalary); }
+    public void ChangeIntegrabilitySpecialistSalaryMonth(int integrabilitySpecialistSalary) { CmdChangeIntegrabilitySpecialistSalary(integrabilitySpecialistSalary); }
     [Command]
     public void CmdChangeProgrammerSalary(int programmerSalary)
     {
-        this.programmerSalary = programmerSalary;
+        programmerSalaryPerMonth = programmerSalary;
+        programmerSalaryPerQuarter = programmerSalaryPerMonth * 3;
         developerAccountingManager.UpdateSalariesServer();
     }
     [Command]
     public void CmdChangeUISpecialistSalary(int uiSpecialistSalary)
     {
-        this.uiSpecialistSalary = uiSpecialistSalary;
+        uiSpecialistSalaryPerMonth = uiSpecialistSalary;
+        uiSpecialistSalaryPerQuarter = uiSpecialistSalaryPerMonth * 3;
         developerAccountingManager.UpdateSalariesServer();
     }
     [Command]
     public void CmdChangeIntegrabilitySpecialistSalary(int integrabilitySpecialistSalary)
     {
-        this.integrabilitySpecialistSalary = integrabilitySpecialistSalary;
+        integrabilitySpecialistSalaryPerMonth = integrabilitySpecialistSalary;
+        integrabilitySpecialistSalaryPerQuarter = integrabilitySpecialistSalaryPerMonth * 3;
         developerAccountingManager.UpdateSalariesServer();
     }
 
@@ -348,31 +380,46 @@ public class HumanResourcesManager : NetworkBehaviour
             humanResourcesUIHandler.UpdateHireIntegrabilitySpecialistsCount(this.hireIntegrabilitySpecialistsCount);
         }
     }
-    public void OnChangeProgrammerSalary(int programmerSalary)
+    public void OnChangeProgrammerSalaryQuarter(int programmerSalary)
     {
-        this.programmerSalary = programmerSalary;
-        if (humanResourcesUIHandler != null)
-        {
-            humanResourcesUIHandler.UpdateProgrammerSalarySlider(this.programmerSalary);
-        }
+        this.programmerSalaryPerQuarter = programmerSalary;
     }
-    public void OnChangeUISpecialistSalary(int uiSpecialistSalary)
-    {
-        this.uiSpecialistSalary = uiSpecialistSalary;
-        if (humanResourcesUIHandler != null)
-        {
-            humanResourcesUIHandler.UpdateUISpecialistSalarySlider(this.uiSpecialistSalary);
-        }
-    }
-    public void OnChangeIntegrabilitySpecialistSalary(int integrabilitySpecialistSalary)
-    {
-        this.integrabilitySpecialistSalary = integrabilitySpecialistSalary;
-        if (humanResourcesUIHandler != null)
-        {
-            humanResourcesUIHandler.UpdateIntegrabilitySpecialistSalarySlider(this.integrabilitySpecialistSalary);
-        }
 
+    public void OnChangeUISpecialistSalaryQuarter(int uiSpecialistSalary)
+    {
+        this.uiSpecialistSalaryPerQuarter = uiSpecialistSalary;
     }
+
+    public void OnChangeIntegrabilitySpecialistSalaryQuarter(int integrabilitySpecialistSalary)
+    {
+        this.integrabilitySpecialistSalaryPerQuarter = integrabilitySpecialistSalary;
+    }
+
+    public void OnChangeProgrammerSalaryMonth(int programmerSalary)
+    {
+        this.programmerSalaryPerMonth = programmerSalary;
+        if (humanResourcesUIHandler != null)
+        {
+            humanResourcesUIHandler.UpdateProgrammerSalarySlider(this.programmerSalaryPerMonth);
+        }
+    }
+    public void OnChangeUISpecialistSalaryMonth(int uiSpecialistSalary)
+    {
+        this.uiSpecialistSalaryPerMonth = uiSpecialistSalary;
+        if (humanResourcesUIHandler != null)
+        {
+            humanResourcesUIHandler.UpdateUISpecialistSalarySlider(this.uiSpecialistSalaryPerMonth);
+        }
+    }
+    public void OnChangeIntegrabilitySpecialistSalaryMonth(int integrabilitySpecialistSalary)
+    {
+        this.integrabilitySpecialistSalaryPerMonth = integrabilitySpecialistSalary;
+        if (humanResourcesUIHandler != null)
+        {
+            humanResourcesUIHandler.UpdateIntegrabilitySpecialistSalarySlider(this.integrabilitySpecialistSalaryPerMonth);
+        }
+    }
+
 
     [Server]
     public void MoveToNextQuarter()
@@ -390,6 +437,9 @@ public class HumanResourcesManager : NetworkBehaviour
         endProgrammersCountQ.Insert(currentQuarter, programmersCurrentCount + hireProgrammersCount);
         endIntegrabilitySpecialistsCountQ.Insert(currentQuarter, integrabilitySpecialistsCurrentCount + hireIntegrabilitySpecialistsCount);
         endUISpecialistsCountQ.Insert(currentQuarter, userInterfaceSpecialistsCurrentCount + hireUISpecialistsCount);
+        programmerSalaryQ.Insert(currentQuarter, programmerSalaryPerQuarter);
+        integrabilitySpecialistSalaryQ.Insert(currentQuarter, integrabilitySpecialistSalaryPerQuarter);
+        uiSpecialistSalaryQ.Insert(currentQuarter, uiSpecialistSalaryPerQuarter);
     }
 
     [Server]

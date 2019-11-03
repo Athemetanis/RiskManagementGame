@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class ProviderResearchCompetitorsProductUIComponentHandler : MonoBehaviour
+public class ResearchProductUIComponentHandler : MonoBehaviour
 {
     public TextMeshProUGUI firmsNameText;
     public TextMeshProUGUI functionalityText;
     public TextMeshProUGUI integrabilityText;
     public TextMeshProUGUI userFriendlinessText;
 
-    public void SetUpProviderResearchUIComponent(string firmName, int functionality, int integrability, int userFriendliness)
+    public void SetUpProductResearchUIComponent(string firmName, int functionality, int integrability, int userFriendliness)
     {
         firmsNameText.text = firmName;
         functionalityText.text = functionality.ToString();

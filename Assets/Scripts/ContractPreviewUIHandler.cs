@@ -7,11 +7,11 @@ using TMPro;
 public class ContractPreviewUIHandler : MonoBehaviour
 {
     //VARIABLES
-    public Text contractIDText;
-    public Text developerFirmText;
-    public Text providerFirmText;
-    public Text featureText;
-    public Text stateText;
+    public TextMeshProUGUI contractIDText;
+    public TextMeshProUGUI developerFirmText;
+    public TextMeshProUGUI providerFirmText;
+    public TextMeshProUGUI featureText;
+    public TextMeshProUGUI stateText;
     public InputField priceIF;      
     public InputField deliveryIF;
     public GameObject historyContent;
@@ -24,8 +24,12 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public Button modifyButton;
     public Button cancelChangesButton;
     public Button cancelProposingButton;
-    public Text scheduleInfoText;
-    public Text warningText;
+    public TextMeshProUGUI scheduleInfoText;
+    public TextMeshProUGUI warningText;
+
+    public TextMeshProUGUI developmentPricePerDay;
+    public TextMeshProUGUI developmentPriceOverall;
+    public TextMeshProUGUI developmentPriceOverallRecommended;
 
     //-------Results
     public TextMeshProUGUI agreedPriceText;
@@ -65,6 +69,10 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public void SetRiskSharingFeePaid(int riskSharingFeePaid) { riskSharingFeePaidText.text = riskSharingFeePaid.ToString("n0"); }
     public void SetTerminationFeePaid(int terminationFeePaid) { terminationFeePaidText.text = terminationFeePaid.ToString("n0"); }
 
+
+    public void SetDevelopmentPricePerDay(string developmentPricePerDay) { this.developmentPricePerDay.text = developmentPricePerDay; }
+    public void SetDevelopmentPriceOverall(string developmentPriceOverall) { this.developmentPriceOverall.text = developmentPriceOverall; }
+    public void SetDevelopmentPriceRecommended(string developmentPriceOverallRecommended) { this.developmentPriceOverallRecommended.text = developmentPriceOverallRecommended; }
 
     //METHODS
     public void DestroyGameObject()
@@ -175,7 +183,7 @@ public class ContractPreviewUIHandler : MonoBehaviour
         {
             GameObject historyRecordUIComponent = Instantiate(historyTextUIComponentPrefab);
             historyRecordUIComponent.transform.SetParent(historyContent.transform, false);
-            historyRecordUIComponent.GetComponent<Text>().text = historyRecord;
+            historyRecordUIComponent.GetComponent<TextMeshProUGUI>().text = historyRecord;
         }
     }
     

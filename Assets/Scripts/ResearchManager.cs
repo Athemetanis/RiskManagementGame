@@ -179,7 +179,12 @@ public class ResearchManager : NetworkBehaviour
     }
 
 
-    public (int enterprisePriceAverage, int enterprisePriceMin, int enterprisePriceMax, int businessPriceAverage, int businessPriceMin, int businessPriceMax, int individualPriceAverage, int individualPriceMin, int individualPriceMax, int advertisementAverage, int advertisementMin, int advertisementMax) GetCorrespondingQuarterDataDeveloper(int correspondingQuarter) { return (enterprisePriceAverage[correspondingQuarter], enterprisePriceMin[correspondingQuarter], enterprisePriceMax[correspondingQuarter], businessPriceAverage[correspondingQuarter], businessPriceMin[correspondingQuarter], businessPriceMax[correspondingQuarter], individualPriceAverage[correspondingQuarter], individualPriceMin[correspondingQuarter], individualPriceMax[correspondingQuarter], advertisementAverage[correspondingQuarter], advertisementMin[correspondingQuarter], advertisementMax[correspondingQuarter]); }
+    public (int enterprisePriceAverage, int enterprisePriceMin, int enterprisePriceMax, int businessPriceAverage, int businessPriceMin, int businessPriceMax, int individualPriceAverage, int individualPriceMin, int individualPriceMax, int advertisementAverage, int advertisementMin, int advertisementMax) GetCorrespondingQuarterDataProvider(int correspondingQuarter) { return (enterprisePriceAverage[correspondingQuarter], enterprisePriceMin[correspondingQuarter], enterprisePriceMax[correspondingQuarter], businessPriceAverage[correspondingQuarter], businessPriceMin[correspondingQuarter], businessPriceMax[correspondingQuarter], individualPriceAverage[correspondingQuarter], individualPriceMin[correspondingQuarter], individualPriceMax[correspondingQuarter], advertisementAverage[correspondingQuarter], advertisementMin[correspondingQuarter], advertisementMax[correspondingQuarter]); }
+
+    public (int programmersSalaryAverage, int programmersSalaryMin, int programmersSalaryMax, int integrabilitySpecialistsSalaryAverage, int integrabilitySpecialistsSalaryMin, int integrabilitySpecialistsSalaryMax, int uiSpecialistsSalaryAverage, int uiSpecialistsSalaryMin, int uiSpecialistsSalaryMax, int reliabilityAverage, int reliabilityMin, int reliabilityMax) GetCorrespondingQuarterDataDeveloper(int correspondingQuarter)
+    {
+        return (programmersSalaryAverage[correspondingQuarter], programmersSalaryMin[correspondingQuarter], programmersSalaryMax[correspondingQuarter], integrabilitySpecialistsSalaryAverage[correspondingQuarter], integrabilitySpecialistsSalaryMin[correspondingQuarter], integrabilitySpecialistsSalaryMax[correspondingQuarter], uiSpecialistsSalaryAverage[correspondingQuarter], uiSpecialistsSalaryMin[correspondingQuarter], uiSpecialistsSalaryMax[correspondingQuarter], reliabilityAverage[correspondingQuarter], reliabilityMin[correspondingQuarter], reliabilityMax[correspondingQuarter]);
+    }
 
     public void SetBuyCompetitorsResearch(bool buyCompetitorsResearch) { CmdSetBuyCompetitorsResearch(buyCompetitorsResearch); }
     public void SetBuyPossiblePartnersResearch(bool buyPossiblePartnersResearch) { CmdSetBuyPossiblePartnersResearch(buyPossiblePartnersResearch); }
@@ -225,9 +230,9 @@ public class ResearchManager : NetworkBehaviour
                               
         foreach ( GameObject developer in developers)
         {   
-            int programmerSalary = developer.GetComponent<HumanResourcesManager>().GetProgrammerSalary();
-            int uiSpecialistsSalary = developer.GetComponent<HumanResourcesManager>().GetUISpecialistSalary();
-            int integrabilitySpecialistsSalary = developer.GetComponent<HumanResourcesManager>().GetIntegrabilitySpecialistSalary();
+            int programmerSalary = developer.GetComponent<HumanResourcesManager>().GetProgrammerSalaryPerQurter();
+            int uiSpecialistsSalary = developer.GetComponent<HumanResourcesManager>().GetUISpecialistSalaryPerQuarter();
+            int integrabilitySpecialistsSalary = developer.GetComponent<HumanResourcesManager>().GetIntegrabilitySpecialistSalaryPerQuarter();
 
             programmersSalarySum += programmerSalary;
             uiSpecialistsSalarySum += uiSpecialistsSalary;
@@ -468,8 +473,6 @@ public class ResearchManager : NetworkBehaviour
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         ComputeSalaryValues();
         ComputeReliability();
-        //ComputeDevelopersEmployees();
-        //ComputeProductStats();
         ComputeAdvertisement();
         ComputePrice();
 
@@ -494,7 +497,10 @@ public class ResearchManager : NetworkBehaviour
         }
         if (playerData.GetPlayerRole() == PlayerRoles.Developer)
         {
-            //developerResearchUIHandler.EnableCorrespondingQuarterUI();
+            if (developerResearchUIHandler != null)
+            {
+                developerResearchUIHandler.EnableCorrespondingQuarterUI(currentQuarter + 1);
+            }
         }
     }
 }

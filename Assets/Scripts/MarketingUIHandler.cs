@@ -106,7 +106,6 @@ public class MarketingUIHandler : MonoBehaviour
     //METHODS FOR UPDATING UI ELEMENTS
     public void UpdateAllUIElements()
     {
-
         UpdateAdvertisementCoverageToggle(marketingManager.GetAdvertisementCoverage());
         individualPriceSlider.value = marketingManager.GetIndividualsPrice();
         individualPriceText.text = individualPriceSlider.value.ToString();
@@ -114,7 +113,6 @@ public class MarketingUIHandler : MonoBehaviour
         businessPriceText.text = businessPriceSlider.value.ToString();
         enterprisePriceSlider.value = marketingManager.GetEnterprisePrice();
         enterprisePriceText.text = enterprisePriceSlider.value.ToString();
-
     }
 
     public void UpdateAdvertisementCoverageToggle(int advertisementCoverage)

@@ -21,20 +21,20 @@ public class PlayerData : NetworkBehaviour {
     private GameObject playerUI;
 
     //REFERENCES - MANAGERS
+    private EventManager eventManager;
     private ContractManager contractMamanger;
+    private RiskManager riskManager;
+    private SubmitDataManager submitDataManager;
+    private ResearchManager researchManager;
     private FeatureManager featureManager;      //provider only
     private ProductManager productManager;      //provider only
     private CustomersManager customerManager;   //provider only
     private MarketingManager marketingManager;  //provider only
+    private ProviderAccountingManager providerAccountingManager;    //provider only
     private ScheduleManager scheduleManager;    //developer only
     private HumanResourcesManager humanResourcesManager; //developer only
-    private RiskManager riskManager;
-    private SubmitDataManager submitDataManager;
-    private ResearchManager researchManager;
-    private ProviderAccountingManager providerAccountingManager;    //provider only
     private DeveloperAccountingManager developerAccountingManager; //developer only
-
-
+    
     //GETTERS & SETTERS
     public void SetGameID(string gameID) { this.gameID = gameID; }
     public string GetGameID() { return gameID; }
@@ -48,24 +48,6 @@ public class PlayerData : NetworkBehaviour {
     public void SetPlayerUI(GameObject playerUI) { this.playerUI = playerUI; }
     public GameObject GetPlayerUI() { return playerUI; }
 
-    //METHODS
-    /* public override void OnStartClient()
-     {   
-         if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
-         {
-             Debug.Log("player registered to all players: " + playerID);
-             GameHandler.allPlayers[gameID].Add(playerID, this.gameObject);
-         }
-
-         if (GameHandler.allGames[gameID] == true)
-         {
-             Debug.Log("player tries to be added into game " + gameID);
-             GameHandler.allGames[gameID].AddPlayerToGame(this.gameObject);
-
-         }
-
-     }*/
-
     void Start()
     {
         if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
@@ -78,21 +60,22 @@ public class PlayerData : NetworkBehaviour {
         {
             Debug.Log("player tries to be added into game " + gameID);
             GameHandler.allGames[gameID].AddPlayerToGame(this.gameObject);
-
         }
 
+        eventManager = this.gameObject.GetComponent<EventManager>();
         contractMamanger = this.gameObject.GetComponent<ContractManager>();
+        riskManager = this.gameObject.GetComponent<RiskManager>();
+        submitDataManager = this.gameObject.GetComponent<SubmitDataManager>();
+        researchManager = this.gameObject.GetComponent<ResearchManager>();
         featureManager = this.gameObject.GetComponent<FeatureManager>();
         productManager = this.gameObject.GetComponent<ProductManager>();
         customerManager = this.gameObject.GetComponent<CustomersManager>();
         marketingManager = this.gameObject.GetComponent<MarketingManager>();
+        providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
         scheduleManager = this.gameObject.GetComponent<ScheduleManager>();
         humanResourcesManager = this.gameObject.GetComponent<HumanResourcesManager>();
-        riskManager = this.gameObject.GetComponent<RiskManager>();
-        submitDataManager = this.gameObject.GetComponent<SubmitDataManager>();
-        providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
         developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
-        researchManager = this.gameObject.GetComponent<ResearchManager>();
+       
 
         if (playerRole == PlayerRoles.Provider)
         {
@@ -104,6 +87,8 @@ public class PlayerData : NetworkBehaviour {
             providerAccountingManager.enabled = true;
             riskManager.enabled = true;
             researchManager.enabled = true;
+            submitDataManager.enabled = true;
+            eventManager.enabled = true;
             
 
         }
@@ -114,9 +99,16 @@ public class PlayerData : NetworkBehaviour {
             contractMamanger.enabled = true;
             scheduleManager.enabled = true;
             developerAccountingManager.enabled = true;
-            //riskManager.enabled = true;
-            //researchManager.enabled = true;
+            riskManager.enabled = true;
+            researchManager.enabled = true;
+            submitDataManager.enabled = true;
+            eventManager.enabled = true;
         }
+    }
+    [Server]
+    public void InvokeEventsBetweenQurters()
+    {
+        eventManager.InvokeGameEvent();
     }
 
     [Server]
@@ -173,7 +165,7 @@ public class PlayerData : NetworkBehaviour {
             humanResourcesManager.SaveCurrentQuarterData();
             developerAccountingManager.SaveCurrentQuarterDataServer();
             riskManager.SaveCurrentQuarterData();
-           // researchManager.SaveCurrentQuaterData();
+            researchManager.SaveCurrentQuaterData();
         }
     }
     [Server]
@@ -205,7 +197,7 @@ public class PlayerData : NetworkBehaviour {
             scheduleManager.MoveToNextQuarter();
             humanResourcesManager.MoveToNextQuarter();
             developerAccountingManager.MoveToNextQuarter();
-            //researchManager.MoveToNextQuarter();
+            researchManager.MoveToNextQuarter();
             riskManager.MoveToTheNextQuarter();
             submitDataManager.MoveToNextQuarter();
            

@@ -28,8 +28,8 @@ class ReplaceTextForTextMeshPro : EditorWindow
     {
         Text currentUIText = Selection.activeGameObject.GetComponent<Text>();
 
-        //var newFont = Resources.Load<TMP_FontAsset>("/Fonts/LiberationSans SDF - Fallback");
-        var newFont = (TMP_FontAsset)AssetDatabase.LoadAssetAtPath("Assets/TextMesh Pro/Resources/Fonts/LiberationSansSDF.asset", typeof(TMP_FontAsset));
+        //var newFont = Resources.Load<TMP_FontAsset>("/Fonts/LiberationSans SDF - Fallback");//Assets/TextMesh Pro/Fonts/LiberationSans SDF 1.asset
+        var newFont = (TMP_FontAsset)AssetDatabase.LoadAssetAtPath("Assets/TextMesh Pro/Fonts/LiberationSansSDF.asset", typeof(TMP_FontAsset));
         if (newFont == null)
         {
             Debug.Log("Not so awesome...");
@@ -89,7 +89,7 @@ class ReplaceTextForTextMeshPro : EditorWindow
     {
         Text[] texts = FindObjectsOfType<Text>();
 
-        var newFont = (TMP_FontAsset)AssetDatabase.LoadAssetAtPath("Assets/TextMesh Pro/Resources/Fonts/LiberationSansSDF.asset", typeof(TMP_FontAsset));
+        var newFont = (TMP_FontAsset)AssetDatabase.LoadAssetAtPath("Assets/TextMesh Pro/Fonts/LiberationSansSDF.asset", typeof(TMP_FontAsset));
         if (newFont == null)
         {
             Debug.Log("Not so awesome...");
@@ -192,7 +192,7 @@ class ReplaceTextForTextMeshPro : EditorWindow
     [MenuItem("Tools/TMPro Utils/Log Text Properties")]
     public static void LogTextFontProperties(MenuCommand command)
     {
-        var newFont = (TMP_FontAsset)AssetDatabase.LoadAssetAtPath("Assets/TextMesh Pro/Resources/Fonts/LiberationSansSDF.asset", typeof(TMP_FontAsset));
+        var newFont = (TMP_FontAsset)AssetDatabase.LoadAssetAtPath("Assets/TextMesh Pro/Fonts/LiberationSansSDF.asset", typeof(TMP_FontAsset));
         if (newFont == null)
             Debug.Log("Not so awesome...");
 

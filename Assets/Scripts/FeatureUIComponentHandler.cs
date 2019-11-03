@@ -48,8 +48,10 @@ public class FeatureUIComponentHandler : MonoBehaviour
 
     public void SetFeatureForOutsourcing(bool setOutsourcing)
     {
+
         if (setOutsourcing)
         {
+            Debug.Log("GUI CHECK: pridavam feature do outsourced " + nameIDText.text );
             featureUIHandler.AddFeatureForOutsourcing(nameIDText.text.ToString());
         }
         else

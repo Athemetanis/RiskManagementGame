@@ -54,6 +54,13 @@ public class CustomersManager : NetworkBehaviour
     [SyncVar(hook = "OnChangeIndividualCustomersAdvAdd")]
     private int individualCustomersAdvAdd;
 
+   /* [SyncVar(hook = "OnChangeEnterpriseCustomersPriceLoss")]
+    private int enterpriseCustomersPriceLoss;
+    [SyncVar(hook = "OnChangeBusinessCustomersPriceLoss")]
+    private int businessCustomersPriceLoss;
+    [SyncVar(hook = "OnChangeIndividualCustomersPriceLoss")]
+    private int individualCustomersPriceLoss;*/
+   
     private string gameID;
     private int currentQuarter;
     //REFERENCE

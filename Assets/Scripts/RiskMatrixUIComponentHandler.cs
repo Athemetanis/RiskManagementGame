@@ -52,12 +52,12 @@ public class RiskMatrixUIComponentHandler : MonoBehaviour
 
     public void SetLikelihood() //trigered by event - OnEndEdit
     {
-        Debug.Log("liekliness ui changed");
+        //Debug.Log("liekliness ui changed");
         string riskID = riskNameID.text;
         int likelihood = likelihoodIF.value;
         if (initialized)
         {
-            Debug.Log("likeliness change riskmanager");
+            //Debug.Log("likeliness change riskmanager");
             riskManager.UpdateLikelihood(riskID, likelihood);
         }
     }

@@ -137,7 +137,9 @@ public class HumanResourcesUIHandler : MonoBehaviour
         UpdateProgramersAvailableCountText(humanResourcesManager.GetProgrammersAvailableCount());
         UpdateIntegrabilitySpecialistsAvailableCountText(humanResourcesManager.GetIntegrabilitySpecialistsAvailableCount());
         UpdateUISpecialistsAvailableCountText(humanResourcesManager.GetUISpecialsitsAvailableCount());
-
+        UpdateProgrammerSalarySlider(humanResourcesManager.GetProgrammerSalaryPerMonth());
+        UpdateUISpecialistSalarySlider(humanResourcesManager.GetUISpecialistSalaryPerMonth());
+        UpdateIntegrabilitySpecialistSalarySlider(humanResourcesManager.GetIntegrabilitySpecialistSalaryPerMonth());
         initialized = true;
     }
 

@@ -192,13 +192,6 @@ public class ContractPreviewUIHandler : MonoBehaviour
     
     public void PreviewContract()
     {
-        rejectButton.gameObject.SetActive(false);
-        acceptButton.gameObject.SetActive(false);
-        sendBackButton.gameObject.SetActive(false);
-        modifyButton.gameObject.SetActive(false);
-        proposeButton.gameObject.SetActive(false);
-        cancelChangesButton.gameObject.SetActive(false);
-        cancelProposingButton.gameObject.SetActive(false);
         priceIF.gameObject.SetActive(true);
         deliveryIF.gameObject.SetActive(true);
         riskSharingFeeIF.gameObject.SetActive(true);
@@ -208,6 +201,14 @@ public class ContractPreviewUIHandler : MonoBehaviour
         priceIF.interactable = false;
         deliveryIF.interactable = false;
         riskSharingFeeIF.interactable = false;
+        rejectButton.gameObject.SetActive(false);
+        acceptButton.gameObject.SetActive(false);
+        sendBackButton.gameObject.SetActive(false);
+        modifyButton.gameObject.SetActive(false);
+        proposeButton.gameObject.SetActive(false);
+        cancelChangesButton.gameObject.SetActive(false);
+        cancelProposingButton.gameObject.SetActive(false);
+
     }
     public void SendBackContract()
     {

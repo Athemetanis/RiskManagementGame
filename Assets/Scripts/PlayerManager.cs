@@ -166,9 +166,9 @@ public class PlayerManager : NetworkBehaviour {
     public void CmdSetPlayerGameID(string gameID)
     {
         playerID = playerFirebaseID + gameID;
-        Debug.Log("playerID " + playerID);
+        //Debug.Log("playerID " + playerID);
         this.playerGameID = gameID;
-        Debug.Log("CmdgameID " + playerGameID);
+        //Debug.Log("CmdgameID " + playerGameID);
 
     }
 
@@ -214,8 +214,8 @@ public class PlayerManager : NetworkBehaviour {
             return;
         }
         Debug.Log("trying to find my playerdata object" + playerID);
-        Debug.Log(GameHandler.allPlayers.ContainsKey(playerGameID));
-        Debug.Log(GameHandler.allPlayers[playerGameID].ContainsKey(playerID));
+        //Debug.Log(GameHandler.allPlayers.ContainsKey(playerGameID));
+        //Debug.Log(GameHandler.allPlayers[playerGameID].ContainsKey(playerID));
 
         if (GameHandler.allPlayers.ContainsKey(playerGameID) && GameHandler.allPlayers[playerGameID].ContainsKey(playerID))
         {

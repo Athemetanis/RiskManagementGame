@@ -188,6 +188,7 @@ public class PlayerData : NetworkBehaviour {
         MoveOtherManagerToNextQuarterProvider();
         MoveOtherManagerToNextQuarterDeveloper();
     }
+
     [Server]
     public void MoveOtherManagerToNextQuarterDeveloper()
     {

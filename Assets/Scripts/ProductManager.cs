@@ -81,6 +81,9 @@ public class ProductManager : NetworkBehaviour
     [Server]
     public void ComputeProductParameters()
     {
+        functionality = 10;
+        integrability = 10;
+        userFriendliness = 10;
         Debug.Log("Computing ProductParameters from done features: " + featureManager.GetDoneFeatures().Count);
         foreach (Feature feature in featureManager.GetDoneFeatures().Values)
         {
@@ -116,12 +119,10 @@ public class ProductManager : NetworkBehaviour
             productUIHandler.UpdateUIIntegrabilityText(integrability);
         }
     }
-
     // NEXT QUARTER EVALUATION METHODS...
     [Server]
     public void UpdateCurrentQuarterData()
-    {
-        SetupDefaultValues();
+    {        
         ComputeProductParameters();
     }
     

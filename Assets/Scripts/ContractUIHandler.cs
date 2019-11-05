@@ -430,7 +430,7 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.GenerateHistoryRecord(contract.GetContractHistory());
         contractPreviewUIHandler.SetAgreedPriceText(contract.GetContractPrice());
         contractPreviewUIHandler.SetAgreedDeliveryText(contract.GetContractDelivery());
-        contractPreviewUIHandler.SetAgreedRiskSharingFee(contract.GetRiskSharingFeePaid());
+        contractPreviewUIHandler.SetAgreedRiskSharingFee(contract.GetContractRiskSharingFee());
         contractPreviewUIHandler.SetActualDelivery(contract.GetTrueDeliveryTime());
         contractPreviewUIHandler.SetRiskSharingFeePaid(contract.GetRiskSharingFeePaid());
         contractPreviewUIHandler.SetTerminationFeePaid(contract.GetTerminationFeePaid());

@@ -145,11 +145,7 @@ public class FeatureUIHandler : MonoBehaviour
             GameObject featureUIComponent = Instantiate(featureUIPrefab);
             featureUIComponent.transform.SetParent(outsourcedFeatureListContent.transform, false);
             FeatureUIComponentHandler featureUIComponentHandler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
-            featureUIComponentHandler.SetNameIDText(feature.Value.nameID);
-            featureUIComponentHandler.SetFunctionalityText(feature.Value.functionality.ToString());
-            featureUIComponentHandler.SetIntegrationText(feature.Value.integrability.ToString());
-            featureUIComponentHandler.SetUserExperienceText(feature.Value.userfriendliness.ToString());
-            featureUIComponentHandler.SetTimeCostsText(feature.Value.timeCost.ToString());
+            featureUIComponentHandler.SetupFeature(feature.Value.nameID, feature.Value.functionality, feature.Value.integrability, feature.Value.userfriendliness, feature.Value.timeCost, feature.Value.enterpriseCustomers, feature.Value.businessCustomers, feature.Value.individualCustomers);
             featureUIComponentHandler.SetFeatureUIHandler(this);
             featureUIComponentHandler.HideToggle();
             //featureUIComponentHandler.SetCheckedForOutsourcing(true);

@@ -116,7 +116,7 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     {   
         if (quarter == 4)
         {
-            if (risksQ3.Count > 0) // player did not join already running game in Q4  so there are some data to be loaded from Q3
+            if (risksQ3.Count > 0 && risks.Count == 0) // player did not join already running game in Q4  so there are some data to be loaded from Q3
             {
                 foreach (string risk in risksQ3)
                 {
@@ -139,7 +139,6 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
                     riskColor.Add(color);
                 }
             }
-
             if(risk1DescriptionQuarters.Count != 4)
             {
                for(int i  = risk1DescriptionQuarters.Count + 1; i < quarter; i++)
@@ -287,7 +286,7 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     {
         if (riskUIHandler != null & riskLikelihood.ContainsKey(riskID) & riskImpact.ContainsKey(riskID) & riskColor.ContainsKey(riskID))
         {
-            Debug.Log(riskColor.ContainsKey(riskID));
+            //Debug.Log(riskColor.ContainsKey(riskID));
             AddRiskToList(riskID);
         }
     }
@@ -295,7 +294,7 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     public void AddRiskToList(string riskID)
     {
         CmdAddRiskToList(riskID);
-        Debug.Log("added to list");
+        //Debug.Log("added to list");
     }
     [Command]
     public void CmdAddRiskToList(string riskID)

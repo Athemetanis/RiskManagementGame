@@ -112,9 +112,11 @@ public class DeveloperResearchUIComponentHandler : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
         List<GameObject> developers = new List<GameObject>(GameHandler.allGames[gameID].GetDeveloperList().Values);
+
+        //Debug.Log(developers.Count);
         foreach (GameObject developer in developers)
         {
-            int employeesCount = developer.GetComponent<HumanResourcesManager>().GetEmployeesCountQuater(currentQuarter);
+            int employeesCount = developer.GetComponent<HumanResourcesManager>().GetEmployeesCountQuater(correspondingResearchQuarter);
             string firmName = developer.GetComponent<FirmManager>().GetFirmName();
 
             GameObject competitorsEmployeesUIComponent = Instantiate(competitorsEmployeesUIComponentPrefab);
@@ -127,7 +129,7 @@ public class DeveloperResearchUIComponentHandler : MonoBehaviour
 
     public void GenerateProductList()
     {
-        foreach (Transform child in possiblePartnersProductComponentPrefab.transform)
+        foreach (Transform child in possiblePartnersProductListContentContainer.transform)
         {
             GameObject.Destroy(child.gameObject);
         }

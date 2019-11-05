@@ -82,14 +82,14 @@ public class RiskUIHandler : MonoBehaviour
 
     public void UpdateGraphPoints()
     {
-        Debug.Log("updating graph points");
+        //Debug.Log("updating graph points");
         foreach(Transform child in riskGraphContent.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
         graphImagePoints.Clear();
         allGraphImages.Clear();
-        Debug.Log(riskManager.GetRisks().Distinct().ToList().Count());
+        //Debug.Log(riskManager.GetRisks().Distinct().ToList().Count());
         foreach (string riskID in riskManager.GetRisks().Distinct().ToList())
         {
             

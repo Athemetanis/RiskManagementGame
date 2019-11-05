@@ -71,11 +71,19 @@ public class EventManager : NetworkBehaviour
         {
             int programmersCurrentCount = humanResourcesManager.GetProgrammersCount();
             int programmersLoss = (int)System.Math.Round(((float)programmersCurrentCount * 0.15), System.MidpointRounding.AwayFromZero);
+            if(programmersLoss == 0)
+            {
+                programmersLoss = 1;
+            }
             humanResourcesManager.SetProgrammersCount(programmersCurrentCount - programmersLoss);        }
         else if (humanResourcesManager.GetProgrammerSalaryPerQurter() >= 2000 && humanResourcesManager.GetProgrammerSalaryPerQurter() < 2500) // 10% loss
         {
             int programmersCurrentCount = humanResourcesManager.GetProgrammersCount();
             int programmersLoss = (int)System.Math.Round(((float)programmersCurrentCount * 0.1), System.MidpointRounding.AwayFromZero);
+            if (programmersLoss == 0)
+            {
+                programmersLoss = 1;
+            }
             humanResourcesManager.SetProgrammersCount(programmersCurrentCount - programmersLoss);
         }
         else if (humanResourcesManager.GetProgrammerSalaryPerQurter() >= 2500) //5% loss
@@ -89,12 +97,20 @@ public class EventManager : NetworkBehaviour
         {
             int integrabilitySpecialistsCurrentCount = humanResourcesManager.GetProgrammersCount();
             int integrabilitySpecialistsLoss = (int)System.Math.Round(((float)integrabilitySpecialistsCurrentCount * 0.15), System.MidpointRounding.AwayFromZero);
+            if (integrabilitySpecialistsLoss == 0)
+            {
+                integrabilitySpecialistsLoss = 1;
+            }
             humanResourcesManager.SetProgrammersCount(integrabilitySpecialistsCurrentCount - integrabilitySpecialistsLoss);
         }
         else if (humanResourcesManager.GetIntegrabilitySpecialistSalaryPerQuarter() >= 3000 && humanResourcesManager.GetIntegrabilitySpecialistSalaryPerQuarter() < 3500)
         {
             int integrabilitySpecialistsCurrentCount = humanResourcesManager.GetProgrammersCount();
             int integrabilitySpecialistsLoss = (int)System.Math.Round(((float)integrabilitySpecialistsCurrentCount * 0.1), System.MidpointRounding.AwayFromZero);
+            if (integrabilitySpecialistsLoss == 0)
+            {
+                integrabilitySpecialistsLoss = 1;
+            }
             humanResourcesManager.SetProgrammersCount(integrabilitySpecialistsCurrentCount - integrabilitySpecialistsLoss);
         }
         else if (humanResourcesManager.GetIntegrabilitySpecialistSalaryPerQuarter() >= 3500)
@@ -108,12 +124,20 @@ public class EventManager : NetworkBehaviour
         {
             int uiSpecialistsCurrentCount = humanResourcesManager.GetProgrammersCount();
             int uiSpecialistsLoss = (int)System.Math.Round(((float)uiSpecialistsCurrentCount * 0.15), System.MidpointRounding.AwayFromZero);
+            if (uiSpecialistsLoss == 0)
+            {
+                uiSpecialistsLoss = 1;
+            }
             humanResourcesManager.SetProgrammersCount(uiSpecialistsCurrentCount - uiSpecialistsLoss);
         }
         else if (humanResourcesManager.GetUISpecialistSalaryPerQuarter() >= 3000 && humanResourcesManager.GetUISpecialistSalaryPerQuarter() < 3500)
         {
             int uiSpecialistsCurrentCount = humanResourcesManager.GetProgrammersCount();
             int uiSpecialistsLoss = (int)System.Math.Round(((float)uiSpecialistsCurrentCount * 0.15), System.MidpointRounding.AwayFromZero);
+            if (uiSpecialistsLoss == 0)
+            {
+                uiSpecialistsLoss = 1;
+            }
             humanResourcesManager.SetProgrammersCount(uiSpecialistsCurrentCount - uiSpecialistsLoss);
         }
         else if (humanResourcesManager.GetUISpecialistSalaryPerQuarter() >= 3500)

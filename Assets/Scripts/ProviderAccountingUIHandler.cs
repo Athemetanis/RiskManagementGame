@@ -8,12 +8,14 @@ public class ProviderAccountingUIHandler : MonoBehaviour
     public GameObject providerAccountingUIContainerQ2;
     public GameObject providerAccountingUIContainerQ3;
     public GameObject providerAccountingUIContainerQ4;
+    public GameObject providerAccountingUIContainerQ5;
 
 
     public ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ1;
     public ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ2;
     public ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ3;
     public ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ4;
+    public ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerQ5;
 
     private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerCurrent;
 
@@ -34,6 +36,7 @@ public class ProviderAccountingUIHandler : MonoBehaviour
         providerAccountingUIComponentHandlerQ2.Init();
         providerAccountingUIComponentHandlerQ3.Init();
         providerAccountingUIComponentHandlerQ4.Init();
+        providerAccountingUIComponentHandlerQ5.Init();
 
         EnableCorrespondingQuarterUI(currentQuarter);
     }
@@ -49,6 +52,8 @@ public class ProviderAccountingUIHandler : MonoBehaviour
                 providerAccountingUIContainerQ2.SetActive(false);
                 providerAccountingUIContainerQ3.SetActive(false);
                 providerAccountingUIContainerQ4.SetActive(false);
+                providerAccountingUIContainerQ5.SetActive(false);
+
 
                 break;
             case 2:
@@ -59,6 +64,7 @@ public class ProviderAccountingUIHandler : MonoBehaviour
                 providerAccountingUIComponentHandlerQ2.UpdateAllElements();
                 providerAccountingUIContainerQ3.SetActive(false);
                 providerAccountingUIContainerQ4.SetActive(false);
+                providerAccountingUIContainerQ5.SetActive(false);
                 break;
             case 3:
                 providerAccountingManager.SetCurrentProviderAccountingUIHandler(providerAccountingUIComponentHandlerQ3);
@@ -69,6 +75,7 @@ public class ProviderAccountingUIHandler : MonoBehaviour
                 providerAccountingUIContainerQ3.SetActive(true);
                 providerAccountingUIComponentHandlerQ3.UpdateAllElements();
                 providerAccountingUIContainerQ4.SetActive(false);
+                providerAccountingUIContainerQ5.SetActive(false);
                 break;
             case 4:
                 providerAccountingManager.SetCurrentProviderAccountingUIHandler(providerAccountingUIComponentHandlerQ4);
@@ -80,6 +87,20 @@ public class ProviderAccountingUIHandler : MonoBehaviour
                 providerAccountingUIComponentHandlerQ3.GetHistoryData();
                 providerAccountingUIContainerQ4.SetActive(true);
                 providerAccountingUIComponentHandlerQ4.UpdateAllElements();
+                providerAccountingUIContainerQ5.SetActive(false);
+                break;
+            case 5:
+                providerAccountingManager.SetCurrentProviderAccountingUIHandler(providerAccountingUIComponentHandlerQ5);
+                providerAccountingUIContainerQ1.SetActive(true);
+                providerAccountingUIComponentHandlerQ1.GetHistoryData();
+                providerAccountingUIContainerQ2.SetActive(true);
+                providerAccountingUIComponentHandlerQ2.GetHistoryData();
+                providerAccountingUIContainerQ3.SetActive(true);
+                providerAccountingUIComponentHandlerQ3.GetHistoryData();
+                providerAccountingUIContainerQ4.SetActive(true);
+                providerAccountingUIComponentHandlerQ4.GetHistoryData();
+                providerAccountingUIContainerQ5.SetActive(true);
+                providerAccountingUIComponentHandlerQ5.UpdateAllElements();
                 break;
         }
     }

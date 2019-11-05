@@ -370,7 +370,7 @@ public class ContractManager : NetworkBehaviour
                 //SCHEDULE
                 if (developerCM.GetScheduleManager() != null)
                 {
-                    developerCM.GetScheduleManager().DeleteScheduledFeature(contract.GetContractID());
+                    developerCM.GetScheduleManager().DeleteScheduledFeatureServer(contract.GetContractID());
                 }
             }
         }
@@ -407,6 +407,7 @@ public class ContractManager : NetworkBehaviour
         }
 
     }
+
     [Command]
     public void CmdRejectContract(string contractID)
     {
@@ -427,7 +428,7 @@ public class ContractManager : NetworkBehaviour
         //SCHEDULE
         if (developerCM.GetScheduleManager() != null)
         {
-            developerCM.GetScheduleManager().DeleteScheduledFeature(contractID);
+            developerCM.GetScheduleManager().DeleteScheduledFeatureServer(contractID);
         }
 
     }
@@ -447,7 +448,7 @@ public class ContractManager : NetworkBehaviour
         //SCHEDULE
         if (scheduleManager != null)
         {
-            scheduleManager.DeleteScheduledFeature(contractID);
+            scheduleManager.DeleteScheduledFeatureClient(contractID);
         }
     }
     [Command]
@@ -658,7 +659,7 @@ public class ContractManager : NetworkBehaviour
     }
     
     //CONTRACT EVALUATION METHODS END
-    
+    [Server]
     public void ComputeRealiability()
     {
         int currentQuarter = GameHandler.allGames[gameID].GetGameRound();
@@ -683,14 +684,15 @@ public class ContractManager : NetworkBehaviour
         }
         if (contractEvaluatedCount > 0)
         {
-            reliability = (contractDoneInTimeCount / contractEvaluatedCount) * 100;
-            reliabilityQurters.Insert(currentQuarter, reliability);
+            reliability = ((contractDoneInTimeCount * 100) / contractEvaluatedCount);
         }
         else
         {
-            reliabilityQurters.Insert(currentQuarter, 100);
+            reliability = 100;
         }
-        
+        reliabilityQurters.Insert(currentQuarter, (int)reliability);
+
+        Debug.Log("RELIABILITY : " + reliability + ", evaluated cont " + contractEvaluatedCount + ", done in time " + contractDoneInTimeCount);
     }
 
 
@@ -707,6 +709,7 @@ public class ContractManager : NetworkBehaviour
     public void RpcMoveToNextQuarter()
     {
         ContractClearance();
+        Debug.Log("ContractClearance on client done");
     }
 
     public void ContractClearance() 

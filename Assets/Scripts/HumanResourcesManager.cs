@@ -124,9 +124,13 @@ public class HumanResourcesManager : NetworkBehaviour
         hireIntegrabilitySpecialistsCount = 0;
         hireUISpecialistsCount = 0;
 
-        programmerSalaryPerQuarter = 2000;
-        uiSpecialistSalaryPerQuarter = 3000;
-        integrabilitySpecialistSalaryPerQuarter = 3000;
+        programmerSalaryPerMonth = 2000;
+        uiSpecialistSalaryPerMonth = 3000;
+        integrabilitySpecialistSalaryPerMonth = 3000;
+
+        programmerSalaryPerQuarter = programmerSalaryPerMonth * 3;
+        uiSpecialistSalaryPerQuarter = uiSpecialistSalaryPerMonth * 3;
+        integrabilitySpecialistSalaryPerQuarter = integrabilitySpecialistSalaryPerMonth * 3;
 
         programmerSalaryQ.Insert(0, 0);
         integrabilitySpecialistSalaryQ.Insert(0, 0);
@@ -380,16 +384,15 @@ public class HumanResourcesManager : NetworkBehaviour
             humanResourcesUIHandler.UpdateHireIntegrabilitySpecialistsCount(this.hireIntegrabilitySpecialistsCount);
         }
     }
+
     public void OnChangeProgrammerSalaryQuarter(int programmerSalary)
     {
         this.programmerSalaryPerQuarter = programmerSalary;
     }
-
     public void OnChangeUISpecialistSalaryQuarter(int uiSpecialistSalary)
     {
         this.uiSpecialistSalaryPerQuarter = uiSpecialistSalary;
     }
-
     public void OnChangeIntegrabilitySpecialistSalaryQuarter(int integrabilitySpecialistSalary)
     {
         this.integrabilitySpecialistSalaryPerQuarter = integrabilitySpecialistSalary;
@@ -401,6 +404,7 @@ public class HumanResourcesManager : NetworkBehaviour
         if (humanResourcesUIHandler != null)
         {
             humanResourcesUIHandler.UpdateProgrammerSalarySlider(this.programmerSalaryPerMonth);
+
         }
     }
     public void OnChangeUISpecialistSalaryMonth(int uiSpecialistSalary)

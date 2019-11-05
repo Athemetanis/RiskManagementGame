@@ -109,7 +109,7 @@ public class ProviderResearchUIComponentHandler : MonoBehaviour
             GameObject.Destroy(child.gameObject);
         }
         List<GameObject> providers = new List<GameObject>(GameHandler.allGames[gameID].GetProviderList().Values);
-
+        Debug.Log(providers.Count);
         foreach (GameObject provider in providers)
         {
             int productFunctionality = provider.GetComponent<ProductManager>().GetFunctionalityQuarter(correspondingResearchQuarter);

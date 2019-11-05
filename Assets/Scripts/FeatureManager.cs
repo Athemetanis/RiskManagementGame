@@ -341,7 +341,7 @@ public class FeatureManager : NetworkBehaviour
     {
         if (featureUIHandler != null)
         {
-            Debug.Log("Available f. count: " + availableFeatures.Count);
+           // Debug.Log("Available f. count: " + availableFeatures.Count);
             featureUIHandler.UpdateFeatureUIList();
             featureUIHandler.UpdateOutsourcedFeatureUIList();
         }
@@ -352,9 +352,9 @@ public class FeatureManager : NetworkBehaviour
     {
         if (featureUIHandler != null)
         {
-            Debug.Log("outsourced feature list changed");
-            Debug.Log(feature.nameID);
-            Debug.Log("Outsourced f. count: " + outsourcedFeatures.Count);
+            //Debug.Log("outsourced feature list changed");
+           // Debug.Log(feature.nameID);
+           // Debug.Log("Outsourced f. count: " + outsourcedFeatures.Count);
             featureUIHandler.UpdateOutsourcedFeatureUIList();
             featureUIHandler.UpdateFeatureUIList();
         }
@@ -366,9 +366,9 @@ public class FeatureManager : NetworkBehaviour
 
     public void OnChangeFeatureInDevelopmet(SyncDictionaryFeatures.Operation op, string key, Feature feature)
     {
-        Debug.Log("InDevelopment feature list changed");
-        Debug.Log("InDevelopment f. count: " + inDevelopmentFeatures.Count);
-        Debug.Log(feature);
+       // Debug.Log("InDevelopment feature list changed");
+       // Debug.Log("InDevelopment f. count: " + inDevelopmentFeatures.Count);
+        //Debug.Log(feature);
         if (featureUIHandler != null)
         {
             featureUIHandler.UpdateFeatureUIList();
@@ -387,7 +387,7 @@ public class FeatureManager : NetworkBehaviour
             featureUIHandler.UpdateFeatureUIList();
             featureUIHandler.UpdateOutsourcedFeatureUIList();
         }
-        Debug.Log("featureDoneListChanged " + doneFeatures.Count);
+        //Debug.Log("featureDoneListChanged " + doneFeatures.Count);
     }
 
     // NEXT QUARTER EVALUATION METHODS...

@@ -123,15 +123,15 @@ public class ProviderAccountingManager : NetworkBehaviour
 
     public void OnBeginningCashHisotryChanged(SyncList<int>.Operation op, int index, int value)
     {
-        Debug.Log("BC history changed on index " + index + " on value " + value);
+       // Debug.Log("BC history changed on index " + index + " on value " + value);
     }
     public void OnRevenueHistoryChanged(SyncList<int>.Operation op, int index, int value)
     {
-        Debug.Log("Revenue history changed on index " + index + " on value " + value);
+        //Debug.Log("Revenue history changed on index " + index + " on value " + value);
     }
     public void OnEndCashHistoryChanged(SyncList<int>.Operation op, int index, int value)
     {
-        Debug.Log("EC history changed on index " + index + " on value " + value);
+       // Debug.Log("EC history changed on index " + index + " on value " + value);
     }
 
     //METHODS
@@ -475,7 +475,7 @@ public class ProviderAccountingManager : NetworkBehaviour
 
     public void OnChangeHistorySaved(bool historySaved)
     {
-        Debug.Log("history changed on " + historySaved);
+        //Debug.Log("history changed on " + historySaved);
         if (historySaved  && hasAuthority)
         {
             playerData.CmdMoveToNextQuarter();
@@ -534,7 +534,7 @@ public class ProviderAccountingManager : NetworkBehaviour
     {
         gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
-        Debug.Log("current quarter for reference" + currentQuarter);
+        //Debug.Log("current quarter for reference" + currentQuarter);
         if (providerAccountingUIHandler != null)
         {
             providerAccountingUIHandler.EnableCorrespondingQuarterUI(currentQuarter + 1);

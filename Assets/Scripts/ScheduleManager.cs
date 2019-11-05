@@ -206,10 +206,10 @@ public class ScheduleManager : NetworkBehaviour
             else if(overallDevelopmentTime  < 0)
             {
                 graphPoints.Add(new Vector3(0, 0));
-                graphPoints.Add(new Vector3(11 * xAxisScale, 66));
+                graphPoints.Add(new Vector3(11 * xAxisScale, 0));
                 for (int i = 0; i <= 10; i++)
                 {
-                    graphDays[i] = -1;
+                    graphDays[i] = 0;
                 }
             }
             else if (overallDevelopmentTime == 1 || overallDevelopmentTime == 0)   //what should happen?  connstant development time? YES: 1 day

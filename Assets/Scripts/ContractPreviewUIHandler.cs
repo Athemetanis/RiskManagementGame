@@ -12,10 +12,10 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public TextMeshProUGUI providerFirmText;
     public TextMeshProUGUI featureText;
     public TextMeshProUGUI stateText;
-    public InputField priceIF;      
-    public InputField deliveryIF;
+    public TMP_InputField priceIF;      
+    public TMP_InputField deliveryIF;
     public GameObject historyContent;
-    public InputField riskSharingFeeIF;
+    public TMP_InputField riskSharingFeeIF;
 
     public Button rejectButton;
     public Button acceptButton;
@@ -92,9 +92,19 @@ public class ContractPreviewUIHandler : MonoBehaviour
         priceIF.gameObject.SetActive(false);
         deliveryIF.gameObject.SetActive(false);
         riskSharingFeeIF.gameObject.SetActive(false);
+
     }
     public void InNegotiationContract()
     {
+        priceIF.gameObject.SetActive(true);
+        deliveryIF.gameObject.SetActive(true);
+        riskSharingFeeIF.gameObject.SetActive(true);
+        priceIF.text = price;
+        deliveryIF.text = delivery;
+        riskSharingFeeIF.text = riskSharingFee;
+        priceIF.interactable = false;
+        deliveryIF.interactable = false;
+        riskSharingFeeIF.interactable = false;
         acceptButton.gameObject.SetActive(true);
         rejectButton.gameObject.SetActive(true);
         modifyButton.gameObject.SetActive(true);
@@ -102,6 +112,10 @@ public class ContractPreviewUIHandler : MonoBehaviour
         sendBackButton.gameObject.SetActive(false);
         cancelChangesButton.gameObject.SetActive(false);
         cancelProposingButton.gameObject.SetActive(false);
+       
+    }
+    public void FinalContract()
+    {
         priceIF.gameObject.SetActive(true);
         deliveryIF.gameObject.SetActive(true);
         riskSharingFeeIF.gameObject.SetActive(true);
@@ -111,9 +125,6 @@ public class ContractPreviewUIHandler : MonoBehaviour
         priceIF.interactable = false;
         deliveryIF.interactable = false;
         riskSharingFeeIF.interactable = false;
-    }
-    public void FinalContract()
-    {
         rejectButton.gameObject.SetActive(true);
         acceptButton.gameObject.SetActive(true);
         sendBackButton.gameObject.SetActive(false);
@@ -121,15 +132,7 @@ public class ContractPreviewUIHandler : MonoBehaviour
         proposeButton.gameObject.SetActive(false);
         cancelChangesButton.gameObject.SetActive(false);
         cancelProposingButton.gameObject.SetActive(false);
-        priceIF.gameObject.SetActive(true);
-        deliveryIF.gameObject.SetActive(true);
-        riskSharingFeeIF.gameObject.SetActive(true);
-        priceIF.text = price;
-        deliveryIF.text = delivery;
-        riskSharingFeeIF.text = riskSharingFee;
-        priceIF.interactable = false;
-        deliveryIF.interactable = false;
-        riskSharingFeeIF.interactable = false;
+
 
 
     }

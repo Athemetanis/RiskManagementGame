@@ -134,7 +134,7 @@ public class DeveloperResearchUIComponentHandler : MonoBehaviour
 
         List<GameObject> providers = new List<GameObject>(GameHandler.allGames[gameID].GetProviderList().Values);
         int providerCount = providers.Count;
-
+        Debug.Log(providers.Count);
         foreach (GameObject provider in providers)
         {
             int productFunctionality = provider.GetComponent<ProductManager>().GetFunctionalityQuarter(correspondingResearchQuarter);

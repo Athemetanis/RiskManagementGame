@@ -121,7 +121,7 @@ public class ProviderResearchUIComponentHandler : MonoBehaviour
             competitorsProductUIComponent.transform.SetParent(competitorsProductListContentContainer.transform, false);
             ResearchProductUIComponentHandler researchProductUIComponentHandler = competitorsProductUIComponent.GetComponent<ResearchProductUIComponentHandler>();
 
-            researchProductUIComponentHandler.SetUpProviderResearchUIComponent(firmName, productFunctionality, productIntegrability, productUI);
+            researchProductUIComponentHandler.SetUpProductResearchUIComponent(firmName, productFunctionality, productIntegrability, productUI);
         }
     }
 

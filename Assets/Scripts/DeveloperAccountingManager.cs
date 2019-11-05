@@ -148,6 +148,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         borrowEmergencyLoanQuarters.Insert(0, 0);
         repayEmergencyLoanQuarters.Insert(0, 0);
         endCashBalanceQuarters.Insert(0, 2000000);
+        emergencyLoanInterestsQuarters.Insert(0, 0);
     }
     [Server]
     public void LoadQuarterData(int quarter)  //loading only values that are transfered to the next quarter  --------SERVER--------

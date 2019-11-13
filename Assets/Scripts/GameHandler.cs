@@ -12,16 +12,16 @@ public class GameHandler : NetworkBehaviour {
     /// </summary>
     public GameObject gamePrefab;
     public GameObject gameUIPrefab;
-    public GameObject gameUIPrefabAdmin;
+    public GameObject gameUIPrefabInstructor;
     public GameObject gameListUIPrefab;
     public GameObject gameListUIPrefabAdmin;
     public GameObject gamePasswordVerificatorPrefab;
 
     //private string gameName;
     //private string gamePassword;
-
-
+    
     private PlayerManager localPlayer;
+    private InstructorManager instructor;
 
     private GameObject gameListUIGameObject;
     private GameObject gameListUIContent;
@@ -48,6 +48,9 @@ public class GameHandler : NetworkBehaviour {
     //public void SetGameName(InputField gameName) { this.gameName = gameName.text; }
     //public void SetGamePassword(InputField gamePassword) { this.gamePassword = gamePassword.text; }
     public bool GetGeneratedGameList() { return generatedGameList; }
+
+    public void SetInstructor(InstructorManager instructor) { this.instructor = instructor; }
+    public InstructorManager GetInstructor() { return instructor; }
 
     private void Awake()
     {
@@ -86,8 +89,12 @@ public class GameHandler : NetworkBehaviour {
 
     }
 
-    public void GenerateGamesListUIForInstructor(InstructorManager instructor)
-    {
+    public void GenerateGamesListUIForInstructor()
+    {   if(instructor == null)
+        {
+            Debug.LogError("Instructor object in GameHandler is NULL. I connot create game list.");
+        }
+
         gameListUIGameObject = Instantiate(gameListUIPrefabAdmin);
         gameListUIGameObject.GetComponent<CreateGameUIHandler>().SetInstructorManager(instructor);
         gameListUIContent = gameListUIGameObject.transform.Find("GameScrolList/GameListViewport/GameListContent").gameObject;
@@ -114,7 +121,7 @@ public class GameHandler : NetworkBehaviour {
         //adding exising games into UI representation
         foreach (GameData gameData in allGames.Values)
         {
-            GameObject gameUI = Instantiate(gameUIPrefabAdmin);
+            GameObject gameUI = Instantiate(gameUIPrefabInstructor);
             allGamesUI.Add(gameUI.GetInstanceID().ToString(), gameUI);
             gameUI.transform.SetParent(gameListUIContent.transform, false);
             gameData.SetGameUIHandler(gameUI.GetComponent<GameUIHandler>());
@@ -150,7 +157,12 @@ public class GameHandler : NetworkBehaviour {
         GameObject GamePasswordVerificator = Instantiate(gamePasswordVerificatorPrefab);
         GamePasswordVerificator.GetComponent<GamePasswordVerification>().SetGameData(GameHandler.allGames[gameID.GetComponent<Text>().text].GetComponent<GameData>());
     }
-       
+
+    public void SetInstructorGameID(GameObject gameID)
+    {
+        GameHandler.singleton.GetLocalPlayer().SetPlayerGameID(gameID.GetComponent<Text>().text);
+    }
+
     [Server]
     public void CreateGame(string name, string password)
     {

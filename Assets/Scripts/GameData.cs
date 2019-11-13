@@ -22,11 +22,14 @@ public class GameData : NetworkBehaviour
     private int gameRound;
     [SyncVar(hook = "OnChangePlayersCount")]
     private int playersCount;
+
+    private int maxNumberOfPlayers = 30;
+
+    private GameObject instructor;
     //private int readyPlayersCount;
 
     private SyncListString readyPlayers = new SyncListString();
     private int playerEvaluated;
-
     private int developersEvaluatedCount;
            
     //--------------<playerID, GameObject player>-----------------//  Q: How am I syncing this? A: When script playerData starts on client/server it requests adding its game object into these lists. 
@@ -46,7 +49,6 @@ public class GameData : NetworkBehaviour
     private SyncDictionaryStringString allFirmDescriptions = new SyncDictionaryStringString();
 
     //-------------------<playerID, firmName>
-    //private SyncDictionaryStringString allFirmsRevers = new SyncDictionaryStringString();
     private Dictionary<string, string> allFirmsRevers = new Dictionary<string, string>();
 
     //this variable holds reference on script of UI representation of game (if it exists) //LOCAL !!!
@@ -72,7 +74,9 @@ public class GameData : NetworkBehaviour
     public Dictionary<string, GameObject> GetDeveloperList() { return developerList; }
 
     public void SetGameUIHandler(GameUIHandler gameUIHandler) { this.gameUIHandler = gameUIHandler; }
-    
+    public void SetInstructor(GameObject instructor) { this.instructor = instructor; }
+    public GameObject GetInstructor() { return instructor; }
+
     //Add me when I awake - this is called on both the clients and the host, so everyone will know me 
     protected virtual void Awake()
     {       
@@ -350,6 +354,7 @@ public class GameData : NetworkBehaviour
             }
         }
     }
+
     public void OnFirmDescriptionChange(SyncDictionaryStringString.Operation op, string firmName, string description)
     {
 
@@ -439,6 +444,21 @@ public class GameData : NetworkBehaviour
 
     }
 
+    public bool IsPlayerReady(string playerID)
+    {
+        return readyPlayers.Contains(playerID);
+    }
 
+
+    public void ForceNextQuarter()
+    {
+        foreach(string playerID in playerList.Keys)
+        {
+            if(!readyPlayers.Contains(playerID))
+            {
+                TryToAddPlayersToReadyServer(playerID);
+            }
+        }
+    }
 
 }

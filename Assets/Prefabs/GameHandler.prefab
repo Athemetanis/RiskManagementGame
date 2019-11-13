@@ -59,6 +59,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -105,10 +106,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
-  m_AssetId: a14cbd21e6fbffb44ac4685c0ad90546
-  m_SceneId: 0
+  serverOnly: 0
+  localPlayerAuthority: 0
+  m_AssetId: 
+  m_SceneId: 2977819273
 --- !u!114 &114098156608362644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,7 +126,7 @@ MonoBehaviour:
   gamePrefab: {fileID: 1932032783963128, guid: 10fd66cd189bdd64988b987f98b343b8, type: 3}
   gameUIPrefab: {fileID: 5464168536294032748, guid: 27e3fab9be11dc54c9d7cfbcbf2913d1,
     type: 3}
-  gameUIPrefabAdmin: {fileID: 5464168536294032748, guid: fe96b15e5dcb9f744a250ff563b4bb95,
+  gameUIPrefabInstructor: {fileID: 3812866867970605815, guid: 10648f4210e8e5341b0c6a57f971cb7e,
     type: 3}
   gameListUIPrefab: {fileID: 1685780879408004592, guid: 3a79f684c0d96b24ba35beca5b1557f3,
     type: 3}

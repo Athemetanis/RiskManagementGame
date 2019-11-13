@@ -47,7 +47,7 @@ MonoBehaviour:
   serverOnly: 0
   localPlayerAuthority: 1
   m_AssetId: 
-  m_SceneId: 1726751760
+  m_SceneId: 3087266808
 --- !u!114 &4895399390629820771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,3 +61,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncInterval: 0.1
+  instructorUIPrefab: {fileID: 1939197326750740696, guid: e35d3d54c0a2ddb4f909a4cecfc285db,
+    type: 3}

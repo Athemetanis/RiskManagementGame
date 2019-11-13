@@ -44,7 +44,6 @@ public class GamePasswordVerification : MonoBehaviour
             WarningText.GetComponent<Text>().enabled = true;
         }
 
-
     }
 
 

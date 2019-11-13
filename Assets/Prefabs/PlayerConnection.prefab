@@ -59,6 +59,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -107,7 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   serverOnly: 0
   localPlayerAuthority: 1
-  m_AssetId: 553ffacd63e2f274ab6a934f4c4ee830
+  m_AssetId: e35d3d54c0a2ddb4f909a4cecfc285db
   m_SceneId: 0
 --- !u!114 &114436350302990588
 MonoBehaviour:
@@ -125,6 +126,8 @@ MonoBehaviour:
   authenticationPrefab: {fileID: 1041454387927078, guid: a0bb6ed37a3ad274fbd812c91aea1f7f,
     type: 3}
   instructorPrefab: {fileID: 6458552567307691280, guid: bcc211dbadc16f34b81dd9b02488ca4c,
+    type: 3}
+  instructorUIPrefab: {fileID: 1939197326750740696, guid: e35d3d54c0a2ddb4f909a4cecfc285db,
     type: 3}
   playerDeveloperPrefab: {fileID: 1303548471944098, guid: 21aea273c8651df45b278f16eab1fb4f,
     type: 3}

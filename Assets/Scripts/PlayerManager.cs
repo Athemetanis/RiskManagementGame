@@ -24,14 +24,16 @@ public class PlayerManager : NetworkBehaviour {
     public GameObject authenticationPrefab;
     private GameObject authentication;
 
-
+    //--INSTRUCTOR
     public GameObject instructorPrefab;
+    public GameObject instructorUIPrefab;       
+
+    //---PLAYER
     public GameObject playerDeveloperPrefab;
     public GameObject playerDeveloperUIPrefab;
     public GameObject playerProviderPrefab;
     public GameObject playerProviderUIprefab;
 
-    private GameObject myInstructorObject;
     private GameObject myPlayerObject;
     private GameObject myPlayerUIObject;
     private PlayerData myPlayerData;
@@ -85,9 +87,21 @@ public class PlayerManager : NetworkBehaviour {
         {
             return;
         }
-
+        if(this.playerFirebaseID == "rojDP7X6ujdmd9jeUKIqGwyLNmG2" && playerGameID != "")
+        {
+            
+            CreateInstructorUI();
+            return;
+        }
+        if (this.playerFirebaseID == "rojDP7X6ujdmd9jeUKIqGwyLNmG2" && playerGameID == "")
+        {
+            GameHandler.singleton.GenerateGamesListUIForInstructor();
+            return;
+        }
         GetPlayerObject();
     }
+
+    
 
     public void OnChangePlayerID(string playerFirebaseID)  ///This function is called only on client after playerID was changed on server. 
     {
@@ -104,13 +118,22 @@ public class PlayerManager : NetworkBehaviour {
                 if(myPlayerData.GetPlayerUI() != null)
                 {
                     Destroy(myPlayerData.GetPlayerUI());
-                } 
-               
+                }                
             }
             GameHandler.singleton.DestroyGameListUI();
             //CmdRemoveAuthority();
             myPlayerObject = null;
             myPlayerData = null;
+
+            InstructorManager instructor = GameHandler.singleton.GetInstructor();
+            if ( instructor != null)
+            {
+              if(instructor.GetMyInstructorUIObject() != null)
+              {
+                    Destroy(instructor.GetMyInstructorUIObject());
+              }
+                Destroy(instructor.gameObject);
+            }
             
             return;
 
@@ -172,15 +195,11 @@ public class PlayerManager : NetworkBehaviour {
 
     }
 
-    /*public void CreateAdminObject()
-    {
-
-    }*/
-
     [Command]
     public void CmdCreateInstructorObject()
     {
-        myInstructorObject = Instantiate(instructorPrefab);
+        GameObject myInstructorObject = Instantiate(instructorPrefab);
+
         NetworkServer.SpawnWithClientAuthority(myInstructorObject, this.gameObject);
     }
 
@@ -209,7 +228,8 @@ public class PlayerManager : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcGetPlayerObject()
-    { if (isLocalPlayer == false)
+    {
+        if (isLocalPlayer == false)
         {
             return;
         }
@@ -311,6 +331,17 @@ public class PlayerManager : NetworkBehaviour {
             myPlayerObject.GetComponent<NetworkIdentity>().RemoveClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
         }
     }
+
+    [Client]
+    public void CreateInstructorUI()
+    {
+        GameObject myInstructorUIObject = Instantiate(instructorUIPrefab);
+        GameHandler.singleton.GetInstructor().SetMyInstructorUIObject(myInstructorUIObject);
+        myInstructorUIObject.GetComponent<InstructorGameInfoUIHandler>().SetGameID(playerGameID);
+        myInstructorUIObject.gameObject.SetActive(true);
+    }
+
+
 
     /// <summary>
     /// ----------------------------------------------OLD------------------------------------

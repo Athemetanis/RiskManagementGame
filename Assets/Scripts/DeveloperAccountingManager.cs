@@ -87,6 +87,8 @@ public class DeveloperAccountingManager : NetworkBehaviour
     public int GetRepayEmergencyLoan() { return repayEmergencyLoan; }
     public int GetEndCashBalance() { return endCashBalance; }
 
+    public int GetEndCashBalanceQuarter(int quarter) { return endCashBalanceQuarters[quarter]; }
+
     public int GetEmergencyLoanInterests() { return emergencyLoanInterests; }
 
     public void SetDeveloperAccountingUIHandler(DeveloperAccountingUIHandler developerAccountingUIHandler) { this.developerAccountingUIHandler = developerAccountingUIHandler; }

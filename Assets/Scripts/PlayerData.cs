@@ -55,7 +55,6 @@ public class PlayerData : NetworkBehaviour {
             Debug.Log("player registered to all players: " + playerID);
             GameHandler.allPlayers[gameID].Add(playerID, this.gameObject);
         }
-
         if (GameHandler.allGames[gameID] == true)
         {
             Debug.Log("player tries to be added into game " + gameID);

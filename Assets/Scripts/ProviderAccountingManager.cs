@@ -86,7 +86,7 @@ public class ProviderAccountingManager : NetworkBehaviour
     public int GetEndCashBalance() { return endCashBalance; }
     public int GetAdditionalExpenses() { return additionalExpenses; }
 
-
+    public int GetEndCashBalanceQuarter(int quarter) { return endCashBalanceQuarters[quarter]; }
 
     public void SetProviderAccountingUIHandler(ProviderAccountingUIHandler providerAccountingUIHandler) { this.providerAccountingUIHandler = providerAccountingUIHandler; }
     public void SetCurrentProviderAccountingUIHandler(ProviderAccountingUIComponentHandler providerAccountingUIHandler) { this.providerAccountingUIComponentHandlerCurrent = providerAccountingUIHandler; }

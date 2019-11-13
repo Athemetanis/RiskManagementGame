@@ -4,29 +4,75 @@ using UnityEngine;
 using Mirror;
 
 public class InstructorManager : NetworkBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
+{   
+    //VARIABLES
+    [SyncVar(hook = "OnChangeGameID")]
+    private string gameID;
+
+    //REFERENCES
+    private GameObject myInstructorUIObject;
+
+    //GETTERS & SETTERS
+    public void SetMyInstructorUIObject(GameObject instructorUI) { myInstructorUIObject = instructorUI; }
+    public GameObject GetMyInstructorUIObject() { return myInstructorUIObject; }
+
+    public override void OnStartServer()
     {
-        GameHandler.singleton.GenerateGamesListUIForInstructor(this);
+        gameID = "";
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnStartClient()
     {
-        
+        GameHandler.singleton.SetInstructor(this);
+    }
+
+    public override void OnStartAuthority()
+    {
+        GameHandler.singleton.GenerateGamesListUIForInstructor();
     }
 
 
+    //METHODS
     public void CreateGame(string gameName, string gamePassword)
     {
         CmdCreateGame(gameName, gamePassword);
     }
-
     [Command]
     public void CmdCreateGame(string gameName, string gamePassword)
     {
         GameHandler.singleton.CreateGame(gameName, gamePassword);
+    }
+
+    public void SetGameID(string gameID)
+    {
+        CmdSetGameID(gameID);
+    }
+
+    [Command]
+    public void CmdSetGameID(string gameID)
+    {
+        this.gameID = gameID;
+    }
+    
+
+    public void ForceGameNextQuarter(string gameID)
+    {
+        CmdForceGameNextQuarter(gameID);
+    }
+
+    public void CmdForceGameNextQuarter(string gameID)
+    {
+        GameHandler.allGames[gameID].ForceNextQuarter();
+    }
+    
+    //HOOKS
+    public void OnChangeGameID(string gameID)
+    {
+        this.gameID = gameID;
+        if (GameHandler.allGames.ContainsKey(gameID))
+        {
+            GameHandler.allGames[gameID].SetInstructor(this.gameObject);
+        }    
     }
 
 

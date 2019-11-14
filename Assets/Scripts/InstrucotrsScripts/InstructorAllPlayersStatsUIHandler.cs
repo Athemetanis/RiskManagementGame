@@ -17,8 +17,8 @@ public class InstructorAllPlayersStatsUIHandler : MonoBehaviour
     public GameObject contractDeveloperUIComponentPrefab;
     public GameObject contractProviderNameTextComponentPrefab;
 
-    string gameID;
-    int quarter;
+    private string gameID;
+    private int quarter;
 
     //REFERENCES
     private InstructorGameInfoUIHandler instructorGameInfoUIHandler;

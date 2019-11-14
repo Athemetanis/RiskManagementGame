@@ -26,6 +26,7 @@ public class InstructorGameInfoUIHandler : MonoBehaviour
     public void SetInstructorManager(InstructorManager instructorManager) { this.instructorManager = instructorManager; }
 
     public InstructorAllPlayersStatsUIHandler instructorAllPlayersStatsUIHandler;
+    public InstructorIndividualStatsUIHandler instructorIndividualStatsUIHandler;
       
 
     private void Start()
@@ -36,6 +37,7 @@ public class InstructorGameInfoUIHandler : MonoBehaviour
         UpdateTextInfo();
         GeneratePlayerGameStateList();
         instructorAllPlayersStatsUIHandler.enabled = true;
+        instructorIndividualStatsUIHandler.enabled = true;
     }
 
     public void UpdateTextInfo()

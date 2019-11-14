@@ -10,7 +10,7 @@ public class SyncListString : SyncList<string> { }
 
 public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
 {
-    //STORED VALUES FOR Q1, Q2, Q3, Q4, on corresponding indexes: 0 1 2 3 4
+    //STORED VALUES FOR Q0, Q1, Q2, Q3, Q4, on corresponding indexes: 0 1 2 3 4
     private SyncListString risk1DescriptionQuarters = new SyncListString() {};
     private SyncListString risk1ImpactActionQuarters = new SyncListString() {};
     private SyncListString risk2DescriptionQuarters = new SyncListString() {};
@@ -75,6 +75,16 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     public string GetRisk1ImpactActions() { return risk1ImpactAction; }
     public string GetRisk2ImpactActions() { return risk2ImpactAction; }
     public string GetRisk3ImpactActions() { return risk3ImpactAction; }
+
+    public string GetRisk1DescriptionQ(int quarter) { return risk1DescriptionQuarters[quarter]; }
+    public string GetRisk2DescriptionQ(int quarter) { return risk2DescriptionQuarters[quarter]; }
+    public string GetRisk3DescriptionQ(int quarter) { return risk3DescriptionQuarters[quarter]; }
+    public string GetRisk1ImpactActionsQ(int quarter) { return risk1ImpactActionQuarters[quarter]; }
+    public string GetRisk2ImpactActionsQ(int quarter) { return risk2ImpactActionQuarters[quarter]; }
+    public string GetRisk3ImpactActionsQ(int quarter) { return risk3ImpactActionQuarters[quarter]; }
+
+
+
 
     public override void OnStartServer()
     {

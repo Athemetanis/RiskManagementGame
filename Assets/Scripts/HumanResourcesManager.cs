@@ -78,6 +78,11 @@ public class HumanResourcesManager : NetworkBehaviour
     public int GetIntegrabilitySpecialistsAvailableCount() { return integrabilitySpecialistsAvailableCount; }
 
     public int GetEmployeesCountQuater(int quater) { return endProgrammersCountQ[quater] + endUISpecialistsCountQ[quater] + endIntegrabilitySpecialistsCountQ[quater]; }
+    public int GetProgrammersCountQuarter(int quarter) { return endProgrammersCountQ[quarter]; }
+    public int GetIntegrabilitySpecialistsCountQuarter(int quarter) { return endIntegrabilitySpecialistsCountQ[quarter]; }
+    public int GetUISpecialistsCountQuarter(int quarter) { return endUISpecialistsCountQ[quarter]; }
+
+
     public int GetProgrammersSalaryQuarter(int quarter) { return programmerSalaryQ[quarter]; }
     public int GetIntegrabilitySpecialistSalaryQuarter(int quarter) { return integrabilitySpecialistSalaryQ[quarter]; }
     public int GetUISpecialistSalaryQuarter(int quarter) { return uiSpecialistSalaryQ[quarter]; }

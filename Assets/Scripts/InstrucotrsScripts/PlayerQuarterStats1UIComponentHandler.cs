@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class PlayerQuartalStatsUIComponentHandler : MonoBehaviour
+public class PlayerQuarterStats1UIComponentHandler : MonoBehaviour
 {
     public TextMeshProUGUI firmName;
     public TextMeshProUGUI valueQ1;

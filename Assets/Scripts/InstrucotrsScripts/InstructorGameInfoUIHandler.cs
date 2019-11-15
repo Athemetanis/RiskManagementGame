@@ -26,18 +26,29 @@ public class InstructorGameInfoUIHandler : MonoBehaviour
     public void SetInstructorManager(InstructorManager instructorManager) { this.instructorManager = instructorManager; }
 
     public InstructorAllPlayersStatsUIHandler instructorAllPlayersStatsUIHandler;
+    public InstructorProviderStatsUIHandler instructorProviderStatsUIHandler;
+    public InstructorDeveloperStatsUIHandler instructorDeveloperStatsUIHandler;
     public InstructorIndividualStatsUIHandler instructorIndividualStatsUIHandler;
-      
 
     private void Start()
     {
         game = GameHandler.allGames[gameID].GetComponent<GameData>();
         instructorAllPlayersStatsUIHandler = this.gameObject.GetComponent<InstructorAllPlayersStatsUIHandler>();
         instructorAllPlayersStatsUIHandler.SetInstructorGameInfoUIHandler(this);
+        instructorIndividualStatsUIHandler = this.gameObject.GetComponent<InstructorIndividualStatsUIHandler>();
+        instructorIndividualStatsUIHandler.SetInstructorGameInfoUIHandler(this);
+        instructorProviderStatsUIHandler = this.game.GetComponent<InstructorProviderStatsUIHandler>();
+        instructorProviderStatsUIHandler.SetInstructorGameInfoUIHandler(this);
+        instructorDeveloperStatsUIHandler = this.game.GetComponent<InstructorDeveloperStatsUIHandler>();
+        instructorDeveloperStatsUIHandler.SetInstructorGameInfoUIHandler(this);
+
         UpdateTextInfo();
         GeneratePlayerGameStateList();
         instructorAllPlayersStatsUIHandler.enabled = true;
         instructorIndividualStatsUIHandler.enabled = true;
+        instructorProviderStatsUIHandler.enabled = true;
+        instructorDeveloperStatsUIHandler.enabled = true;
+
     }
 
     public void UpdateTextInfo()

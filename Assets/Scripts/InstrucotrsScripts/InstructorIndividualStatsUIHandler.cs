@@ -34,12 +34,13 @@ public class InstructorIndividualStatsUIHandler : MonoBehaviour
     {   
         gameID = instructorGameInfoUIHandler.GetGameID();
         quarter = instructorGameInfoUIHandler.GetGame().GetGameRound();
+        GeneratePlayersToggles();
 
-        if(quarter == 1)
+        if (quarter == 1)
         {
             return;
         }
-        GeneratePlayersToggles();
+
     }
 
     public void GeneratePlayersToggles()
@@ -68,8 +69,13 @@ public class InstructorIndividualStatsUIHandler : MonoBehaviour
     }
 
     public void GeneratePlayerDecisions(string playerID)
-    {   
-        if(playerID == null)
+    {
+        if (quarter == 1)
+        {
+            return;
+        }
+
+        if (playerID == null)
         {
             Debug.LogError("INSTRUCTOR: PlayerID in toggle is null");
             return;

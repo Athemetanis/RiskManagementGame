@@ -402,7 +402,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firmName: {fileID: 8160968184996727969}
-  playerName: {fileID: 0}
+  playerName: {fileID: 7602109050909967086}
 --- !u!1 &8473368197187215542
 GameObject:
   m_ObjectHideFlags: 0

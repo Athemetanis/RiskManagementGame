@@ -49,6 +49,9 @@ public class InstructorAllPlayersStatsUIHandler : MonoBehaviour
 
     public void GeneratePlayerMoneyList()
     {
+        foreach (Transform child in playerMoneyListContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");
@@ -119,7 +122,13 @@ public class InstructorAllPlayersStatsUIHandler : MonoBehaviour
 
     public void GenerateContractTable()
     {
-        if(GameHandler.allGames[gameID].GetPlayersCount() == 0)
+        foreach (Transform child in contractsListContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
+        foreach (Transform child in contractsProvidersNamesContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
+        if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");
             return;

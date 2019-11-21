@@ -17,7 +17,7 @@ public class InstructorGameInfoUIHandler : MonoBehaviour
     private InstructorManager instructorManager;
     private string gameID;
     private GameData game;
-    private int gameQuarter;
+    //private int gameQuarter;
 
 
     public GameData GetGame() { return game; }
@@ -37,9 +37,9 @@ public class InstructorGameInfoUIHandler : MonoBehaviour
         instructorAllPlayersStatsUIHandler.SetInstructorGameInfoUIHandler(this);
         instructorIndividualStatsUIHandler = this.gameObject.GetComponent<InstructorIndividualStatsUIHandler>();
         instructorIndividualStatsUIHandler.SetInstructorGameInfoUIHandler(this);
-        instructorProviderStatsUIHandler = this.game.GetComponent<InstructorProviderStatsUIHandler>();
+        instructorProviderStatsUIHandler = this.gameObject.GetComponent<InstructorProviderStatsUIHandler>();
         instructorProviderStatsUIHandler.SetInstructorGameInfoUIHandler(this);
-        instructorDeveloperStatsUIHandler = this.game.GetComponent<InstructorDeveloperStatsUIHandler>();
+        instructorDeveloperStatsUIHandler = this.gameObject.GetComponent<InstructorDeveloperStatsUIHandler>();
         instructorDeveloperStatsUIHandler.SetInstructorGameInfoUIHandler(this);
 
         UpdateTextInfo();
@@ -48,8 +48,7 @@ public class InstructorGameInfoUIHandler : MonoBehaviour
         instructorIndividualStatsUIHandler.enabled = true;
         instructorProviderStatsUIHandler.enabled = true;
         instructorDeveloperStatsUIHandler.enabled = true;
-
-    }
+    } 
 
     public void UpdateTextInfo()
     {
@@ -57,12 +56,14 @@ public class InstructorGameInfoUIHandler : MonoBehaviour
         passwordText.text = game.GetPassword();
         quarterText.text = game.GetGameRound().ToString();
         numberOfPlayersText.text = game.GetPlayersCount().ToString();
-
     }
 
     public void GeneratePlayerGameStateList()
     {
-        foreach(string playerID in game.GetPlayerList().Keys)
+        foreach (Transform child in playerGameStateContainer.transform)
+        { GameObject.Destroy(child.gameObject); }
+
+        foreach (string playerID in game.GetPlayerList().Keys)
         {
             string firmName = game.GetFirmName(playerID);
             bool playerGameState = game.IsPlayerReady(playerID);
@@ -77,5 +78,16 @@ public class InstructorGameInfoUIHandler : MonoBehaviour
     {
         instructorManager.ForceGameNextQuarter(gameID);
     }
+
+    public void RefreshGameInstructorUI()
+    {
+        UpdateTextInfo();
+        GeneratePlayerGameStateList();
+        instructorAllPlayersStatsUIHandler.UpdateContent();
+        instructorIndividualStatsUIHandler.UpdateContent();
+        instructorProviderStatsUIHandler.UpdateContent();
+        instructorDeveloperStatsUIHandler.UpdateContent();
+    }
+
 
 }

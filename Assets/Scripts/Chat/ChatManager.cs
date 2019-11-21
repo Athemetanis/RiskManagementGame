@@ -78,6 +78,11 @@ public class ChatManager : NetworkBehaviour
     private string gameID;
     private PlayerData playerData;
     private FirmManager firmManager;
+
+    private ChatUIHandler chatUIHandler;
+
+    public void SetChatUIHandler(ChatUIHandler chatUIHandler) { this.chatUIHandler = chatUIHandler; }
+    public Dictionary<string, Message> GetMyMessages() { return new Dictionary<string, Message>(myMessages); }
     
     void Start() { }
     public override void OnStartServer()
@@ -135,15 +140,21 @@ public class ChatManager : NetworkBehaviour
     {
         if(op == SyncDictionary<string, Message>.Operation.OP_ADD)
         {
-            ShowNotificationChat();
+            if (msg.sender != playerData.GetPlayerID())
+            {
+                ShowNotificationChat(msg.sender);
+            }            
+        }
+
+    }
+
+    public void ShowNotificationChat(string playerID)
+    {
+        string sender = GameHandler.allGames[gameID].GetFirmName(playerID);
+        if (chatUIHandler != null)
+        {
+            chatUIHandler.ShowMessageNotification(sender);
         }
     }
-
-    public void ShowNotificationChat()
-    {
-        //not implemented yet
-    }
-
-
 
 }

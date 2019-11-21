@@ -90,6 +90,7 @@ public class GameData : NetworkBehaviour
         developersFirms.Callback += OnDevelopersFirmsChange;
         allFirmDescriptions.Callback += OnFirmDescriptionChange;
         allFirms.Callback += OnAllFirmsChange;
+        readyPlayers.Callback += OnReadyPlayersChange;
         RecreateAllFirmsReverse();
     }
 
@@ -196,6 +197,10 @@ public class GameData : NetworkBehaviour
         {
             gameUIHandler.ChangeRoundText(gameRound);
         }
+        if(instructor != null)
+        {
+            instructor.GetComponent<InstructorManager>().RefreshInstructorUI();
+        }
     }
     public void OnChangePlayersCount(int playersCount)
     {
@@ -203,6 +208,10 @@ public class GameData : NetworkBehaviour
         if (gameUIHandler != null)
         {
             gameUIHandler.ChangePlayersCountText(playersCount);
+        }
+        if (instructor != null)
+        {
+            instructor.GetComponent<InstructorManager>().RefreshInstructorUI();
         }
     }
 
@@ -373,8 +382,12 @@ public class GameData : NetworkBehaviour
         }
     }
     public void OnAllFirmsChange(SyncDictionaryStringString.Operation op, string firmName, string description)
-    {
+    {   
         RecreateAllFirmsReverse();
+        if (instructor != null)
+        {
+            instructor.GetComponent<InstructorManager>().RefreshInstructorUI();
+        }
     }
     
 
@@ -392,6 +405,14 @@ public class GameData : NetworkBehaviour
             
         }
     }
+    public void OnReadyPlayersChange(SyncListString.Operation op, int index, string item)
+    {
+        if (instructor != null)
+        {
+            instructor.GetComponent<InstructorManager>().RefreshInstructorUI();
+        }
+    }
+
     [Server]
     public void InvokeGameEvents()
     {

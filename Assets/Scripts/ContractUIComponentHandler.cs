@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ContractUIComponentHandler : MonoBehaviour
 {   
     //VARIABLES
-    public Text partnersNameText;
-    public Text contractIDText;
-    public Text playersTurnText;
-    public Text statusText;
+    public TextMeshProUGUI partnersNameText;
+    public TextMeshProUGUI contractIDText;
+    public TextMeshProUGUI playersTurnText;
+    public TextMeshProUGUI statusText;
     public Button editButton;
     public Button detailButton;
     public Button resultButton;
 
+    
 
     private ContractUIHandler contractUIHandler;
 
@@ -27,7 +29,7 @@ public class ContractUIComponentHandler : MonoBehaviour
     //Methods
     public void ChangeEditButtonText(string newText)
     {
-        editButton.GetComponentInChildren<Text>().text = newText;
+        editButton.GetComponentInChildren<TextMeshProUGUI>().text = newText;
     }
     public void DisableEditButton() 
     {

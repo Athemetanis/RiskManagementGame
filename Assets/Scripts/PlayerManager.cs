@@ -337,6 +337,7 @@ public class PlayerManager : NetworkBehaviour {
     {
         GameObject myInstructorUIObject = Instantiate(instructorUIPrefab);
         GameHandler.singleton.GetInstructor().SetMyInstructorUIObject(myInstructorUIObject);
+        GameHandler.singleton.GetInstructor().SetGameID(playerGameID);
         myInstructorUIObject.GetComponent<InstructorGameInfoUIHandler>().SetGameID(playerGameID);
         myInstructorUIObject.gameObject.SetActive(true);
     }

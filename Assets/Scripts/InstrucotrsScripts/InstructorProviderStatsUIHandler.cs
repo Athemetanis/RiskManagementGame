@@ -43,10 +43,17 @@ public class InstructorProviderStatsUIHandler : MonoBehaviour
         }
         //InfoText.enabled = false;
         GenerateProviderMoneyList();
+        GenerateAdvertisementList();
+        GenerateProductList();
+        GenerateCustomersList();
+        GeneratePriceList();
     }
 
     public void GenerateProviderMoneyList()
     {
+        foreach (Transform child in playerMoneyListContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");
@@ -95,6 +102,9 @@ public class InstructorProviderStatsUIHandler : MonoBehaviour
 
     public void GenerateAdvertisementList()
     {
+        foreach (Transform child in playerAdvertisementContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");
@@ -143,6 +153,8 @@ public class InstructorProviderStatsUIHandler : MonoBehaviour
 
     public void GenerateProductList()
     {
+        foreach (Transform child in playerProductStatsContent.transform)
+        { GameObject.Destroy(child.gameObject); }
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");
@@ -208,6 +220,9 @@ public class InstructorProviderStatsUIHandler : MonoBehaviour
 
     public void GenerateCustomersList()
     {
+        foreach (Transform child in playerCustomersStatsContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");
@@ -271,9 +286,12 @@ public class InstructorProviderStatsUIHandler : MonoBehaviour
         }
     }
 
-
     public void GeneratePriceList()
     {
+        foreach (Transform child in playerPricesStatsContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
+
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");

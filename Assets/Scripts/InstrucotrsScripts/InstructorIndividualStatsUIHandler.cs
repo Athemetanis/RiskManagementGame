@@ -45,6 +45,9 @@ public class InstructorIndividualStatsUIHandler : MonoBehaviour
 
     public void GeneratePlayersToggles()
     {
+        foreach (Transform child in playerToggleContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");

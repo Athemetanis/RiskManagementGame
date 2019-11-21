@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class FirmUIHandler : MonoBehaviour
 {
-    public InputField firmNameIF;
-    public InputField firmDescriptionIF;
-    public Text errorMessageText;
+    public TMP_InputField firmNameIF;
+    public TMP_InputField firmDescriptionIF;
+    public TextMeshProUGUI errorMessageText;
 
     public Button confirmNameChangeButton;
 
@@ -24,13 +25,13 @@ public class FirmUIHandler : MonoBehaviour
     }
 
     // If gui changed call this - try to set new firmName/description
-    public void SetFirmName(InputField firmName)
+    public void SetFirmName(TMP_InputField firmName)
     {
         firmManager.TryToChangeFirmName(firmName.text);
         //zavolaj na Firmmanagerovi funkciu ktor8 skusi zmenit firm name
     }
 
-    public void SetFirmDescription(InputField firmDescription)
+    public void SetFirmDescription(TMP_InputField firmDescription)
     {
         Debug.Log(firmDescription.text);
         firmManager.ChangeFirmDescription(firmDescription.text);

@@ -39,10 +39,18 @@ public class InstructorDeveloperStatsUIHandler : MonoBehaviour
         }
         //InfoText.enabled = false;
         GenerateDeveloperMoneyList();
+        GenerateReliabilityList();
+        GenerateEmploeesList();
+        GenerateSalariesList();
+
     }
 
     public void GenerateDeveloperMoneyList()
     {
+        foreach (Transform child in playerMoneyListContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
+
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");
@@ -91,6 +99,9 @@ public class InstructorDeveloperStatsUIHandler : MonoBehaviour
 
     public void GenerateReliabilityList()
     {
+        foreach (Transform child in playerReliabilityContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");
@@ -139,6 +150,9 @@ public class InstructorDeveloperStatsUIHandler : MonoBehaviour
 
     public void GenerateEmploeesList()
     {
+        foreach (Transform child in playerEmployeesStatsContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");
@@ -204,6 +218,9 @@ public class InstructorDeveloperStatsUIHandler : MonoBehaviour
 
     public void GenerateSalariesList()
     {
+        foreach (Transform child in playerSalariesStatsContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
         if (GameHandler.allGames[gameID].GetPlayersCount() == 0)
         {
             Debug.Log("game has no player in");

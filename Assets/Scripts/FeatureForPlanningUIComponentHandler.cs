@@ -2,31 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class FeatureForPlanningUIComponentHandler : MonoBehaviour
-{
+{   
+    
     public Dropdown orderDropdown;
-    public Text contractIDText;
-    public Text partnersNameText;
-    public Text contractStateText;
-    public Text featureIDText;
-    public Text functionalityValueText;
-    public Text userInterfaceValueText;
-    public Text integrabilityValueText;
+    public TextMeshProUGUI contractIDText;
+    public TextMeshProUGUI partnersNameText;
+    public TextMeshProUGUI contractStateText;
+    public TextMeshProUGUI featureIDText;
+    public TextMeshProUGUI functionalityValueText;
+    public TextMeshProUGUI userInterfaceValueText;
+    public TextMeshProUGUI integrabilityValueText;
     public InputField developmentTimeIF;
     public GameObject graphContainer;
 
-    public Text point1Text;
-    public Text point2Text;
-    public Text point3Text;
-    public Text point4Text;
-    public Text point5Text;
-    public Text point6Text;
-    public Text point7Text;
-    public Text point8Text;
-    public Text point9Text;
-    public Text point10Text;
-    public Text point11Text;
+    public TextMeshProUGUI point1Text;
+    public TextMeshProUGUI point2Text;
+    public TextMeshProUGUI point3Text;
+    public TextMeshProUGUI point4Text;
+    public TextMeshProUGUI point5Text;
+    public TextMeshProUGUI point6Text;
+    public TextMeshProUGUI point7Text;
+    public TextMeshProUGUI point8Text;
+    public TextMeshProUGUI point9Text;
+    public TextMeshProUGUI point10Text;
+    public TextMeshProUGUI point11Text;
 
     private bool initialized;
     

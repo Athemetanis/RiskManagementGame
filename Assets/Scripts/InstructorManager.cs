@@ -68,6 +68,7 @@ public class InstructorManager : NetworkBehaviour
     //HOOKS
     public void OnChangeGameID(string gameID)
     {
+        Debug.Log("Instructor: GameID changed");
         this.gameID = gameID;
         if (GameHandler.allGames.ContainsKey(gameID))
         {
@@ -75,5 +76,13 @@ public class InstructorManager : NetworkBehaviour
         }    
     }
 
+
+    public void RefreshInstructorUI()
+    {
+        if(myInstructorUIObject != null)
+        {
+            myInstructorUIObject.GetComponent<InstructorGameInfoUIHandler>().RefreshGameInstructorUI();
+        }
+    }
 
 }

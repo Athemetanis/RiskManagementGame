@@ -3,17 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class HumanResourcesUIHandler : MonoBehaviour
 {   
     //VARIABLES
-    public Text programersCurrentCountText;
-    public Text userInterfaceSpecialistsCurrentCountText;
-    public Text integrabilitySpecialistsCurrentCountText;
+    public TextMeshProUGUI programersCurrentCountText;
+    public TextMeshProUGUI userInterfaceSpecialistsCurrentCountText;
+    public TextMeshProUGUI integrabilitySpecialistsCurrentCountText;
 
-    public Text programersAvailableCountText;
-    public Text userInterfaceSpecialistsAvailableCountText;
-    public Text integrabilitySpecialistsAvialableCountText;
+ 
+    public TextMeshProUGUI programersAvailableCountText;
+    public TextMeshProUGUI userInterfaceSpecialistsAvailableCountText;
+    public TextMeshProUGUI integrabilitySpecialistsAvialableCountText;
 
     public Button addProgrammersButton;
     public Button addUIpecialistButton;
@@ -23,17 +25,18 @@ public class HumanResourcesUIHandler : MonoBehaviour
     public Button substractUISpecialistButton;
     public Button substractIntegrabilityButton;
 
-    public InputField hireProgrammersCountIF;
-    public InputField hireUISpecialistsCountIF;
-    public InputField hireIntegrabilitySpecialistsCountIF;
+
+    public TMP_InputField hireProgrammersCountIF;
+    public TMP_InputField hireUISpecialistsCountIF;
+    public TMP_InputField hireIntegrabilitySpecialistsCountIF;
 
     public Slider programmerSalarySlider;
     public Slider uiSpecialistSalarySlider;
     public Slider integrabilitySpecialistSalarySlider;
 
-    public Text programmerSalaryText;
-    public Text uiSpecialistSalaryText;
-    public Text integrabilitySpecialistsSalaryText;
+    public TextMeshProUGUI programmerSalaryText;
+    public TextMeshProUGUI uiSpecialistSalaryText;
+    public TextMeshProUGUI integrabilitySpecialistsSalaryText;
 
     private bool initialized;
     private GameObject myPlayerDataObject;
@@ -59,12 +62,12 @@ public class HumanResourcesUIHandler : MonoBehaviour
         UpdateAllElements();
     }
     
-    public void AdditonOfOne(InputField inputfield)
+    public void AdditonOfOne(TMP_InputField inputfield)
     {
         int value = int.Parse(inputfield.text) + 1;
         inputfield.text = value.ToString();
     }
-    public void SubstractionOfOne(InputField inputfield)
+    public void SubstractionOfOne(TMP_InputField inputfield)
     {
         int value = int.Parse(inputfield.text) - 1;
         if(value < 0)
@@ -84,16 +87,16 @@ public class HumanResourcesUIHandler : MonoBehaviour
     public void SubstractUISpecialist() { humanResourcesManager.SubstractUISpecialist(); }
     public void SubstarctIntegrability() { humanResourcesManager.SubstarctIntegrabilitySpecialist(); }
 
-    public void HireProgrammersNextQuarter(InputField hireProgrammers)
+    public void HireProgrammersNextQuarter(TMP_InputField hireProgrammers)
     {
         humanResourcesManager.HireProgrammersNextQuarter(Int32.Parse(hireProgrammers.text));
         
     }
-    public void HireUISPecialistsNextQuarter(InputField hireUISpecialists)
+    public void HireUISPecialistsNextQuarter(TMP_InputField hireUISpecialists)
     {
         humanResourcesManager.HireUISPecialistsNextQuarter(Int32.Parse(hireUISpecialists.text));
     }
-    public void HireIntegrabilitySpecialistsNextQuarter(InputField hireIntegrabilitySpecialists)
+    public void HireIntegrabilitySpecialistsNextQuarter(TMP_InputField hireIntegrabilitySpecialists)
     {
         humanResourcesManager.HireIntegrabilitySpecialistsNextQuarter(Int32.Parse(hireIntegrabilitySpecialists.text));
     }

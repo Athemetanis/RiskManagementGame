@@ -252,9 +252,9 @@ public class ProviderAccountingManager : NetworkBehaviour
         int businessPrice = marketingManager.GetBusinessPrice();
         int enterprisePrice = marketingManager.GetEnterprisePrice();
 
-        individualCustomersRevenue = (beginningIndividualCustomers + individualCustomersAddDuringQ + individualCustomersAdvAdd - individualCustomersAdvLoss) * individualPrice;
-        businessCustomersRevenue = (beginningBusinessCustomers + businessCustomersAddDuringQ + businessCutomersAdvAdd - businessCutomersAdvLoss) * businessPrice;
-        enterpriseCustomersRevenue = (beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ + enterpriseCustomersAdvAdd - enterpriseCustomersAdvLoss) * enterprisePrice;
+        individualCustomersRevenue = (beginningIndividualCustomers + individualCustomersAddDuringQ + individualCustomersAdvAdd - individualCustomersAdvLoss) * individualPrice * 3;
+        businessCustomersRevenue = (beginningBusinessCustomers + businessCustomersAddDuringQ + businessCutomersAdvAdd - businessCutomersAdvLoss) * businessPrice * 3;
+        enterpriseCustomersRevenue = (beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ + enterpriseCustomersAdvAdd - enterpriseCustomersAdvLoss) * enterprisePrice * 3;
         revenue = individualCustomersRevenue + businessCustomersRevenue + enterpriseCustomersRevenue;
 
         endCashBalance = ComputeEndCashBalance();

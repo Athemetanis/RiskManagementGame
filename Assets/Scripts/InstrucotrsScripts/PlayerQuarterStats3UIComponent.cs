@@ -32,6 +32,7 @@ public class PlayerQuarterStats3UIComponent : MonoBehaviour
 
     public void SetUpPlayerStatsQ1(string firmName, string value1, string value2, string value3)
     {
+        this.firmName.text = firmName;
         value1Q1.text = value1;
         value2Q1.text = value2;
         value3Q1.text = value3;
@@ -39,6 +40,7 @@ public class PlayerQuarterStats3UIComponent : MonoBehaviour
 
     public void SetUpPlayerStatsQ2(string firmName, string value1, string value2, string value3)
     {
+        this.firmName.text = firmName;
         value1Q2.text = value1;
         value2Q2.text = value2;
         value3Q2.text = value3;
@@ -46,6 +48,7 @@ public class PlayerQuarterStats3UIComponent : MonoBehaviour
 
     public void SetUpPlayerStatsQ3(string firmName, string value1, string value2, string value3)
     {
+        this.firmName.text = firmName;
         value1Q3.text = value1;
         value2Q3.text = value2;
         value3Q3.text = value3;
@@ -53,6 +56,7 @@ public class PlayerQuarterStats3UIComponent : MonoBehaviour
 
     public void SetUpPlayerStatsQ4(string firmName, string value1, string value2, string value3)
     {
+        this.firmName.text = firmName;
         value1Q4.text = value1;
         value2Q4.text = value2;
         value3Q4.text = value3;

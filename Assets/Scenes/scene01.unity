@@ -7357,31 +7357,12 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 263853241076602139, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_UiScaleMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 263853241076602139, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_ReferenceResolution.x
-      value: 1920
-      objectReference: {fileID: 0}
-    - target: {fileID: 263853241076602139, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_ReferenceResolution.y
-      value: 1080
-      objectReference: {fileID: 0}
     - target: {fileID: 4201297182192923009, guid: 6e91e91f35976684baad45cae750e4c3,
         type: 3}
-      propertyPath: m_UseSpriteMesh
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4201297182192923009, guid: 6e91e91f35976684baad45cae750e4c3,
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8ea07a77c0b576b40be98cb71e4a798d,
         type: 3}
-      propertyPath: m_PreserveAspect
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4201297182192923009, guid: 6e91e91f35976684baad45cae750e4c3,
         type: 3}
       propertyPath: m_Color.r
@@ -7399,61 +7380,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4201297182192923009, guid: 6e91e91f35976684baad45cae750e4c3,
         type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4201297182192923009, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 8ea07a77c0b576b40be98cb71e4a798d,
-        type: 3}
-    - target: {fileID: 4201297182192923009, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_Type
+      propertyPath: m_PreserveAspect
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6994530919900151384, guid: 6e91e91f35976684baad45cae750e4c3,
+    - target: {fileID: 4201297182192923009, guid: 6e91e91f35976684baad45cae750e4c3,
         type: 3}
-      propertyPath: m_FontData.m_Font
+      propertyPath: m_UseSpriteMesh
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4201297182192923009, guid: 6e91e91f35976684baad45cae750e4c3,
+        type: 3}
+      propertyPath: m_Material
       value: 
-      objectReference: {fileID: 12800000, guid: 743bca6206fabfa42bd87853e9b0254a,
-        type: 3}
-    - target: {fileID: 6994530919900151384, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_FontData.m_FontSize
-      value: 18
-      objectReference: {fileID: 0}
-    - target: {fileID: 1784349893596518385, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_RenderMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1784349893596518385, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 43307723}
-    - target: {fileID: 1784349893596518385, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_PlaneDistance
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4425920356183302038, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5890378342769173689, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4791631282123746358, guid: 6e91e91f35976684baad45cae750e4c3,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e91e91f35976684baad45cae750e4c3, type: 3}
 --- !u!1 &1606303049

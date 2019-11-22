@@ -2259,26 +2259,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orderDropdown: {fileID: 3275794138487797543}
-  contractIDText: {fileID: 0}
-  partnersNameText: {fileID: 0}
-  contractStateText: {fileID: 0}
-  featureIDText: {fileID: 0}
-  functionalityValueText: {fileID: 0}
-  userInterfaceValueText: {fileID: 0}
-  integrabilityValueText: {fileID: 0}
+  contractIDText: {fileID: 4101783132385376460}
+  partnersNameText: {fileID: 405941582577068887}
+  contractStateText: {fileID: 9159123285498474547}
+  featureIDText: {fileID: 6330205762426142458}
+  functionalityValueText: {fileID: 436931032889677608}
+  userInterfaceValueText: {fileID: 6132423640180191727}
+  integrabilityValueText: {fileID: 5287887714067203407}
   developmentTimeIF: {fileID: 1982080069887777196}
   graphContainer: {fileID: 4344537580499430120}
-  point1Text: {fileID: 0}
-  point2Text: {fileID: 0}
-  point3Text: {fileID: 0}
-  point4Text: {fileID: 0}
-  point5Text: {fileID: 0}
-  point6Text: {fileID: 0}
-  point7Text: {fileID: 0}
-  point8Text: {fileID: 0}
-  point9Text: {fileID: 0}
-  point10Text: {fileID: 0}
-  point11Text: {fileID: 0}
+  point1Text: {fileID: 3491367476337735108}
+  point2Text: {fileID: 5883851442880477211}
+  point3Text: {fileID: 3671469121622980217}
+  point4Text: {fileID: 5976707818061430269}
+  point5Text: {fileID: 1902903804508705063}
+  point6Text: {fileID: 4869794003187974210}
+  point7Text: {fileID: 6966638251261669263}
+  point8Text: {fileID: 4699465321974749307}
+  point9Text: {fileID: 3309017512387435008}
+  point10Text: {fileID: 4213136974548424565}
+  point11Text: {fileID: 7274180384918795329}
 --- !u!1 &2039588169391312851
 GameObject:
   m_ObjectHideFlags: 0

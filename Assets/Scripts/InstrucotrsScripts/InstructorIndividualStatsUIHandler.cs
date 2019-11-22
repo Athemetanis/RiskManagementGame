@@ -95,15 +95,21 @@ public class InstructorIndividualStatsUIHandler : MonoBehaviour
         if (quarter > 2)
         {
             riskQ1Handler.SetUpQuarterRisksDescriptions(rm.GetRisk1DescriptionQ(2), rm.GetRisk1ImpactActionsQ(2), rm.GetRisk2DescriptionQ(2), rm.GetRisk2ImpactActionsQ(2), rm.GetRisk3DescriptionQ(2), rm.GetRisk3ImpactActionsQ(2));
+
         }
         if (quarter > 3)
         {
             riskQ1Handler.SetUpQuarterRisksDescriptions(rm.GetRisk1DescriptionQ(3), rm.GetRisk1ImpactActionsQ(3), rm.GetRisk2DescriptionQ(3), rm.GetRisk2ImpactActionsQ(3), rm.GetRisk3DescriptionQ(3), rm.GetRisk3ImpactActionsQ(3));
+
+
+
         }
         if (quarter > 4)
         {
-            riskQ1Handler.SetUpQuarterRisksDescriptions(rm.GetRisk1DescriptionQ(4), rm.GetRisk1ImpactActionsQ(4), rm.GetRisk2DescriptionQ(4), rm.GetRisk2ImpactActionsQ(4), rm.GetRisk3DescriptionQ(4), rm.GetRisk3ImpactActionsQ(4));
+            riskQ1Handler.SetUpQuarterRisksDescriptions(rm.GetRisk1DescriptionQ(4),rm.GetRisk2DescriptionQ(4), rm.GetRisk3DescriptionQ(4));
         }
+
+
     }
 
    

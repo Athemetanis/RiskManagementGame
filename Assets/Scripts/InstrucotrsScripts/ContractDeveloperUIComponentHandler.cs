@@ -22,6 +22,5 @@ public class ContractDeveloperUIComponentHandler : MonoBehaviour
         contractCount.transform.SetParent(contractsCountValuesContainer.transform, false);
         ContractCountTextHandler handler = contractCount.GetComponent<ContractCountTextHandler>();
         handler.SetContractCount(value);
-
     }
 }

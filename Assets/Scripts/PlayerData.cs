@@ -21,6 +21,8 @@ public class PlayerData : NetworkBehaviour {
     private GameObject playerUI;
 
     //REFERENCES - MANAGERS
+    private ChatManager chatManager;
+    private FirmManager firmManager;
     private EventManager eventManager;
     private ContractManager contractMamanger;
     private RiskManager riskManager;
@@ -60,7 +62,8 @@ public class PlayerData : NetworkBehaviour {
             Debug.Log("player tries to be added into game " + gameID);
             GameHandler.allGames[gameID].AddPlayerToGame(this.gameObject);
         }
-
+        chatManager = this.gameObject.GetComponent<ChatManager>();
+        firmManager = this.gameObject.GetComponent<FirmManager>();
         eventManager = this.gameObject.GetComponent<EventManager>();
         contractMamanger = this.gameObject.GetComponent<ContractManager>();
         riskManager = this.gameObject.GetComponent<RiskManager>();
@@ -74,10 +77,12 @@ public class PlayerData : NetworkBehaviour {
         scheduleManager = this.gameObject.GetComponent<ScheduleManager>();
         humanResourcesManager = this.gameObject.GetComponent<HumanResourcesManager>();
         developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
+
        
 
         if (playerRole == PlayerRoles.Provider)
         {
+            firmManager.enabled = true;
             featureManager.enabled = true;
             productManager.enabled = true;
             marketingManager.enabled = true;

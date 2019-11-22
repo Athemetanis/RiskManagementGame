@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class RiskMatrixUIComponentHandler : MonoBehaviour
 {
-    
+
     public Image imageColor;
-    public Text riskNameID;
+    public TextMeshProUGUI riskNameID;
     public Dropdown likelihoodIF;
     public Dropdown impactIF;
     public Toggle monitorToggle;

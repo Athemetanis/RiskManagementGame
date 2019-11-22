@@ -8,7 +8,7 @@ public class FeatureUIHandler : MonoBehaviour
     public GameObject featureUIPrefab;
     public GameObject FeatureListContent;
     public GameObject outsourcedFeatureListContent;
-    public GameObject doneFeatureListContent;
+    //public GameObject doneFeatureListContent;
 
     public Toggle allFeaturesToggle;
     public Toggle availableFeaturesToggle;
@@ -158,7 +158,7 @@ public class FeatureUIHandler : MonoBehaviour
         foreach (KeyValuePair<string, Feature> feature in featureManager.GetDoneFeatures())
         {
             GameObject featureUIComponent = Instantiate(featureUIPrefab);
-            featureUIComponent.transform.SetParent(doneFeatureListContent.transform, false);
+            featureUIComponent.transform.SetParent(FeatureListContent.transform, false);
             FeatureUIComponentHandler featureUIComponentHandler = featureUIComponent.GetComponent<FeatureUIComponentHandler>();
             featureUIComponentHandler.SetNameIDText(feature.Value.nameID);
             featureUIComponentHandler.SetFunctionalityText(feature.Value.functionality.ToString());

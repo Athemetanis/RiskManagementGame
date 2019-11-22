@@ -42,6 +42,8 @@ public class ChatUIHandler : MonoBehaviour
 
         chatManager = myPlayerDataObject.GetComponent<ChatManager>();
         chatManager.SetChatUIHandler(this);
+
+        GeneratePlayersContent();
     }
 
     public void GeneratePlayersContent()
@@ -51,6 +53,7 @@ public class ChatUIHandler : MonoBehaviour
         foreach (Transform child in developerContent.transform)
         { GameObject.Destroy(child.gameObject); }
 
+        string myPlayerID = playerData.GetPlayerID();
 
         Dictionary<string, GameObject> developers = GameHandler.allGames[gameID].GetDeveloperList();
         Dictionary<string, GameObject> providers = GameHandler.allGames[gameID].GetProviderList();
@@ -58,7 +61,13 @@ public class ChatUIHandler : MonoBehaviour
         foreach (KeyValuePair<string, GameObject> developer in developers)
         {
             PlayerData playerData = developer.Value.GetComponent<PlayerData>();
+
             string playerID = playerData.GetPlayerID();
+
+            if (myPlayerID == playerID)
+            {
+                return;
+            }
 
             string firmName = gameData.GetFirmName(playerID);
 
@@ -74,10 +83,14 @@ public class ChatUIHandler : MonoBehaviour
             PlayerData playerData = provider.Value.GetComponent<PlayerData>();
             string playerID = playerData.GetPlayerID();
 
+            if (myPlayerID == playerID)
+            {
+                return;
+            }
             string firmName = gameData.GetFirmName(playerID);
 
             GameObject playerToggle = Instantiate(playerTogglePrefab);
-            playerToggle.transform.SetParent(developerContent.transform, false);
+            playerToggle.transform.SetParent(providerContent.transform, false);
             ChatPlayerToggleUIHandler playerToggleHandler = playerToggle.GetComponent<ChatPlayerToggleUIHandler>();
             playerToggleHandler.SetChatUIHandler(this);
             playerToggleHandler.SetUpChatPlayerToggle(toggleGroup, playerID, firmName, playerID);

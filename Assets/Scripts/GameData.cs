@@ -213,6 +213,14 @@ public class GameData : NetworkBehaviour
         {
             instructor.GetComponent<InstructorManager>().RefreshInstructorUI();
         }
+        if (GameHandler.singleton.GetLocalPlayer() != null)
+        {   
+            if(GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject() != null)
+            {
+                ChatUIHandler chatUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ChatUIHandler>();
+                chatUIHandler.GeneratePlayersContent();
+            }           
+        }
     }
 
     //METHODS FOR UPDATING UI ELEMENTS
@@ -387,6 +395,14 @@ public class GameData : NetworkBehaviour
         if (instructor != null)
         {
             instructor.GetComponent<InstructorManager>().RefreshInstructorUI();
+        }
+        if (GameHandler.singleton.GetLocalPlayer() != null)
+        {
+            if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject() != null)
+            {
+                ChatUIHandler chatUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ChatUIHandler>();
+                chatUIHandler.GeneratePlayersContent();
+            }
         }
     }
     

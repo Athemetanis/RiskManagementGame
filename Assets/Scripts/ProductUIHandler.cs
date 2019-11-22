@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ProductUIHandler : MonoBehaviour
 {
     //VARIABLES
-    public Text functionalityText;
-    public Text userFriendlinessText;
-    public Text integrabilityText;
+    
+    public TextMeshProUGUI functionalityText;
+    public TextMeshProUGUI userFriendlinessText;
+    public TextMeshProUGUI integrabilityText;
 
 
     private GameObject myPlayerDataObject;

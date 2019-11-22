@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class FeatureUIComponentHandler : MonoBehaviour
 {   
     //VARIABLES
     private FeatureUIHandler featureUIHandler;
 
-    public Text nameIDText;
-    public Text functionalityText;
-    public Text integrationText;
-    public Text userExperienceText;
-    public Text timeCostsText;
-    public Toggle checkedForOutsourcingToggle;
-    public Text stateText;
 
-    public Text enterpriseCustomersText;
-    public Text businessCustomersText;
-    public Text individualCustomersText;
+    public TextMeshProUGUI nameIDText;
+    public TextMeshProUGUI functionalityText;
+    public TextMeshProUGUI integrationText;
+    public TextMeshProUGUI userExperienceText;
+    public TextMeshProUGUI timeCostsText;
+    public Toggle checkedForOutsourcingToggle;
+    public TextMeshProUGUI stateText;
+
+    public TextMeshProUGUI enterpriseCustomersText;
+    public TextMeshProUGUI businessCustomersText;
+    public TextMeshProUGUI individualCustomersText;
 
     //GETTERS & SETTERS
     public void SetFeatureUIHandler(FeatureUIHandler featureUIHandler) { this.featureUIHandler = featureUIHandler; }

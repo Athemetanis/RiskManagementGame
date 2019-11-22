@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class DeveloperUIComponentHandler : MonoBehaviour
-{
-    public Text firmNameText;
-    public Text firmDescriptionsText;
+{   
+    public TextMeshProUGUI firmNameText;
+    public TextMeshProUGUI firmDescriptionsText;
     
     public void SetFirmName(string firmName)
     {

@@ -16,17 +16,17 @@ public class MarketingManager : NetworkBehaviour
     [SyncVar(hook = "OnChangeAdvertisement")]
     private int advertisementCoverage;   //0,25,50,75,100,
     [SyncVar(hook = "OnChangeIndividualPrice")]
-    private int individualPrice;        // 7-15
+    private int individualPrice;        // 4-7
     [SyncVar(hook = "OnChangeBusinessPrice")]
-    private int businessPrice;          //20-40
+    private int businessPrice;          //18-32
     [SyncVar(hook = "OnChangeEnterprisePrice")]
-    private int enterprisePrice;        //50-80
+    private int enterprisePrice;        //750-1250
 
     private readonly int advertisement0Price = 0;
-    private readonly int advertisement25Price = 10000;
-    private readonly int advertisement50Price = 30000;
-    private readonly int advertisement75Price = 60000;
-    private readonly int advertisement100Price = 90000;
+    private readonly int advertisement25Price = 300000;
+    private readonly int advertisement50Price = 600000;
+    private readonly int advertisement75Price = 900000;
+    private readonly int advertisement100Price = 1200000;
 
     private string gameID;
     private int currentQuarter;
@@ -78,9 +78,9 @@ public class MarketingManager : NetworkBehaviour
         businessPriceQ.Insert(0, 25);
         enterprisePriceQ.Insert(0, 60);
         advertisementCoverage = 0;
-        individualPrice = 8;
-        businessPrice = 25;
-        enterprisePrice = 60;
+        individualPrice = 5;
+        businessPrice = 20;
+        enterprisePrice = 900;
     }
     public void LoadQuarterData(int quarter)
     {

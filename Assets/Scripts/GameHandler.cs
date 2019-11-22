@@ -131,6 +131,18 @@ public class GameHandler : NetworkBehaviour {
 
     public void RefreshGamesList()
     {
+        if (GameHandler.singleton.instructor != null)
+        {
+            Debug.Log("refreshing game list");
+            foreach (Transform child in gameListUIContent.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+            allGamesUI.Clear();
+            GenerateGamesListUIForInstructor();
+            return;
+        }
+
         if (generatedGameList)
         {
             Debug.Log("refreshing game list");
@@ -141,7 +153,8 @@ public class GameHandler : NetworkBehaviour {
             allGamesUI.Clear();
 
             GeneratingGamesUIForPlayer();
-        } 
+
+        }
     }
 
     public void DestroyGameListUI()

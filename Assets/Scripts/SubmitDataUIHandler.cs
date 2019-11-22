@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class SubmitDataUIHandler : MonoBehaviour
 {   
     //VARIABLES
-    public Text warningText;
+   // public Text warningText;  WARNIGN MESSAGES NOT IMPLEMENTED YET
     public Button submitButton;
 
     private SubmitDataManager submitDataManager;

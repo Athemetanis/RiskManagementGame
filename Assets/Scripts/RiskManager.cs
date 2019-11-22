@@ -83,8 +83,62 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     public string GetRisk2ImpactActionsQ(int quarter) { return risk2ImpactActionQuarters[quarter]; }
     public string GetRisk3ImpactActionsQ(int quarter) { return risk3ImpactActionQuarters[quarter]; }
 
+    public List<string> GetRisksQ(int quarter)
+    {
+        if (quarter == 3)
+        {
+            return new List<string>(risksQ3);
+        }
+        else
+        {
+            return new List<string>(risksQ4);
+        }      
+    }
 
-
+    public Dictionary<string, int> GetLikelihoodQ(int quarter)
+    {
+        if (quarter == 3)
+        {
+            return new Dictionary<string, int> (riskLikelihoodQ3);
+        }
+        else
+        {
+            return new Dictionary<string, int>(riskLikelihoodQ4);
+        }
+    }
+    public Dictionary<string, int> GetImpactQ(int quarter)
+    {
+        if (quarter == 3)
+        {
+            return new Dictionary<string, int>(riskImpactQ3);
+        }
+        else
+        {
+            return new Dictionary<string, int>(riskImpactQ4);
+        }
+    }
+    public Dictionary<string, bool> GetMitigationQ(int quarter)
+    {
+        if (quarter == 3)
+        {
+            return new Dictionary<string, bool>(riskMonitorQ3);
+        }
+        else
+        {
+            return new Dictionary<string, bool>(riskMonitorQ4);
+        }
+    }
+    public Dictionary<string, Color> GetColorsQ(int quarter)
+    {
+        if (quarter == 3)
+        {
+            return new Dictionary<string, Color>(riskColorQ3);
+        }
+        else
+        {
+            return new Dictionary<string, Color>(riskColorQ4);
+        }
+    }
 
     public override void OnStartServer()
     {

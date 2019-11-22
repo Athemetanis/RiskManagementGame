@@ -74,7 +74,6 @@ public class ProductManager : NetworkBehaviour
         functionality = functionalityQ[quarter - 1];
         integrability = integrabilityQ[quarter - 1];
         userFriendliness = userFriendlinessQ[quarter - 1];
-
     }
 
 

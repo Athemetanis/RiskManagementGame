@@ -36,6 +36,4 @@ public class IndividulaDecisionsPlayerToggleHandler : MonoBehaviour
             instructorIndividualStatsUIHandler.GeneratePlayerDecisions(playerID);
         }
     }
-
-
 }

@@ -92,8 +92,24 @@ public class ContractPreviewUIHandler : MonoBehaviour
         priceIF.gameObject.SetActive(false);
         deliveryIF.gameObject.SetActive(false);
         riskSharingFeeIF.gameObject.SetActive(false);
-
     }
+    public void ProposalDetailContract()
+    {
+        rejectButton.gameObject.SetActive(false);
+        proposeButton.gameObject.SetActive(false);
+        sendBackButton.gameObject.SetActive(false);
+        modifyButton.gameObject.SetActive(false);
+        acceptButton.gameObject.SetActive(false);
+        cancelChangesButton.gameObject.SetActive(false);
+        cancelProposingButton.gameObject.SetActive(false);
+        priceIF.gameObject.SetActive(false);
+        deliveryIF.gameObject.SetActive(false);
+        riskSharingFeeIF.gameObject.SetActive(false);
+    }
+
+
+
+
     public void InNegotiationContract()
     {
         priceIF.gameObject.SetActive(true);
@@ -228,7 +244,12 @@ public class ContractPreviewUIHandler : MonoBehaviour
 
     public void DisableScheduleInfoText() { scheduleInfoText.gameObject.SetActive(false); }
     public void CheckDeliveryInput()
-    {
+    {   
+        if(deliveryIF.text == "")
+        {
+            deliveryIF.text = "0";
+            return;
+        }
         if(int.Parse(deliveryIF.text) > 60)
         {
             deliveryIF.text = "60";

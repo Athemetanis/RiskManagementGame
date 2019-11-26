@@ -9,6 +9,9 @@ public class ContractManager : NetworkBehaviour
     private Dictionary<string, Contract> myContractsHistory = new Dictionary<string, Contract>();
     private int myContractsCount;
 
+    private SyncDictionaryStringString myContractProviderHistory = new SyncDictionaryStringString();
+
+
     private SyncListInt reliabilityQurters = new SyncListInt() { };
 
     private PlayerRoles playerRole;
@@ -33,6 +36,7 @@ public class ContractManager : NetworkBehaviour
     public string GetGameID() { return gameID; }
     public Dictionary<string, Contract> GetMyContracts() { return myContracts; }
     public Dictionary<string, Contract> GetMyContractsHistory() { return myContractsHistory; }
+    public Dictionary<string, string> GetMyContractProviderHistory() { return new Dictionary<string, string>(myContractProviderHistory);  }
     public int GetReliabilityQuater(int quater) { return reliabilityQurters[quater]; }
 
 
@@ -713,7 +717,7 @@ public class ContractManager : NetworkBehaviour
     }
 
     public void ContractClearance() 
-    {
+    { 
         foreach (Contract contract in myContracts.Values)
         {
             if (contract.GetContractState() == ContractState.Terminated || contract.GetContractState() == ContractState.Completed)
@@ -730,6 +734,16 @@ public class ContractManager : NetworkBehaviour
             if(playerRole == PlayerRoles.Provider)
             {
                 contractUIHandler.UpdateContractOverview();
+            }
+        }
+        if (isServer)
+        {
+            foreach (Contract contract in myContractsHistory.Values)
+            {   
+                if( !myContractProviderHistory.ContainsKey(contract.GetContractID()))
+                {
+                    myContractProviderHistory.Add(contract.GetContractID(), contract.GetProviderID());
+                }               
             }
         }
     }

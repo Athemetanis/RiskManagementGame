@@ -53,8 +53,8 @@ public class DeveloperResearchUIHandler : MonoBehaviour
         switch (quarter)
         {
             case 1:
-                availabilityInfoText.gameObject.SetActive(true);
-                availabilityInfoText.text = "Results for previus Quarter not avialable";
+                //availabilityInfoText.gameObject.SetActive(true);
+                //availabilityInfoText.text = "Results for previus Quarter not avialable";
                 previusResearchResultsToggle.gameObject.SetActive(false);
                 researchQ4Container.SetActive(false);
                 researchQ3Container.SetActive(false);

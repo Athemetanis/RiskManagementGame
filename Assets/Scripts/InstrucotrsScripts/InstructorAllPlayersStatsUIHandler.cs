@@ -140,7 +140,7 @@ public class InstructorAllPlayersStatsUIHandler : MonoBehaviour
 
         foreach (string provider in providers.Keys)
         {
-            providerContracts.Add(provider, 0);
+            providerContracts.Add(provider, 10);
 
             string providerFirmName = GameHandler.allGames[gameID].GetFirmName(provider);
 
@@ -148,17 +148,16 @@ public class InstructorAllPlayersStatsUIHandler : MonoBehaviour
             providerFirmUIText.transform.SetParent(contractsProvidersNamesContent.transform, false);
             providerFirmUIText.GetComponent<ContractProviderNameTextHandler>().SetProviderName(providerFirmName);
 
-        }
-        
+        }        
         foreach(KeyValuePair<string, GameObject> developer in developers)
         {
             string developerFirmName = GameHandler.allGames[gameID].GetFirmName(developer.Key);
 
-            List<Contract> contracts = developer.Value.GetComponent<ContractManager>().GetMyContractsHistory().Values.ToList();
+            Dictionary<string, string> contracts = developer.Value.GetComponent<ContractManager>().GetMyContractProviderHistory();
 
-            foreach (Contract contract in contracts)
+            foreach (KeyValuePair<string, string> contract in contracts)
             {   
-                providerContracts[contract.GetProviderID()] += 1; 
+                providerContracts[contract.Value] += 1; 
             }
 
             GameObject developerUIComponent = Instantiate(contractDeveloperUIComponentPrefab);
@@ -172,6 +171,4 @@ public class InstructorAllPlayersStatsUIHandler : MonoBehaviour
         }
     }
 
-
-    
 }

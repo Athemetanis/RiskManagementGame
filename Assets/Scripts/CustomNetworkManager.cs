@@ -25,4 +25,14 @@ public class CustomNetworkManager : NetworkManager {
 
         NetworkServer.DestroyPlayerForConnection(conn);
     }
+
+
+    public void StartServer()
+    {
+        Debug.Log("STARTING SERVER  ");
+        base.StartServer();
+    }
+
+
+
 }

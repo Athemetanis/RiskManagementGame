@@ -9,6 +9,8 @@ public class SubmitDataUIHandler : MonoBehaviour
    // public Text warningText;  WARNIGN MESSAGES NOT IMPLEMENTED YET
     public Button submitButton;
 
+    public GameObject submitingDataImage;
+
     private SubmitDataManager submitDataManager;
     private GameObject myLocalPlayerObject;
 
@@ -19,6 +21,13 @@ public class SubmitDataUIHandler : MonoBehaviour
     {
         myLocalPlayerObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         submitDataManager = myLocalPlayerObject.gameObject.GetComponent<SubmitDataManager>();
+        submitDataManager.SetSubmitDataUIHandler(this);
+
+        if (submitDataManager.GetSubmitData())
+        {
+            EnableSubmitDataImage();
+        }
+        
     }
 
     // Update is called once per frame
@@ -27,13 +36,20 @@ public class SubmitDataUIHandler : MonoBehaviour
         
     }
 
+
    public void SubmitData()
     {
         submitDataManager.SubmitData();
     }
 
-
-
+    public void EnableSubmitDataImage()
+    {
+        submitingDataImage.SetActive(true);
+    }
+    public void DisableSubmitDataImage()
+    {
+        submitingDataImage.SetActive(false);
+    }
 
 
 }

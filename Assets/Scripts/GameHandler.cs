@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using TMPro;
 
 public class GameHandler : NetworkBehaviour {
 
@@ -80,7 +81,8 @@ public class GameHandler : NetworkBehaviour {
 
     //This method generates visual representation of list of games
     public void GenerateGamesListUI()
-    {   
+    {
+        Debug.Log("generating game list for player");
         //created list of game UI
         gameListUIGameObject = Instantiate(gameListUIPrefab);
         gameListUIContent = gameListUIGameObject.transform.Find("GameScrolList/GameListViewport/GameListContent").gameObject;
@@ -94,7 +96,7 @@ public class GameHandler : NetworkBehaviour {
         {
             Debug.LogError("Instructor object in GameHandler is NULL. I connot create game list.");
         }
-
+        Debug.Log("generating game list for player");
         gameListUIGameObject = Instantiate(gameListUIPrefabAdmin);
         gameListUIGameObject.GetComponent<CreateGameUIHandler>().SetInstructorManager(instructor);
         gameListUIContent = gameListUIGameObject.transform.Find("GameScrolList/GameListViewport/GameListContent").gameObject;
@@ -139,7 +141,7 @@ public class GameHandler : NetworkBehaviour {
                 GameObject.Destroy(child.gameObject);
             }
             allGamesUI.Clear();
-            GenerateGamesListUIForInstructor();
+            GeneratingGamesUIForInstructor();
             return;
         }
 
@@ -168,12 +170,12 @@ public class GameHandler : NetworkBehaviour {
     public void GenerateGamePasswordVerificator(GameObject gameID)
     {
         GameObject GamePasswordVerificator = Instantiate(gamePasswordVerificatorPrefab);
-        GamePasswordVerificator.GetComponent<GamePasswordVerification>().SetGameData(GameHandler.allGames[gameID.GetComponent<Text>().text].GetComponent<GameData>());
+        GamePasswordVerificator.GetComponent<GamePasswordVerification>().SetGameData(GameHandler.allGames[gameID.GetComponent<TextMeshProUGUI>().text].GetComponent<GameData>());
     }
 
     public void SetInstructorGameID(GameObject gameID)
     {
-        GameHandler.singleton.GetLocalPlayer().SetPlayerGameID(gameID.GetComponent<Text>().text);
+        GameHandler.singleton.GetLocalPlayer().SetPlayerGameID(gameID.GetComponent<TextMeshProUGUI>().text);
     }
 
     [Server]

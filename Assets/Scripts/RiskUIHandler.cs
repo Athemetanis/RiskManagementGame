@@ -120,7 +120,7 @@ public class RiskUIHandler : MonoBehaviour
     {
         foreach(Image image in allGraphImages.Values)
         {
-            image.color = new Color(image.color.r, image.color.g, image.color.b, 0.4f);
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 0.2f);
         }
         Image highlightedImage = allGraphImages[riskID];
         highlightedImage.color = new Color(highlightedImage.color.r, highlightedImage.color.g, highlightedImage.color.b, 1f);

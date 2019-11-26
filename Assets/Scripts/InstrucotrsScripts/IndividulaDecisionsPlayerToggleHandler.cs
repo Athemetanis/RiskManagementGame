@@ -33,6 +33,7 @@ public class IndividulaDecisionsPlayerToggleHandler : MonoBehaviour
     {   
         if (playerToggle.isOn)
         {
+           // Debug.LogError("INSTRUCTOR: generating playerDecisions");
             instructorIndividualStatsUIHandler.GeneratePlayerDecisions(playerID);
         }
     }

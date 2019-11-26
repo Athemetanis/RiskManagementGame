@@ -201,6 +201,14 @@ public class GameData : NetworkBehaviour
         {
             instructor.GetComponent<InstructorManager>().RefreshInstructorUI();
         }
+        if (GameHandler.singleton.GetLocalPlayer() != null  && playersCount != 0)
+        {
+            if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject() != null)
+            {
+                TabUIHandler tabUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<TabUIHandler>();
+                tabUIHandler.HandlingQTabs();
+            }
+        }
     }
     public void OnChangePlayersCount(int playersCount)
     {
@@ -213,7 +221,7 @@ public class GameData : NetworkBehaviour
         {
             instructor.GetComponent<InstructorManager>().RefreshInstructorUI();
         }
-        if (GameHandler.singleton.GetLocalPlayer() != null)
+        if (GameHandler.singleton.GetLocalPlayer() != null && playersCount != 0)
         {   
             if(GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject() != null)
             {
@@ -374,19 +382,19 @@ public class GameData : NetworkBehaviour
 
     public void OnFirmDescriptionChange(SyncDictionaryStringString.Operation op, string firmName, string description)
     {
-
-        if (true)
+        if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerData() != null)
         {
-            if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerData() != null)
+            if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerData().GetPlayerRole() == PlayerRoles.Provider)
             {
-                if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerData().GetPlayerRole() == PlayerRoles.Provider)
-                {   
-                    ContractUIHandler contractUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>();
+                ContractUIHandler contractUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>();
 
-                    contractUIHandler.UpdateDeveloperFirmList(GetListDeveloperFirmNameDescription());
-                }
+                contractUIHandler.UpdateDeveloperFirmList(GetListDeveloperFirmNameDescription());
             }
-
+        }
+        if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject() != null)
+        {
+            ChatUIHandler chatUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ChatUIHandler>();
+            chatUIHandler.GeneratePlayersContent();
         }
     }
     public void OnAllFirmsChange(SyncDictionaryStringString.Operation op, string firmName, string description)
@@ -403,6 +411,11 @@ public class GameData : NetworkBehaviour
                 ChatUIHandler chatUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ChatUIHandler>();
                 chatUIHandler.GeneratePlayersContent();
             }
+        }
+        if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject() != null)
+        {
+            ChatUIHandler chatUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ChatUIHandler>();
+            chatUIHandler.GeneratePlayersContent();
         }
     }
     

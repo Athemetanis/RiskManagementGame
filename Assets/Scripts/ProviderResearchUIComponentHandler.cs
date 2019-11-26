@@ -13,7 +13,9 @@ public class ProviderResearchUIComponentHandler : MonoBehaviour
 
     public GameObject partnersResearchContainer;
     public GameObject competitorsResearchContainer;
-    
+
+    public TextMeshProUGUI notAvialableInfo;
+
     public TextMeshProUGUI enterprisePriceMin;
     public TextMeshProUGUI enterprisePriceMax;
     public TextMeshProUGUI enterprisePriceAverage;
@@ -68,16 +70,20 @@ public class ProviderResearchUIComponentHandler : MonoBehaviour
             partnersResearchContainer.SetActive(true);            
         }
         else
-        {   
-            providerResearchUIHandler.SetAvailabilityText("Research on possible partners not bought for this quarter " + currentQuarter + ".");
+        {
+            notAvialableInfo.text += "Research on possible business partners was not bought for this quarter.";
         }
         if (researchManager.GetBuyPossiblePartnersResearchQuarter(correspondingResearchQuarter))
         {
             competitorsResearchContainer.SetActive(true);
         }
         else
-        {   
-            providerResearchUIHandler.SetAvailabilityText("Research on competitors not bought for this quarter " + currentQuarter + ".");
+        {
+            if (notAvialableInfo.text.Length != 0)
+            {
+                notAvialableInfo.text += "\\n ";
+            }
+            notAvialableInfo.text += "Research on competitors was not bought for this quarter.";
         }
     }
 

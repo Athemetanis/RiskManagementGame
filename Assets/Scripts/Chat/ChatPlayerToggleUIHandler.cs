@@ -12,6 +12,8 @@ public class ChatPlayerToggleUIHandler : MonoBehaviour
     private Toggle playerToggle;
     private string playerID;
 
+    public GameObject notificationImage;
+
     private ChatUIHandler chatUIHandler;
 
     public void SetChatUIHandler(ChatUIHandler chatUIHandler) { this.chatUIHandler = chatUIHandler; }
@@ -27,14 +29,24 @@ public class ChatPlayerToggleUIHandler : MonoBehaviour
         playerToggle.onValueChanged.AddListener(delegate { ToggleValueChanged(playerToggle); });
     }
 
-    void ToggleValueChanged(Toggle change)
+    public void ToggleValueChanged(Toggle change)
     {
         if (playerToggle.isOn)
         {
             chatUIHandler.GenerateChatContent(playerID);
             chatUIHandler.SetRecipient(playerID);
-
         }
     }
+
+    public void ShowNotificationImage()
+    {
+        notificationImage.SetActive(true);
+    }
+
+    public void DisableNotificationImageAfterClick()
+    {
+        notificationImage.SetActive(false);
+    }
+
 
 }

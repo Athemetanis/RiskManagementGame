@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public class IndividualDecisionsRiskManagementQuarterHandler : MonoBehaviour
 {
@@ -26,9 +27,12 @@ public class IndividualDecisionsRiskManagementQuarterHandler : MonoBehaviour
     public GameObject riskListContent;
     public GameObject riskGraphContent;
 
-
     private Dictionary<string, RectTransform> graphImagePoints = new Dictionary<string, RectTransform>();
     private Dictionary<string, Image> allGraphImages = new Dictionary<string, Image>();
+
+    private int xAxisScaler = 50;
+    private int yAxisScaler = 30;
+
 
     // Start is called before the first frame update
     void Start()
@@ -54,40 +58,39 @@ public class IndividualDecisionsRiskManagementQuarterHandler : MonoBehaviour
         risk2ActionText.gameObject.SetActive(false);
         risk3ActionText.gameObject.SetActive(false);
     }
-
-
-    public void SetUpQuarterMatrix(     )
+    
+    public void SetUpQuarterMatrix( List<string> risks, Dictionary<string, int> likelihood, Dictionary<string, int> impact, Dictionary<string, bool> monitor, Dictionary<string, Color> color )
     {
-
-
-    }
-
-    public void UpdateGraphPoints( )
-    {
-        /*//Debug.Log("updating graph points");
+        foreach (Transform child in riskListContent.transform)
+        { GameObject.Destroy(child.gameObject); }
         foreach (Transform child in riskGraphContent.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
+        { GameObject.Destroy(child.gameObject); }
+
         graphImagePoints.Clear();
         allGraphImages.Clear();
-        //Debug.Log(riskManager.GetRisks().Distinct().ToList().Count());
-        foreach (string riskID in riskManager.GetRisks().Distinct().ToList())
-        {
 
-            GameObject riskGraphImage = Instantiate(riskGraphImagePrefab);
+        foreach (string risk in risks.Distinct().ToList())
+        {
+            GameObject riskStat = Instantiate(riskUIComponentPrefab);
+            riskStat.transform.SetParent(riskListContent.transform, false);
+            InstructorRiskStatHandler handler = riskStat.GetComponent<InstructorRiskStatHandler>();
+            handler.SetupValues(this, risk, likelihood[risk], impact[risk], monitor[risk], color[risk]);
+
+            GameObject riskGraphImage = Instantiate(riskImagePrefab);
             riskGraphImage.transform.SetParent(riskGraphContent.transform, false);
             RectTransform graphPointRT = riskGraphImage.GetComponent<RectTransform>();
             Image pointI = riskGraphImage.GetComponent<Image>();
-            graphImagePoints.Add(riskID, graphPointRT);
-            allGraphImages.Add(riskID, pointI);
-            //Debug.Log("L" + riskManager.GetLikelihood(riskID));
-            // Debug.Log(riskManager.GetImpact(riskID));
-            riskGraphImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(riskManager.GetLikelihood(riskID) * xAxisScaler, riskManager.GetImpact(riskID) * yAxisScaler);
-            pointI.color = riskManager.GetColor(riskID);
-        }*/
+            
+            graphImagePoints.Add(risk, graphPointRT);
+            allGraphImages.Add(risk, pointI);
+
+            riskGraphImage.GetComponent<RectTransform>().anchoredPosition = new Vector2(likelihood[risk] * xAxisScaler, impact[risk] * yAxisScaler);
+            pointI.color = color[risk];
+        }
+
     }
 
+   
     public void HighlightRisk(string riskID)
     {
         foreach (Image image in allGraphImages.Values)

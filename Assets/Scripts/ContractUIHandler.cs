@@ -42,6 +42,8 @@ public class ContractUIHandler : MonoBehaviour
     private MarketingManager marketingManager;
     private DeveloperAccountingManager developerAccountingManager;
 
+    private string gameID;
+
 
     // Start is called before the first frame update
     void Start()
@@ -49,7 +51,7 @@ public class ContractUIHandler : MonoBehaviour
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         contractManager = myPlayerDataObject.GetComponent<ContractManager>();
         contractManager.SetContractUIHandler(this);
-
+        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
 
         firmManager = myPlayerDataObject.GetComponent<FirmManager>();
         scheduleManager = myPlayerDataObject.GetComponent<ScheduleManager>();
@@ -133,7 +135,7 @@ public class ContractUIHandler : MonoBehaviour
     public void GenerateDeveloperDropdownOptions()
     {
         selectedDeveloperDropdown.ClearOptions();
-        selectedDeveloperDropdown.AddOptions(firmManager.GetDeveloperList());
+        selectedDeveloperDropdown.AddOptions(GameHandler.allGames[gameID].GetDevelopersFirms());
     }
     public void UpdateDeveloperDropdownOptions(List<string> developerFirmList)
     {
@@ -320,7 +322,13 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.SetState(contract.GetContractState());
         contractPreviewUIHandler.GenerateHistoryRecord(contract.GetContractHistory());
         contractPreviewUIHandler.SetRiskSharingFee(contract.GetContractRiskSharingFee());
-        contractPreviewUIHandler.PreviewContract();
+        if (contract.GetContractState() == ContractState.Proposal)
+        {
+            contractPreviewUIHandler.ProposalDetailContract();
+        }
+        else { contractPreviewUIHandler.PreviewContract(); }
+
+
         if (scheduleManager != null) //Developer
         {
             if (scheduleManager.GetScheduleDevelopmentEndDay().ContainsKey(contractID))

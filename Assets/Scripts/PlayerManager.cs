@@ -85,6 +85,7 @@ public class PlayerManager : NetworkBehaviour {
         }
         if (playerGameID == "" || playerGameID.Equals(""))
         {
+            CmdRemoveAuthority();
             return;
         }
         if(this.playerFirebaseID == "rojDP7X6ujdmd9jeUKIqGwyLNmG2" && playerGameID != "")
@@ -260,6 +261,17 @@ public class PlayerManager : NetworkBehaviour {
 
     }
 
+
+    [Command]
+    public void CmdRemoveAuthority()
+    {
+        if (myPlayerData != null)
+        {
+            myPlayerObject.GetComponent<NetworkIdentity>().RemoveClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
+        }
+    }
+
+
     [Command]
     public void CmdCreatePlayerData()
     {
@@ -323,14 +335,7 @@ public class PlayerManager : NetworkBehaviour {
         
     }*/
      
-    [Command]
-    public void CmdRemoveAuthority()
-    {
-        if (myPlayerData != null)
-        {
-            myPlayerObject.GetComponent<NetworkIdentity>().RemoveClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
-        }
-    }
+
 
     [Client]
     public void CreateInstructorUI()

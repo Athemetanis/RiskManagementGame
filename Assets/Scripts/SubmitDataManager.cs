@@ -13,10 +13,11 @@ public class SubmitDataManager : NetworkBehaviour
     private ContractManager contractManager;
     private PlayerData playerData;
     private FeatureManager featureManager;
-
+    private SubmitDataUIHandler submitDataUIHandler;
 
     //GETTERS AND SETTERS
     public void SetSubmitData(bool submitData) { this.submitData = submitData; }
+    public void SetSubmitDataUIHandler(SubmitDataUIHandler submitDataUIHandler) { this.submitDataUIHandler = submitDataUIHandler; }
     public bool GetSubmitData() { return submitData; }
 
     private void Start() { }
@@ -52,9 +53,20 @@ public class SubmitDataManager : NetworkBehaviour
 
     public void OnChangeSubmitData(bool submitData)
     {
+        this.submitData = submitData;
         if (submitData)
         {
-            //cover my screeen with image and text abut wating for other player .... bla bla bla 
+            if (submitDataUIHandler != null)
+            {
+                submitDataUIHandler.EnableSubmitDataImage();
+            }
+        }
+        else
+        {
+            if (submitDataUIHandler != null)
+            {
+                submitDataUIHandler.DisableSubmitDataImage();
+            }
         }
     }
     

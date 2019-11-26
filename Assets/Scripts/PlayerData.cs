@@ -109,6 +109,7 @@ public class PlayerData : NetworkBehaviour {
             eventManager.enabled = true;
         }
     }
+
     [Server]
     public void InvokeEventsBetweenQurters()
     {

@@ -26,8 +26,10 @@ public class RiskMatrixUIComponentHandler : MonoBehaviour
     //METHODS
     public void Start() //on clients only because its UI
     {
+        Debug.Log("RISK UI COMPONENT START");
         if (this.gameObject.activeSelf)
         {
+            Debug.Log("RISK UI COMPONENT ACTIVE SELF");
             initialized = false;
             riskColor = imageColor.color;
             riskID = riskNameID.text;
@@ -43,13 +45,13 @@ public class RiskMatrixUIComponentHandler : MonoBehaviour
             }
             else
             {
-                riskManager.AddRisk(riskNameID.text, likelihoodIF.value, impactIF.value, monitorToggle.isOn, riskColor);
+                riskManager.AddRisk(riskNameID.text, 0, 0, false, riskColor);
             }
-
             initialized = true;
         }
     }
-   
+    
+
 
     public void SetLikelihood() //trigered by event - OnEndEdit
     {

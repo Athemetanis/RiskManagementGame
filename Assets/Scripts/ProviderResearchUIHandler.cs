@@ -35,7 +35,7 @@ public class ProviderResearchUIHandler : MonoBehaviour
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         researchManager = myPlayerDataObject.GetComponent<ResearchManager>();
         researchManager.SetProviderResearchUIHandler(this);
-        availabilityInfoText.gameObject.SetActive(false);
+       // availabilityInfoText.gameObject.SetActive(false);
         providerResearchUIComponentHandlerQ1.SerProviderResearchUIHandler(this);
         providerResearchUIComponentHandlerQ2.SerProviderResearchUIHandler(this);
         providerResearchUIComponentHandlerQ3.SerProviderResearchUIHandler(this);
@@ -53,8 +53,8 @@ public class ProviderResearchUIHandler : MonoBehaviour
         switch (quarter)
         {
             case 1:
-                availabilityInfoText.gameObject.SetActive(true);
-                availabilityInfoText.text = "Results for previus Quarter not avialable";
+               // availabilityInfoText.gameObject.SetActive(true);
+               // availabilityInfoText.text = "Results for previus Quarter not avialable";
                 previusResearchResultsToggle.gameObject.SetActive(false);
                 researchQ4Container.SetActive(false);
                 researchQ3Container.SetActive(false);

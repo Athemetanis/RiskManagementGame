@@ -85,6 +85,7 @@ public class ChatManager : NetworkBehaviour
     public Dictionary<string, Message> GetMyMessages() { return new Dictionary<string, Message>(myMessages); }
     
     void Start() { }
+
     public override void OnStartServer()
     {
         playerData = this.gameObject.GetComponent<PlayerData>();
@@ -101,9 +102,9 @@ public class ChatManager : NetworkBehaviour
 
     }
 
-    public void SendMessage(string recipientfirmName, string messageText)
+    public void SendMessage(string playerID, string messageText)
     {
-        Message message = new Message(firmManager.GetFirmName(), recipientfirmName, messageText);
+        Message message = new Message(playerID, playerData.GetPlayerID(), messageText);
         CmdSendMessage(message);
     }
 
@@ -111,8 +112,8 @@ public class ChatManager : NetworkBehaviour
     public void CmdSendMessage(Message message)
     {   
         string messageID = GameHandler.singleton.GenerateUniqueID();
-        string recipientPlayerID = GameHandler.allGames[gameID].GetFirmPlayerID(message.recipent);
-        string senderPlayerID = GameHandler.allGames[gameID].GetFirmPlayerID(message.sender);
+        string recipientPlayerID = message.recipent;
+        string senderPlayerID = message.sender;
 
         ChatManager recipentChatManager = GameHandler.allGames[gameID].GetPlayer(recipientPlayerID).GetComponent<ChatManager>();
         ChatManager senderChatManager = GameHandler.allGames[gameID].GetPlayer(senderPlayerID).GetComponent<ChatManager>();
@@ -138,11 +139,23 @@ public class ChatManager : NetworkBehaviour
 
     public void OnChangeMyMessages(SyncDictionaryMessage.Operation op, string key, Message msg)
     {
-        if(op == SyncDictionary<string, Message>.Operation.OP_ADD)
-        {
+        if(op == SyncDictionaryMessage.Operation.OP_ADD)
+        {   
             if (msg.sender != playerData.GetPlayerID())
-            {
+            {   
                 ShowNotificationChat(msg.sender);
+
+                if(chatUIHandler != null)
+                {
+                    string sender = msg.sender;
+
+                    chatUIHandler.playerToggleNotificationON(sender);
+                    
+                    if(chatUIHandler.GetRecipient() != null)
+                    {
+                        chatUIHandler.GenerateChatContent(chatUIHandler.GetRecipient());
+                    }
+                }
             }            
         }
 

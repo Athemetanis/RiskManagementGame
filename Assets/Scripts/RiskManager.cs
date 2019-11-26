@@ -31,7 +31,6 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     private SyncDictionaryStringColor riskColorQ4 = new SyncDictionaryStringColor();
 
     //CURRENT VALUES
-    // index: 0 = name/description, 1 = imapact & actions;
     [SyncVar]
     private string risk1Description;
     [SyncVar]
@@ -63,12 +62,7 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     //GETTERS & SETTERS
     public void SetRiskUIHandler(RiskUIHandler riskUIHandler) { this.riskUIHandler = riskUIHandler; }
     public List<string> GetRisks() { return new List<string>(risks); }
-    public void SetRisk1Description(string description) { risk1Description = description; }
-    public void SetRisk2Description(string description) { risk2Description = description; }
-    public void SetRisk3Description(string description) { risk3Description = description; }
-    public void SetRisk1ImpactAction(string impactAction) { risk1ImpactAction = impactAction; }
-    public void SetRisk2ImpactAction(string impactAction) { risk2ImpactAction = impactAction; }
-    public void SetRisk3ImpactAction(string impactAction) { risk3ImpactAction = impactAction; }
+   
     public string GetRisk1Description() { return risk1Description; }
     public string GetRisk2Description() { return risk2Description; }
     public string GetRisk3Description() { return risk3Description; }
@@ -82,7 +76,6 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     public string GetRisk1ImpactActionsQ(int quarter) { return risk1ImpactActionQuarters[quarter]; }
     public string GetRisk2ImpactActionsQ(int quarter) { return risk2ImpactActionQuarters[quarter]; }
     public string GetRisk3ImpactActionsQ(int quarter) { return risk3ImpactActionQuarters[quarter]; }
-
     public List<string> GetRisksQ(int quarter)
     {
         if (quarter == 3)
@@ -154,7 +147,7 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     public override void OnStartClient()
     {
         gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
-        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+       // currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         // syncDict is already populated with anything the server set up
         // but we can subscribe to the callback in case it is updated later on
         riskLikelihood.Callback += OnLikelihoodChange;
@@ -173,11 +166,31 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
         risk3DescriptionQuarters.Insert(0, "");
         risk3ImpactActionQuarters.Insert(0, "");
     }
-    
+
+    public void SetRisk1Description(string description) { CmdSetRisk1Description(description); }
+    public void SetRisk2Description(string description) { CmdSetRisk2Description(description); }
+    public void SetRisk3Description(string description) { CmdSetRisk3Description(description); }
+    public void SetRisk1ImpactAction(string impactAction) { CmdSetRisk1ImpactAction(impactAction); }
+    public void SetRisk2ImpactAction(string impactAction) { CmdSetRisk2ImpactAction(impactAction); }
+    public void SetRisk3ImpactAction(string impactAction) { CmdSetRisk3ImpactAction(impactAction); }
+
+    [Command]
+    public void CmdSetRisk1Description(string description) { risk1Description = description; }
+    [Command]
+    public void CmdSetRisk2Description(string description) { risk2Description = description; }
+    [Command]
+    public void CmdSetRisk3Description(string description) { risk3Description = description; }
+    [Command]
+    public void CmdSetRisk1ImpactAction(string impactAction) { risk1ImpactAction = impactAction; }
+    [Command]
+    public void CmdSetRisk2ImpactAction(string impactAction) { risk2ImpactAction = impactAction; }
+    [Command]
+    public void CmdSetRisk3ImpactAction(string impactAction) { risk3ImpactAction = impactAction; }
+
     //METHODS
     [Server]
     public void LoadQuarterData(int quarter)
-    {   
+    {
         if (quarter == 4)
         {
             if (risksQ3.Count > 0 && risks.Count == 0) // player did not join already running game in Q4  so there are some data to be loaded from Q3
@@ -203,9 +216,9 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
                     riskColor.Add(color);
                 }
             }
-            if(risk1DescriptionQuarters.Count != 4)
+            if (risk1DescriptionQuarters.Count != 4)
             {
-               for(int i  = risk1DescriptionQuarters.Count + 1; i < quarter; i++)
+                for (int i = risk1DescriptionQuarters.Count + 1; i < quarter; i++)
                 {
                     risk1DescriptionQuarters.Insert(i, risk1DescriptionQuarters[i - 1]);
                     risk2DescriptionQuarters.Insert(i, risk2DescriptionQuarters[i - 1]);
@@ -215,20 +228,41 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
                     risk3ImpactActionQuarters.Insert(i, risk3ImpactActionQuarters[i - 1]);
                 }
             }
-            risk1Description = risk1DescriptionQuarters[quarter - 1];
-            risk2Description = risk2DescriptionQuarters[quarter - 1];
-            risk3Description = risk3DescriptionQuarters[quarter - 1];
-            risk1ImpactAction = risk1ImpactActionQuarters[quarter - 1];
-            risk2ImpactAction = risk2ImpactActionQuarters[quarter - 1];
-            risk3ImpactAction = risk3ImpactActionQuarters[quarter - 1];
+            else
+            {
+                risk1Description = risk1DescriptionQuarters[quarter - 1];
+                risk2Description = risk2DescriptionQuarters[quarter - 1];
+                risk3Description = risk3DescriptionQuarters[quarter - 1];
+                risk1ImpactAction = risk1ImpactActionQuarters[quarter - 1];
+                risk2ImpactAction = risk2ImpactActionQuarters[quarter - 1];
+                risk3ImpactAction = risk3ImpactActionQuarters[quarter - 1];
+            }
+
         }
         else
-        risk1Description = "";
-        risk1ImpactAction = "";
-        risk2Description = "";
-        risk2ImpactAction = "";
-        risk3Description = "";
-        risk3ImpactAction = "";
+        {
+            if (risk1DescriptionQuarters.Count != quarter)
+            {
+                for (int i = risk1DescriptionQuarters.Count + 1; i < quarter; i++)
+                {
+                    risk1DescriptionQuarters.Insert(i, risk1DescriptionQuarters[i - 1]);
+                    risk2DescriptionQuarters.Insert(i, risk2DescriptionQuarters[i - 1]);
+                    risk3DescriptionQuarters.Insert(i, risk3DescriptionQuarters[i - 1]);
+                    risk1ImpactActionQuarters.Insert(i, risk1ImpactActionQuarters[i - 1]);
+                    risk2ImpactActionQuarters.Insert(i, risk2ImpactActionQuarters[i - 1]);
+                    risk3ImpactActionQuarters.Insert(i, risk3ImpactActionQuarters[i - 1]);
+                }
+            }
+            else
+            {
+                risk1Description = risk1DescriptionQuarters[quarter - 1];
+                risk2Description = risk2DescriptionQuarters[quarter - 1];
+                risk3Description = risk3DescriptionQuarters[quarter - 1];
+                risk1ImpactAction = risk1ImpactActionQuarters[quarter - 1];
+                risk2ImpactAction = risk2ImpactActionQuarters[quarter - 1];
+                risk3ImpactAction = risk3ImpactActionQuarters[quarter - 1];
+            }
+        }        
     }
 
     public bool ContainsRisk(string riskID)
@@ -259,16 +293,18 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
 
     public void AddRisk(string riskID, int likelihood, int impact, bool monitor, Color color)
     {
+
         CmdAddRisk(riskID, likelihood, impact, monitor, color);
+        CmdAddRiskToList(riskID);
     }
     [Command]
     public void CmdAddRisk(string riskID, int likelihood, int impact, bool monitor, Color color)
     {
+        risks.Add(riskID);
         riskLikelihood.Add(riskID, likelihood);
         riskImpact.Add(riskID, impact);
         riskMonitor.Add(riskID, monitor);
         riskColor.Add(riskID, color);
-
     }
     public void UpdateLikelihood(string riskID, int likelihood)
     {
@@ -365,23 +401,23 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
     {
         if (risks.Contains(riskID))
         {
-            risks.Remove(riskID);
-            risks.Add(riskID);
+           risks.Remove(riskID);
+           risks.Add(riskID);
         }
         else
         {
             risks.Add(riskID);
 
         }
-
     }
 
     // NEXT QUARTER EVALUATION METHODS...
     [Server]
     public void MoveToTheNextQuarter()
     {
-        SetNewReferences();
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         LoadNextQuarterData(currentQuarter);
+        SetNewReferences();
     }
 
     [Server]

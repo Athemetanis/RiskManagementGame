@@ -30,8 +30,12 @@ public class ChatUIHandler : MonoBehaviour
 
     private string recipient;
     
-
+    ///----------------playerID, script attached to toggle
+    private Dictionary<string, ChatPlayerToggleUIHandler> toggles= new Dictionary<string, ChatPlayerToggleUIHandler>();
+    
+    //GETTERS & SETTERS
     public void SetRecipient(string playerID) { recipient = playerID; }
+    public string GetRecipient() { return recipient; }
 
     private void Start()
     {   
@@ -48,10 +52,19 @@ public class ChatUIHandler : MonoBehaviour
 
     public void GeneratePlayersContent()
     {
+        Debug.Log("generating chat players");
+
         foreach (Transform child in providerContent.transform)
         { GameObject.Destroy(child.gameObject); }
         foreach (Transform child in developerContent.transform)
         { GameObject.Destroy(child.gameObject); }
+
+        toggles.Clear();
+
+        if(playerData == null)
+        {
+            return;
+        }
 
         string myPlayerID = playerData.GetPlayerID();
 
@@ -66,16 +79,21 @@ public class ChatUIHandler : MonoBehaviour
 
             if (myPlayerID == playerID)
             {
-                return;
+                continue;
             }
 
-            string firmName = gameData.GetFirmName(playerID);
+            FirmManager firmMamager = developer.Value.GetComponent<FirmManager>();
+            string firmName = firmMamager.GetFirmName();
+            string playerName = firmMamager.GetPlayerName();
 
             GameObject playerToggle = Instantiate(playerTogglePrefab);
             playerToggle.transform.SetParent(developerContent.transform, false);
             ChatPlayerToggleUIHandler playerToggleHandler = playerToggle.GetComponent<ChatPlayerToggleUIHandler>();
+
+            toggles.Add(playerID, playerToggleHandler);
+
             playerToggleHandler.SetChatUIHandler(this);
-            playerToggleHandler.SetUpChatPlayerToggle(toggleGroup, playerID, firmName, playerID);
+            playerToggleHandler.SetUpChatPlayerToggle(toggleGroup, playerID, firmName, playerName);
         }
 
         foreach (KeyValuePair<string, GameObject> provider in providers)
@@ -85,15 +103,21 @@ public class ChatUIHandler : MonoBehaviour
 
             if (myPlayerID == playerID)
             {
-                return;
+                continue;
             }
-            string firmName = gameData.GetFirmName(playerID);
+
+            FirmManager firmMamager = provider.Value.GetComponent<FirmManager>();
+            string firmName = firmMamager.GetFirmName();
+            string playerName = firmMamager.GetPlayerName();
 
             GameObject playerToggle = Instantiate(playerTogglePrefab);
             playerToggle.transform.SetParent(providerContent.transform, false);
             ChatPlayerToggleUIHandler playerToggleHandler = playerToggle.GetComponent<ChatPlayerToggleUIHandler>();
+
+            toggles.Add(playerID, playerToggleHandler);
+
             playerToggleHandler.SetChatUIHandler(this);
-            playerToggleHandler.SetUpChatPlayerToggle(toggleGroup, playerID, firmName, playerID);
+            playerToggleHandler.SetUpChatPlayerToggle(toggleGroup, playerID, firmName, playerName);
         }
     }
 
@@ -106,17 +130,17 @@ public class ChatUIHandler : MonoBehaviour
 
         foreach (KeyValuePair<string, Message> msg in myMessages)
         {
-            string sender = msg.Value.sender;
-            string recipent = msg.Value.recipent;
+            string sender = GameHandler.allGames[gameID].GetFirmName(msg.Value.sender);
+            string recipent = GameHandler.allGames[gameID].GetFirmName(msg.Value.recipent);
             string message = msg.Value.message;
-            if(sender == playerID || recipent == playerID)
+            if(msg.Value.sender == playerID || msg.Value.recipent == playerID)
             {
 
                 GameObject newMessageOBJ = Instantiate(chatMessagePrefab);
                 newMessageOBJ.transform.SetParent(messageContent.transform, false);
                 ChatMessageUIHandler chatMessageUIHandler = newMessageOBJ.GetComponent<ChatMessageUIHandler>();
 
-                if(sender == playerData.GetPlayerID())
+                if(msg.Value.sender == playerData.GetPlayerID())
                 {
                     sender = "Me";
                     
@@ -125,6 +149,44 @@ public class ChatUIHandler : MonoBehaviour
             }
         }
     }
+
+    public void RefreshChatContentAfterSendingMessage()
+    {   
+        if(recipient == "")
+        {
+            return;
+        }
+        foreach (Transform child in messageContent.transform)
+        { GameObject.Destroy(child.gameObject); }
+
+        Dictionary<string, Message> myMessages = chatManager.GetMyMessages();
+        foreach (KeyValuePair<string, Message> msg in myMessages)
+        {
+            string sender = GameHandler.allGames[gameID].GetFirmName(msg.Value.sender);
+            string recipent = GameHandler.allGames[gameID].GetFirmName(msg.Value.recipent);
+            string message = msg.Value.message;
+
+            string playerID = playerData.GetPlayerID();
+
+            if (msg.Value.sender == playerID || msg.Value.recipent == playerID)
+            {
+
+                GameObject newMessageOBJ = Instantiate(chatMessagePrefab);
+                newMessageOBJ.transform.SetParent(messageContent.transform, false);
+                ChatMessageUIHandler chatMessageUIHandler = newMessageOBJ.GetComponent<ChatMessageUIHandler>();
+
+                if (msg.Value.sender == playerData.GetPlayerID())
+                {
+                    sender = "Me";
+
+                }
+                chatMessageUIHandler.SetUpMessageText(sender, message);
+            }
+        }
+
+    }
+
+
 
     public void SendChatMessage()
     {   
@@ -160,6 +222,15 @@ public class ChatUIHandler : MonoBehaviour
         {
             infoText.enabled = false;
         }
+    }
+
+    public void playerToggleNotificationON(string sender)
+    {
+        if (toggles.ContainsKey(sender))
+        {
+            toggles[sender].ShowNotificationImage();
+        }
+
     }
 
     IEnumerator Wait5SecondsAndDisable()

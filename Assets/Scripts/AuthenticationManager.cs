@@ -188,6 +188,7 @@ public class AuthenticationManager : MonoBehaviour {
         authForm.EnableWarningTextChange("");
         playerManager.SetPlayerFirebaseID("");
         playerManager.SetPlayerGameID("");
+
         auth.SignOut();
 
     }

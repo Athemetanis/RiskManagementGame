@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameUIHandler : MonoBehaviour
 {
     //VARIABLES
-
-    public Text NameText;
-    public Text IDText;
-    public Text PlayersCountText;
-    public Text RoundText;
+    
+    public TextMeshProUGUI NameText;
+    public TextMeshProUGUI IDText;
+    public TextMeshProUGUI PlayersCountText;
+    public TextMeshProUGUI RoundText;
 
     //METHODS
     public void ChangeNameText(string name)

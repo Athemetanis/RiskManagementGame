@@ -85,7 +85,7 @@ public class ResearchManager : NetworkBehaviour
     {
         playerData = this.gameObject.GetComponent<PlayerData>();
         gameID = playerData.GetGameID();
-        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+       // currentQuarter = GameHandler.allGames[gameID].GetGameRound();
     }
 
     [Server]
@@ -279,7 +279,7 @@ public class ResearchManager : NetworkBehaviour
     [Server]
     public void ComputeReliability()
     {
-        int currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+        currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         List<GameObject> developers = new List<GameObject>(GameHandler.allGames[gameID].GetDeveloperList().Values);
 
         int developersCount = developers.Count;

@@ -23,13 +23,20 @@ public class RisksSpecifikationsUIComponentHandler : MonoBehaviour
     {
         initialized = false;
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
+        string gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        int currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         riskManager = myPlayerDataObject.GetComponent<RiskManager>();
-        risk1Description.text = riskManager.GetRisk1Description();
-        risk1ImpactAction.text = riskManager.GetRisk1ImpactActions();
-        risk2Description.text = riskManager.GetRisk2Description();
-        risk2ImpactAction.text = riskManager.GetRisk2ImpactActions();
-        risk3Description.text = riskManager.GetRisk3Description();
-        risk3ImpactAction.text = riskManager.GetRisk3ImpactActions();
+
+        if(currentQuarter != 5)
+        {
+            risk1Description.text = riskManager.GetRisk1Description();
+            risk1ImpactAction.text = riskManager.GetRisk1ImpactActions();
+            risk2Description.text = riskManager.GetRisk2Description();
+            risk2ImpactAction.text = riskManager.GetRisk2ImpactActions();
+            risk3Description.text = riskManager.GetRisk3Description();
+            risk3ImpactAction.text = riskManager.GetRisk3ImpactActions();
+
+        }
         initialized = true;
     }
 

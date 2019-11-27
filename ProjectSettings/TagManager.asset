@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PlayerData
   - ContentContainer
+  - CustomNetworkManager
   layers:
   - Default
   - TransparentFX

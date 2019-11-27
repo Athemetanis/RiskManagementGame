@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8897275406874515567}
   m_Layer: 0
   m_Name: CustomNetworkManager
-  m_TagString: Untagged
+  m_TagString: CustomNetworkManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -121,9 +121,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showGUI: 1
-  offsetX: 0
-  offsetY: 0
+  showGUI: 0
+  offsetX: 100
+  offsetY: 100
 --- !u!114 &1036389672063853366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,8 +151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   drawGUI: 1
-  offsetX: 5
-  offsetY: 150
+  offsetX: 100
+  offsetY: 300
   width: 500
   height: 400
   refreshInterval: 3

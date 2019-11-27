@@ -56,7 +56,7 @@ public class HumanResourcesUIHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
+       
         humanResourcesManager = myPlayerDataObject.GetComponent<HumanResourcesManager>();
         humanResourcesManager.SetHumanResourcesUIHandler(this);
         UpdateAllElements();
@@ -295,6 +295,23 @@ public class HumanResourcesUIHandler : MonoBehaviour
         substractProgrammerButton.interactable = true;
     }
 
-   
+    public void DisableEditation()
+    {
+        addProgrammersButton.interactable = false;
+        addUIpecialistButton.interactable = false;
+        addIntegrabilitySpecialistButton.interactable = false;
+
+        substractProgrammerButton.interactable = false;
+        substractUISpecialistButton.interactable = false;
+        substractIntegrabilityButton.interactable = false;
+
+        hireProgrammersCountIF.interactable = false;
+        hireUISpecialistsCountIF.interactable = false;
+        hireIntegrabilitySpecialistsCountIF.interactable = false;
+
+        programmerSalarySlider.interactable = false;
+        uiSpecialistSalarySlider.interactable = false;
+        integrabilitySpecialistSalarySlider.interactable = false;
+    }
 
 }

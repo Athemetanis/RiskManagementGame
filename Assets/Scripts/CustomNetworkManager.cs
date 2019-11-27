@@ -27,7 +27,7 @@ public class CustomNetworkManager : NetworkManager {
     }
 
 
-    public void StartServer()
+    public void StartMyServer()
     {
         Debug.Log("STARTING SERVER  ");
         base.StartServer();

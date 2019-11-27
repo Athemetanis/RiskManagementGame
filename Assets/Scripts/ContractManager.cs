@@ -348,6 +348,9 @@ public class ContractManager : NetworkBehaviour
         ContractManager providerCM = GameHandler.allGames[gameID].GetProvider(myContracts[contractID].GetProviderID()).GetComponent<ContractManager>();
         myContracts[contractID].SetContractState(ContractState.Accepted);
 
+        string developerID = myContracts[contractID].GetDeveloperID();
+        string providerID = myContracts[contractID].GetProviderID();
+
         if (providerCM.GetFeatureManager() != null)
         {
             Debug.Log("feature removed from outsourced");
@@ -364,7 +367,7 @@ public class ContractManager : NetworkBehaviour
 
         foreach (Contract contract in myContracts.Values)
         {
-            if (contract.GetContractFeature().Equals(myContracts[contractID].GetContractFeature()) && contract.GetContractID() != contractID && contract.GetContractState() != ContractState.Rejected)
+            if (contract.GetContractFeature().Equals(myContracts[contractID].GetContractFeature()) && contract.GetContractID() != contractID && contract.GetContractState() != ContractState.Rejected && contract.GetProviderID() == myContracts[contractID].GetProviderID())
             {
                 contract.SetContractState(ContractState.Rejected);
                 message = firmManager.GetFirmName() + " rejected contract. ";
@@ -378,6 +381,28 @@ public class ContractManager : NetworkBehaviour
                 }
             }
         }
+
+        if(providerID != playerID)
+        {
+            foreach (Contract contract in providerCM.GetMyContracts().Values)
+            {
+                if (contract.GetContractFeature().Equals(myContracts[contractID].GetContractFeature()) && contract.GetContractID() != contractID && contract.GetContractState() != ContractState.Rejected)
+                {
+                    contract.SetContractState(ContractState.Rejected);
+                    message = firmManager.GetFirmName() + " rejected contract. ";
+                    contract.AddHistoryRecord(message);
+                    developerCM.RpcRejectContract(contract.GetContractID(), message);
+                    //providerCM.RpcRejectContract(contract.GetContractID(), message);
+                    //SCHEDULE
+                    if (developerCM.GetScheduleManager() != null)
+                    {
+                        developerCM.GetScheduleManager().DeleteScheduledFeatureServer(contract.GetContractID());
+                    }
+                }
+            }
+        }
+
+
         //SCHEDULE
         if (developerCM.GetScheduleManager() != null)
         {
@@ -395,6 +420,8 @@ public class ContractManager : NetworkBehaviour
         providerAM.UpdateEstimatedContractPaymentsServer();
 
     }
+
+
     [ClientRpc]
     public void RpcAcceptContract(string contractID, string message)
     {
@@ -567,7 +594,7 @@ public class ContractManager : NetworkBehaviour
         //Now all conctract are evaluated and I can update other manager accordingly;
         if (playerRole == PlayerRoles.Developer)
         {
-            playerData.UpdateCurrentQuarterDataDeveloper();
+
             GameHandler.allGames[gameID].AddDeveloperToEvaluated();
         }
     }

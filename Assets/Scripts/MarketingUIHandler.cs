@@ -156,5 +156,16 @@ public class MarketingUIHandler : MonoBehaviour
 
     }
 
+    public void DisableEditation()
+    {
+        advertisementCoverage0Toggle.interactable = false;
+        advertisementCoverage25Toggle.interactable = false;
+        advertisementCoverage50Toggle.interactable = false;
+        advertisementCoverage75Toggle.interactable = false;
+        advertisementCoverage100Toggle.interactable = false;
 
+        individualPriceSlider.interactable = false;
+        businessPriceSlider.interactable = false;
+        enterprisePriceSlider.interactable = false;
+    }
 }

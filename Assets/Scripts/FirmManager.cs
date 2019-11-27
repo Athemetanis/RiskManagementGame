@@ -101,6 +101,15 @@ public class FirmManager : NetworkBehaviour
     public bool GetPlayerNameChanged() { return playerNameChanged; }
     public string GetPlayerName() { return playerName; }
 
+    public (bool, bool, bool) GetMarketSize() { return (marketSize1, marketSize2, marketSize3); }
+    public(bool, bool, bool, bool, bool) GetCompetitivePosture() { return (competitivePosture1, competitivePosture2, competitivePosture3, competitivePosture4, competitivePosture5); }
+    public(bool, bool, bool, bool, bool) GetDistinctiveCompetenceis() { return (distictiveComp1, distictiveComp2, distictiveComp3, distictiveComp4, distictiveComp5); }
+    public (bool, bool, bool) GetBusinessPartnerDiversity() { return (businesspartnerDiversity1, businesspartnerDiversity2, businesspartnerDiversity3); }
+    public (bool, bool, bool, bool) GetContractPriorities() { return (contractPriorities1, contractPriorities2, contractPriorities3, contractPriorities4); }
+    public (bool, bool, bool) GetFirmAccouningStrategies() { return (accountingStrategies1, accountingStrategies2, accountingStrategies3); }
+    public (bool, bool, bool) GetGrowthStrategies() { return (growthStrategies1, growthStrategies2, growthStrategies3); }
+    public (bool, bool, bool) GetDevelopmentStrategies() { return (developmentStrategies1, developmentStrategies2, developmentStrategies3); }
+
     private void Start()
     {
         if (isServer)

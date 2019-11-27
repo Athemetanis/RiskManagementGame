@@ -140,6 +140,9 @@ public class PlayerData : NetworkBehaviour {
             contractMamanger.EvaluateContractsServer();
         }
     }
+
+
+
     [Server]
     public void UpdateCurrentQuarterDataProvider()
     {
@@ -162,6 +165,9 @@ public class PlayerData : NetworkBehaviour {
         }
         SaveCurretnQuarterDataDeveloper();
     }
+
+
+
     [Server]
     public void SaveCurretnQuarterDataDeveloper()
     {

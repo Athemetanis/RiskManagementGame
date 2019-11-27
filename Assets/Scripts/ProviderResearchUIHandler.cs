@@ -152,5 +152,11 @@ public class ProviderResearchUIHandler : MonoBehaviour
             }
         }
     }
-  
+
+    public void DisableEditation()
+    {
+        buyCompetitorsResearchToggle.interactable = false;
+        buyPossiblePartnersResearchToggle.interactable = false;
+    }
+
 }

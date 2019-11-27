@@ -20,6 +20,16 @@ public class TabUIHandler : MonoBehaviour
     public GameObject introQ4Content;
     public GameObject endEvaluationContent;
 
+    public FirmUIHandler firmUIHandler;
+    public ContractUIHandler contractUIHandler;   //tlacitko pre novy kontrakt
+    public HumanResourcesUIHandler humanResourcesUIHandler; //talcitka na pridavanie zamest //slidery pre mzdy
+    public MarketingUIHandler marketingUIHandeler; //ceny advert
+    //tlacitka na kupu researchu
+    public DeveloperResearchUIHandler developerResearchUIHandler;    
+    public ProviderResearchUIHandler providerResearchUIHandler;
+
+    public FinalEvaluationUIHandler finalEvaluationUIHandler;
+
 
     private GameObject myPlayerDataObject;
     private PlayerData playerData;
@@ -27,6 +37,7 @@ public class TabUIHandler : MonoBehaviour
     private GameData gameData;
 
     private int currentQuarter;
+
 
     private void Start()
     {
@@ -154,6 +165,8 @@ public class TabUIHandler : MonoBehaviour
 
         if (currentQuarter == 5)
         {
+            finalEvaluationUIHandler.GenerateContent();
+
             welcomeTab.isOn = false;
             welcomeTab.gameObject.SetActive(false);
             marketOverviewTab.isOn = false;
@@ -176,6 +189,27 @@ public class TabUIHandler : MonoBehaviour
             introQ3Content.SetActive(false);
             introQ4Content.SetActive(false);
             endEvaluationContent.SetActive(true);
+
+            firmUIHandler.DisableEditation();
+            contractUIHandler.DisableEditation();
+
+            if(humanResourcesUIHandler != null)
+            {
+                humanResourcesUIHandler.DisableEditation();
+            }
+            if(marketingUIHandeler != null)
+            {
+                marketingUIHandeler.DisableEditation();
+            }
+            if(developerResearchUIHandler != null)
+            {
+                developerResearchUIHandler.DisableEditation();
+            }
+            if(providerResearchUIHandler != null)
+            {
+
+            }
+
         }
     }
 }

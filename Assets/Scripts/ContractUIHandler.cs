@@ -328,6 +328,7 @@ public class ContractUIHandler : MonoBehaviour
         }
         else { contractPreviewUIHandler.PreviewContract(); }
 
+        
 
         if (scheduleManager != null) //Developer
         {
@@ -339,24 +340,27 @@ public class ContractUIHandler : MonoBehaviour
                     contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Feature can not be completed in one quarter.");
                 }
                 contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Contract's end day of developmet: " + developmentEndDay);
+
+                if (developerAccountingManager != null)
+                {
+                    int salaries = developerAccountingManager.GetSalaries();
+                    int developmenyPerDay = (int)System.Math.Round(((float)salaries / 60), System.MidpointRounding.AwayFromZero);
+                    int developmentOverallPrice = scheduleManager.GetScheduledFeatureDevelopmentTime(contractID) * developmenyPerDay;
+                    int priceRecommendend = developmentOverallPrice * 3;
+                    contractPreviewUIHandler.SetDevelopmentPricePerDay("Salary of employees is  " + developmenyPerDay + " per day." + "$");
+                    contractPreviewUIHandler.SetDevelopmentPriceOverall("Price of overall development time of feature is " + developmentOverallPrice + "$");
+                    contractPreviewUIHandler.SetDevelopmentPriceRecommended("Recommended price of feature is tripple of your development price. This corresponds to " + priceRecommendend + "$");
+
+                }
+                else { Debug.LogError("DeveloperAccountinManager in contractUIHandler is null!"); }
+
+
             }
             else
             {
                 contractPreviewUIHandler.SetScheduleInfoText("SCHEDULE: Contract was not scheduled for development. ");
-            }
 
-            if (developerAccountingManager != null)
-            {
-                int salaries = developerAccountingManager.GetSalaries();
-                int developmenyPerDay = (int)System.Math.Round(((float)salaries / 60), System.MidpointRounding.AwayFromZero);
-                int developmentOverallPrice = scheduleManager.GetScheduledFeatureDevelopmentTime(contractID) * developmenyPerDay;
-                int priceRecommendend = developmentOverallPrice * 3;
-                contractPreviewUIHandler.SetDevelopmentPricePerDay("Salary of employees is  " + developmenyPerDay + " per day." + "$");
-                contractPreviewUIHandler.SetDevelopmentPriceOverall("Price of overall development time of feature is " + developmentOverallPrice + "$");
-                contractPreviewUIHandler.SetDevelopmentPriceRecommended("Recommended price of feature is tripple of your development price. This corresponds to " + priceRecommendend + "$");
-
-            }
-            else { Debug.LogError("DeveloperAccountinManager in contractUIHandler is null!"); }
+            }           
         }
         else { contractPreviewUIHandler.DisableScheduleInfoText(); }
         contractPreviewUIHandler.EnableNegotiationContainer();
@@ -449,5 +453,11 @@ public class ContractUIHandler : MonoBehaviour
     }
 
 
-
+    public void DisableEditation()
+    {   
+        if(createContractButton != null)
+        {
+            createContractButton.interactable = false;
+        }
+    }
 }

@@ -466,8 +466,12 @@ public class GameData : NetworkBehaviour
     {
         developersEvaluatedCount++;
         if (developersEvaluatedCount == developersCount)
-        {
-            foreach(GameObject providerGo in providerList.Values)
+        {   
+            foreach(GameObject developerGo in developerList.Values)
+            {
+                developerGo.GetComponent<PlayerData>().UpdateCurrentQuarterDataDeveloper();
+            }
+            foreach (GameObject providerGo in providerList.Values)
             {
                 providerGo.GetComponent<PlayerData>().UpdateCurrentQuarterDataProvider();
             }

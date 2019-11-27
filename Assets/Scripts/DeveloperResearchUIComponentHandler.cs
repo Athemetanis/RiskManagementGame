@@ -65,6 +65,7 @@ public class DeveloperResearchUIComponentHandler : MonoBehaviour
         GetHistoryData();
         GenerateEmployeesList();
         GenerateProductList();
+        notAvialableInfo.text = "";
 
         if (researchManager.GetBuyCompertitorsResearchQuarter(correspondingResearchQuarter))
         {
@@ -81,7 +82,7 @@ public class DeveloperResearchUIComponentHandler : MonoBehaviour
         else
         {   if(notAvialableInfo.text.Length != 0)
             {
-                notAvialableInfo.text += "\\n ";
+                notAvialableInfo.text += " \n ";
             }
             notAvialableInfo.text += "Research on competitors was not bought for this quarter.";
         }

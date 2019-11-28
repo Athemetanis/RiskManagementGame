@@ -24,9 +24,9 @@ public struct Feature
         this.integrability = integrability;
         this.timeCost = timeCost;
         this.difficulty = difficulty;
-        this.enterpriseCustomers = (int)System.Math.Round(((float)functionality * 0.5f), System.MidpointRounding.AwayFromZero);
-        this.businessCustomers = (int)System.Math.Round(((float)integrability * 50), System.MidpointRounding.AwayFromZero);
-        this.individualCustomers = (int)System.Math.Round(((float)userfriendliness * 1000), System.MidpointRounding.AwayFromZero);
+        this.enterpriseCustomers = (int)System.Math.Round(((float)functionality * 1f), System.MidpointRounding.AwayFromZero);
+        this.businessCustomers = (int)System.Math.Round(((float)integrability * 40), System.MidpointRounding.AwayFromZero);
+        this.individualCustomers = (int)System.Math.Round(((float)userfriendliness * 200), System.MidpointRounding.AwayFromZero);
     }
 
     public override bool Equals(object obj)
@@ -132,12 +132,23 @@ public class FeatureManager : NetworkBehaviour
     [Server]
     public void GenerateAllFeatures()
     {
-        allFeatures.Add("feature1", new Feature("feature1", 10, 0, 0, 150, 1));
-        allFeatures.Add("feature2", new Feature("feature2", 1, 1, 8, 250, 1));
-        allFeatures.Add("feature3", new Feature("feature3", 0, 8, 0, 200, 1));
-        allFeatures.Add("feature4", new Feature("feature4", 10, 2, 0, 170, 1));
-        allFeatures.Add("feature5", new Feature("feature5", 0, 2, 5, 190, 1));
-        allFeatures.Add("feature6", new Feature("feature6", 0, 8, 2, 270, 1));
+        allFeatures.Add("feature1", new Feature("feature1", 8, 0, 0, 80, 1));
+        allFeatures.Add("feature2", new Feature("feature2", 1, 1, 8, 100, 1));
+        allFeatures.Add("feature3", new Feature("feature3", 0, 8, 0, 80, 1));
+        allFeatures.Add("feature4", new Feature("feature4", 10, 2, 0, 120, 1));
+        allFeatures.Add("feature5", new Feature("feature5", 0, 1, 6, 70, 1));
+        allFeatures.Add("feature6", new Feature("feature6", 0, 8, 2, 100, 1));
+
+        allFeatures.Add("feature7", new Feature("feature1", 8, 8, 0, 160, 1));
+        allFeatures.Add("feature8", new Feature("feature2", 0, 0, 12, 120, 1));
+        allFeatures.Add("feature9", new Feature("feature3", 14, 0, 0, 140, 1));
+        allFeatures.Add("feature10", new Feature("feature4", 0, 12, 0, 120, 1));
+        allFeatures.Add("feature11", new Feature("feature5", 0, 5, 5, 100, 1));
+        allFeatures.Add("feature12", new Feature("feature6", 0, 8, 0, 80, 1));
+
+
+
+
     }
 
     [Server]

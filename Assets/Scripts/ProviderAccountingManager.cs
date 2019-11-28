@@ -17,11 +17,15 @@ public class ProviderAccountingManager : NetworkBehaviour
     private SyncListInt riskSharingFeesReceivedQuarters = new SyncListInt() { };
     private SyncListInt terminationFeeReceivedQuarters = new SyncListInt() { };
     private SyncListInt marketingResearchQuarters = new SyncListInt() { };
+
     private SyncListInt borrowEmergencyLoanQuarters = new SyncListInt(){};
     private SyncListInt repayEmergencyLoanQuarters = new SyncListInt() { };
-    private SyncListInt endCashBalanceQuarters = new SyncListInt() { };
 
     private SyncListInt additionalExpensesQuarters = new SyncListInt() { };
+
+    private SyncListInt endCashBalanceQuarters = new SyncListInt() { };
+
+
 
 
     [SyncVar(hook = "OnChangeHistorySaved")]
@@ -48,10 +52,14 @@ public class ProviderAccountingManager : NetworkBehaviour
     private int terminationFeeReceived;
     [SyncVar(hook = "OnChangeMarketingResearch")]
     private int marketingResearch;
+
+
     [SyncVar(hook = "OnChangeBorrowEmergencyLoan")]
     private int borrowEmergencyLoan;
     [SyncVar(hook = "OnChangeRepayEmergencyLoan")]
     private int repayEmergencyLoan;
+
+
     [SyncVar(hook = "OnChangeEndCashBalance")]
     private int endCashBalance;
     [SyncVar(hook = "OnChangeAdditionalExpenses")]
@@ -148,12 +156,15 @@ public class ProviderAccountingManager : NetworkBehaviour
         riskSharingFeesReceivedQuarters.Insert(0, 0);
         terminationFeeReceivedQuarters.Insert(0, 0);
         marketingResearchQuarters.Insert(0, 0);
+
         borrowEmergencyLoanQuarters.Insert(0, 0);
         repayEmergencyLoanQuarters.Insert(0, 0);
+
         endCashBalanceQuarters.Insert(0, 2000000);
         additionalExpensesQuarters.Insert(0, 0);
         historySaved = false;
     }
+
     [Server]
     public void LoadQuarterData(int quarter)
     {
@@ -183,7 +194,11 @@ public class ProviderAccountingManager : NetworkBehaviour
                 additionalExpensesQuarters.Insert(i, 0);
             }
         }
+
         beginningCashBalance = endCashBalanceQuarters[quarter - 1];
+
+        marketingResearch = marketingResearchQuarters[quarter - 1];
+
         additionalExpenses = 0;
         UpdateRevenueServer();
         UpdateEstimatedContractPaymentsServer();
@@ -472,6 +487,20 @@ public class ProviderAccountingManager : NetworkBehaviour
             providerAccountingUIComponentHandlerCurrent.UpdateAdditionalExpensesText(this.additionalExpenses);
         }
     }
+
+
+
+
+    public void ChangeMarketingResearchServer(int price)
+    {
+        marketingResearch = price;
+
+        ComputeEndCashBalance();
+    }
+
+
+
+
 
     public void OnChangeHistorySaved(bool historySaved)
     {

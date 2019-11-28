@@ -342,6 +342,8 @@ public class GameData : NetworkBehaviour
             allFirmsRevers.Add(pair.Value, pair.Key);
         }
     }
+
+
     public Dictionary<string, string> GetListDeveloperFirmNameDescription()
     {
         Dictionary<string, string> developerFirmNameDescritpion = new Dictionary<string, string>();
@@ -355,6 +357,25 @@ public class GameData : NetworkBehaviour
         }
         return developerFirmNameDescritpion;
     }
+
+    public Dictionary<string, string> GetListProviderFirmNameDescription()
+    {
+        Dictionary<string, string> providerFirmNameDescrition = new Dictionary<string, string>();
+
+        foreach (string firmName in providersFirms.Keys)
+        {
+            if (allFirmDescriptions.ContainsKey(firmName))
+            {
+                providerFirmNameDescrition.Add(firmName, allFirmDescriptions[firmName]);
+            }
+        }
+        return providerFirmNameDescrition;
+    }
+
+
+
+
+
     public string GetFirmName(string playerID)
     {
         return allFirmsRevers[playerID];
@@ -373,8 +394,10 @@ public class GameData : NetworkBehaviour
                 contractUIHandler.UpdateUIContractListsContents();
             }
             else
-            {
+            {   
+
                 ContractUIHandler contractUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>();
+                contractUIHandler.UpdateProviderFirmList(GetListProviderFirmNameDescription());
                 contractUIHandler.UpdateUIContractListsContents();
             }
         }
@@ -389,6 +412,12 @@ public class GameData : NetworkBehaviour
                 ContractUIHandler contractUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>();
 
                 contractUIHandler.UpdateDeveloperFirmList(GetListDeveloperFirmNameDescription());
+            }
+            else
+            {
+                ContractUIHandler contractUIHandler = GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject().GetComponent<ContractUIHandler>();
+                contractUIHandler.UpdateProviderFirmList(GetListProviderFirmNameDescription());
+
             }
         }
         if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerUIObject() != null)

@@ -15,6 +15,9 @@ public class ScheduleUIHandler : MonoBehaviour
     private GameObject myPlayerDataObject;
     private ScheduleManager scheduleManager;
 
+    private string gameID;
+    private GameData gameData;
+
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +26,8 @@ public class ScheduleUIHandler : MonoBehaviour
         scheduleManager = myPlayerDataObject.GetComponent<ScheduleManager>();
         scheduleManager.SetScheduleUIHandler(this);
         UpdateFeatureListContent();
+        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        gameData = GameHandler.allGames[gameID].GetComponent<GameData>();
     }
 
 
@@ -38,7 +43,7 @@ public class ScheduleUIHandler : MonoBehaviour
             featureUIComponentForPlanning.transform.SetParent(featureListContent.transform, false);
             FeatureForPlanningUIComponentHandler featureForPlanningUIComponentHandler = featureUIComponentForPlanning.GetComponent<FeatureForPlanningUIComponentHandler>();
             featureForPlanningUIComponentHandler.SetScheduleUIHandler(this);
-            featureForPlanningUIComponentHandler.SetUpFeatureForPlanning(scheduleManager.GetScheduledFeatures().Values.Count, scheduledFeature.GetOrder(), scheduledFeature.GetContractID(), scheduledFeature.GetProviderFirmID(), scheduledFeature.GetContractState(), scheduledFeature.GetFeature().nameID, scheduledFeature.GetFeature().functionality, scheduledFeature.GetFeature().userfriendliness, scheduledFeature.GetFeature().integrability, scheduledFeature.GetGraphPoints(),scheduledFeature.GetGraphDays(), scheduledFeature.GetDevelopmentTime());
+            featureForPlanningUIComponentHandler.SetUpFeatureForPlanning(scheduleManager.GetScheduledFeatures().Values.Count, scheduledFeature.GetOrder(), scheduledFeature.GetContractID(), gameData.GetFirmName(scheduledFeature.GetProviderFirmID()), scheduledFeature.GetContractState(), scheduledFeature.GetFeature().nameID, scheduledFeature.GetFeature().functionality, scheduledFeature.GetFeature().userfriendliness, scheduledFeature.GetFeature().integrability, scheduledFeature.GetGraphPoints(),scheduledFeature.GetGraphDays(), scheduledFeature.GetDevelopmentTime());
         }
         UpdateSchedeleListContent();
     }

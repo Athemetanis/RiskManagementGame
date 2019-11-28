@@ -11,7 +11,9 @@ public class TabUIHandler : MonoBehaviour
     public Toggle introQ3Tab;
     public Toggle introQ4Tab;
     public Toggle endEvaluationTab;
+    public Toggle submitTab;
 
+    public GameObject gameEnd;
 
     public GameObject welcomeContent;
     public GameObject marketOverviewContent;
@@ -19,16 +21,16 @@ public class TabUIHandler : MonoBehaviour
     public GameObject introQ3Content;
     public GameObject introQ4Content;
     public GameObject endEvaluationContent;
+    public GameObject submitContent;
 
-    public FirmUIHandler firmUIHandler;
-    public ContractUIHandler contractUIHandler;   //tlacitko pre novy kontrakt
-    public HumanResourcesUIHandler humanResourcesUIHandler; //talcitka na pridavanie zamest //slidery pre mzdy
-    public MarketingUIHandler marketingUIHandeler; //ceny advert
+    private FirmUIHandler firmUIHandler;
+    private ContractUIHandler contractUIHandler;   //tlacitko pre novy kontrakt
+    private HumanResourcesUIHandler humanResourcesUIHandler; //talcitka na pridavanie zamest //slidery pre mzdy
+    private MarketingUIHandler marketingUIHandeler; //ceny advert
     //tlacitka na kupu researchu
-    public DeveloperResearchUIHandler developerResearchUIHandler;    
-    public ProviderResearchUIHandler providerResearchUIHandler;
-
-    public FinalEvaluationUIHandler finalEvaluationUIHandler;
+    private DeveloperResearchUIHandler developerResearchUIHandler;
+    private ProviderResearchUIHandler providerResearchUIHandler;
+    private FinalEvaluationUIHandler finalEvaluationUIHandler;
 
 
     private GameObject myPlayerDataObject;
@@ -47,6 +49,15 @@ public class TabUIHandler : MonoBehaviour
         gameData = GameHandler.allGames[gameID];
 
         currentQuarter = gameData.GetGameRound();
+
+        firmUIHandler = this.gameObject.GetComponent<FirmUIHandler>();
+        contractUIHandler = this.gameObject.GetComponent<ContractUIHandler>();
+        humanResourcesUIHandler = this.gameObject.GetComponent<HumanResourcesUIHandler>();
+        marketingUIHandeler = this.gameObject.GetComponent<MarketingUIHandler>();
+        developerResearchUIHandler = this.gameObject.GetComponent<DeveloperResearchUIHandler>();
+        providerResearchUIHandler = this.gameObject.GetComponent<ProviderResearchUIHandler>();
+        finalEvaluationUIHandler = this.gameObject.GetComponent<FinalEvaluationUIHandler>();
+
 
         HandlingQTabs();
     }
@@ -182,7 +193,11 @@ public class TabUIHandler : MonoBehaviour
             endEvaluationTab.isOn = true;
             endEvaluationTab.gameObject.SetActive(true);
 
-            
+            submitTab.isOn = false;
+            submitTab.gameObject.SetActive(false);
+            submitContent.SetActive(false);
+
+
             welcomeContent.SetActive(false);
             marketOverviewContent.SetActive(false);
             introQ2Content.SetActive(false);
@@ -193,23 +208,31 @@ public class TabUIHandler : MonoBehaviour
             firmUIHandler.DisableEditation();
             contractUIHandler.DisableEditation();
 
-            if(humanResourcesUIHandler != null)
+            if (humanResourcesUIHandler != null)
             {
                 humanResourcesUIHandler.DisableEditation();
             }
-            if(marketingUIHandeler != null)
+            if (marketingUIHandeler != null)
             {
                 marketingUIHandeler.DisableEditation();
             }
-            if(developerResearchUIHandler != null)
+            if (developerResearchUIHandler != null)
             {
                 developerResearchUIHandler.DisableEditation();
             }
-            if(providerResearchUIHandler != null)
+            if (providerResearchUIHandler != null)
             {
-
+                providerResearchUIHandler.DisableEditation();
             }
 
+            finalEvaluationUIHandler.GenerateContent();
+
+
         }
+        if (currentQuarter == 6)
+        {
+            gameEnd.SetActive(true);
+        }
+
     }
 }

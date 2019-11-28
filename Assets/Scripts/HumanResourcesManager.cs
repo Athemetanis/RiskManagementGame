@@ -14,6 +14,8 @@ public class HumanResourcesManager : NetworkBehaviour
     private SyncListInt integrabilitySpecialistSalaryQ = new SyncListInt() { };
     private SyncListInt uiSpecialistSalaryQ = new SyncListInt() { };
 
+
+
     [SyncVar(hook = "OnChangeProgrammersCount")]
     private int programmersCurrentCount;
     [SyncVar(hook = "OnChangeUISpecialistsCount")]
@@ -125,6 +127,7 @@ public class HumanResourcesManager : NetworkBehaviour
         programmersAvailableCount = 10;
         userInterfaceSpecialistsAvailableCount = 7;
         integrabilitySpecialistsAvailableCount = 7;
+
         hireProgrammersCount = 0;
         hireIntegrabilitySpecialistsCount = 0;
         hireUISpecialistsCount = 0;
@@ -161,6 +164,10 @@ public class HumanResourcesManager : NetworkBehaviour
         programmersCurrentCount = endProgrammersCountQ[quarter - 1];
         integrabilitySpecialistsCurrentCount = endIntegrabilitySpecialistsCountQ[quarter - 1];
         userInterfaceSpecialistsCurrentCount = endUISpecialistsCountQ[quarter - 1];
+
+        hireProgrammersCount = 0;
+        hireIntegrabilitySpecialistsCount = 0;
+        hireUISpecialistsCount = 0;
     }
 
     public void AddProgramer()
@@ -446,6 +453,8 @@ public class HumanResourcesManager : NetworkBehaviour
         endProgrammersCountQ.Insert(currentQuarter, programmersCurrentCount + hireProgrammersCount);
         endIntegrabilitySpecialistsCountQ.Insert(currentQuarter, integrabilitySpecialistsCurrentCount + hireIntegrabilitySpecialistsCount);
         endUISpecialistsCountQ.Insert(currentQuarter, userInterfaceSpecialistsCurrentCount + hireUISpecialistsCount);
+
+
         programmerSalaryQ.Insert(currentQuarter, programmerSalaryPerQuarter);
         integrabilitySpecialistSalaryQ.Insert(currentQuarter, integrabilitySpecialistSalaryPerQuarter);
         uiSpecialistSalaryQ.Insert(currentQuarter, uiSpecialistSalaryPerQuarter);

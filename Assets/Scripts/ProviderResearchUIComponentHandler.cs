@@ -68,15 +68,15 @@ public class ProviderResearchUIComponentHandler : MonoBehaviour
 
         if (researchManager.GetBuyCompertitorsResearchQuarter(correspondingResearchQuarter))
         {
-            partnersResearchContainer.SetActive(true);            
+            competitorsResearchContainer.SetActive(true);
         }
         else
         {
-            notAvialableInfo.text += "Research on possible business partners was not bought for this quarter.";
+            notAvialableInfo.text += "Research on competitors was not bought for this quarter.";
         }
         if (researchManager.GetBuyPossiblePartnersResearchQuarter(correspondingResearchQuarter))
         {
-            competitorsResearchContainer.SetActive(true);
+            partnersResearchContainer.SetActive(true);
         }
         else
         {
@@ -84,7 +84,7 @@ public class ProviderResearchUIComponentHandler : MonoBehaviour
             {
                 notAvialableInfo.text += " \n ";
             }
-            notAvialableInfo.text += "Research on competitors was not bought for this quarter.";
+            notAvialableInfo.text += "Research on possible business partners was not bought for this quarter.";
         }
     }
 
@@ -107,6 +107,7 @@ public class ProviderResearchUIComponentHandler : MonoBehaviour
         enterprisePriceMine.text = marketingManager.GetEnterprisePriceQuarter(correspondingResearchQuarter).ToString("n0");
         businessPriceMine.text = marketingManager.GetBusinessPriceQuarter(correspondingResearchQuarter).ToString("n0");
         individualPriceMine.text = marketingManager.GetIndividualPriceQuarter(correspondingResearchQuarter).ToString("n0");
+        advertisementMine.text = marketingManager.GetAdvertismenetCoverageQuarters(correspondingResearchQuarter).ToString();
     }
 
     public void GenerateProductList()

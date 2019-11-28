@@ -161,7 +161,8 @@ public class CustomersManager : NetworkBehaviour
         beginningIndividualCutomers = endIndividualsCutomersQ[quarter - 1];
 
         UpdateEstimatedCustomersCountServer();
-        //UpdateAdverisementCustomersInfluence();
+        UpdateAdverisementCustomersInfluence();
+
         enterpriseCustomersAdvAdd = 0;
         businessCustomersAdvAdd = 0;
         individualCustomersAdvAdd = 0;
@@ -224,6 +225,7 @@ public class CustomersManager : NetworkBehaviour
         int advertisementCount = 0;
         int averageAdvertisement = 0;
 
+
         Debug.Log("DEBUG: gameid=" + gameID);
 
         foreach(GameObject provider in GameHandler.allGames[gameID].GetProviderList().Values)
@@ -231,25 +233,27 @@ public class CustomersManager : NetworkBehaviour
             advertisementSum += provider.GetComponent<MarketingManager>().GetAdvertismenetCoverageQuarters(currentQuarter - 1);
             advertisementCount = advertisementCount + 1;
         }
+
         if(advertisementCount != 0)
         {
             averageAdvertisement = advertisementSum / advertisementCount;
         }        
-        if(marketingManager.GetAdvertisementCoverage() > averageAdvertisement)
+        if(marketingManager.GetAdvertismenetCoverageQuarters(currentQuarter - 1) > averageAdvertisement)
         {
             //gaining 10% of customers
-            enterpriseCustomersAdvAdd = (int)System.Math.Round((beginningEnterpriseCustomers * 0.1f), System.MidpointRounding.AwayFromZero); 
-            businessCustomersAdvAdd = (int)System.Math.Round((beginningBusinessCustomers * 0.1f), System.MidpointRounding.AwayFromZero);
-            individualCustomersAdvAdd = (int)System.Math.Round((beginningIndividualCutomers * 0.1f), System.MidpointRounding.AwayFromZero);
+            enterpriseCustomersAdvAdd = (int)System.Math.Round((beginningEnterpriseCustomers * 0.2f), System.MidpointRounding.AwayFromZero); 
+            businessCustomersAdvAdd = (int)System.Math.Round((beginningBusinessCustomers * 0.2f), System.MidpointRounding.AwayFromZero);
+            individualCustomersAdvAdd = (int)System.Math.Round((beginningIndividualCutomers * 0.2f), System.MidpointRounding.AwayFromZero);
 
         }
-        else
+        else if (marketingManager.GetAdvertismenetCoverageQuarters(currentQuarter - 1) < averageAdvertisement)
         {
             //losing 10% of cutomers
             enterpriseCustomersAdvLoss = (int)System.Math.Round((beginningEnterpriseCustomers * 0.1f), System.MidpointRounding.AwayFromZero);
             businessCustomersAdvLoss = (int)System.Math.Round((beginningBusinessCustomers * 0.1f), System.MidpointRounding.AwayFromZero);
             individualCustomersAdvLoss = (int)System.Math.Round((beginningIndividualCutomers * 0.1f), System.MidpointRounding.AwayFromZero);
         }
+
         endEnterpriseCustomers = ComputeEndEnterpriseCutomers();
         endBusinessCustomers = ComputeEndBusinessCutomers();
         endIndividualsCutomers = ComputeEndIndividualCustomers();
@@ -350,7 +354,7 @@ public class CustomersManager : NetworkBehaviour
 
     public int ComputeEndEnterpriseCutomers() { int endEnterpriseCustomersTmp = beginningEnterpriseCustomers + enterpriseCustomersAddDuringQ + enterpriseCustomersAddEndQ + enterpriseCustomersAdvAdd - enterpriseCustomersAdvLoss; return endEnterpriseCustomersTmp; }
     public int ComputeEndBusinessCutomers() { int endBusinessCustomersTmp = beginningBusinessCustomers + businessCustomersAddDuringQ + businessCustomersAddEndQ + businessCustomersAdvAdd - businessCustomersAdvLoss; return endBusinessCustomersTmp; }
-    public int ComputeEndIndividualCustomers() { int endIndividualsCutomersTmp = beginningIndividualCutomers + individualCustomersAddDuringQ + individualCustomersAddEndQ + businessCustomersAdvAdd - businessCustomersAdvLoss; return endIndividualsCutomersTmp; }
+    public int ComputeEndIndividualCustomers() { int endIndividualsCutomersTmp = beginningIndividualCutomers + individualCustomersAddDuringQ + individualCustomersAddEndQ + businessCustomersAdvAdd - individualCustomersAdvLoss; return endIndividualsCutomersTmp; }
 
     //HOOKS
     public void OnChangeBeginningEneterpriseCustomers(int beginningEnterpriseCustomers)

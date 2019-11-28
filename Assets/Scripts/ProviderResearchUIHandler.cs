@@ -50,6 +50,13 @@ public class ProviderResearchUIHandler : MonoBehaviour
     public void EnableCorrespondingQuarterUI (int quarter)
     {
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+
+        researchQ4Container.SetActive(false);
+        researchQ3Container.SetActive(false);
+        researchQ2Container.SetActive(false);
+        researchQ1Container.SetActive(false);
+
+
         switch (quarter)
         {
             case 1:

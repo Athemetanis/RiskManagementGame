@@ -56,9 +56,15 @@ public class ResearchManager : NetworkBehaviour
 
     private SyncListBool buyCompetitorsResearchQuarters = new SyncListBool() { };
     private SyncListBool buyPossiblePartnersResearchQuarters = new SyncListBool() { };
+
+
     private string gameID;
     private PlayerData playerData;
     private int currentQuarter;
+
+    private DeveloperAccountingManager developerAccountingManager;
+    private ProviderAccountingManager providerAccountingManager;
+
     private ProviderResearchUIHandler providerResearchUIHandler;
     private DeveloperResearchUIHandler developerResearchUIHandler;
     
@@ -76,15 +82,39 @@ public class ResearchManager : NetworkBehaviour
     {  
         playerData = this.gameObject.GetComponent<PlayerData>();
         gameID = playerData.GetGameID();
+
+
+        if (playerData.GetPlayerRole() == PlayerRoles.Developer)
+        {
+            developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
+        }
+        else
+        {
+            providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
+        }
+
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         SetUpDefaultValues();
         LoadDefaultValues(currentQuarter);
+
+
     }
 
     public override void OnStartClient()
     {
         playerData = this.gameObject.GetComponent<PlayerData>();
         gameID = playerData.GetGameID();
+
+        if(playerData.GetPlayerRole() == PlayerRoles.Developer)
+        {
+            developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
+        }
+        else
+        {
+            providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
+        }
+        
+
        // currentQuarter = GameHandler.allGames[gameID].GetGameRound();
     }
 
@@ -188,15 +218,60 @@ public class ResearchManager : NetworkBehaviour
 
     public void SetBuyCompetitorsResearch(bool buyCompetitorsResearch) { CmdSetBuyCompetitorsResearch(buyCompetitorsResearch); }
     public void SetBuyPossiblePartnersResearch(bool buyPossiblePartnersResearch) { CmdSetBuyPossiblePartnersResearch(buyPossiblePartnersResearch); }
+
     [Command]
     public void CmdSetBuyCompetitorsResearch(bool buyCompetitorsResearch)
     {
         this.buyCompetitorsResearch = buyCompetitorsResearch;
+
+        int price = 0;
+
+        if(buyCompetitorsResearch == true)
+        {
+            price += 25000;
+        }
+        if (buyPossiblePartnersResearch == true)
+        {
+            price += 25000;
+        }
+
+        if (developerAccountingManager != null)
+        {
+            developerAccountingManager.ChangeMarketingResearchServer(price);
+        }
+        if (providerAccountingManager != null)
+        {
+            providerAccountingManager.ChangeMarketingResearchServer(price);
+        }
+
     }
+
     [Command]
     public void CmdSetBuyPossiblePartnersResearch(bool buyPossiblePartnersResearch)
     {
         this.buyPossiblePartnersResearch = buyPossiblePartnersResearch;
+
+        int price = 0;
+
+        if (buyCompetitorsResearch == true)
+        {
+            price += 25000;
+        }
+        if (buyPossiblePartnersResearch == true)
+        {
+            price += 25000;
+        }
+
+        if (developerAccountingManager != null)
+        {
+            developerAccountingManager.ChangeMarketingResearchServer(price);
+        }
+        if (providerAccountingManager != null)
+        {
+            providerAccountingManager.ChangeMarketingResearchServer(price);
+        }
+
+
     }
 
     [Server]
@@ -461,9 +536,11 @@ public class ResearchManager : NetworkBehaviour
 
     public void OnChangeBuyPossiblePartnersResearch( bool buyPossiblePartnersResearch)
     {
+
     }
     public void OnChangeBuyCompetitorsResearch(bool buyCompetitorsResearch)
     {
+
     }
 
     //NEXT QUARTER METHODS

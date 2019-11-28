@@ -25,8 +25,10 @@ public class DeveloperAccountingManager : NetworkBehaviour
 
     private SyncListInt borrowEmergencyLoanQuarters = new SyncListInt() { };
     private SyncListInt repayEmergencyLoanQuarters = new SyncListInt() { };
+
+    /*
     private SyncListInt emergencyLoanBaseQuarters = new SyncListInt() { };
-    private SyncListInt emergencyLoanInterestsQuarters = new SyncListInt() { };
+    private SyncListInt emergencyLoanInterestsQuarters = new SyncListInt() { };*/
 
     [SyncVar(hook = "OnChangeHistorySaved")]
     private bool historySaved;
@@ -57,10 +59,15 @@ public class DeveloperAccountingManager : NetworkBehaviour
     private int borrowEmergencyLoan;
     [SyncVar(hook = "OnChangeRepayEmergencyLoan")]
     private int repayEmergencyLoan;
+
+    /*
     [SyncVar(hook = "OnChangeEmergencyLoanBase")]
     private int emergencyLoanBase;
     [SyncVar(hook = "OnChangeEmergencyLoanInterests")]
     private int emergencyLoanInterests;
+    */
+
+
 
     //REFERNCES
     private string gameID;
@@ -89,7 +96,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
 
     public int GetEndCashBalanceQuarter(int quarter) { return endCashBalanceQuarters[quarter]; }
 
-    public int GetEmergencyLoanInterests() { return emergencyLoanInterests; }
+   // public int GetEmergencyLoanInterests() { return emergencyLoanInterests; }
 
     public void SetDeveloperAccountingUIHandler(DeveloperAccountingUIHandler developerAccountingUIHandler) { this.developerAccountingUIHandler = developerAccountingUIHandler; }
     public void SetCurrentDeveloperAccountingUIHandler(DeveloperAccountingUIComponentHandler currentDeveloperAccountingUIHandler) { this.developerAccountingUIHandlerCurrent = currentDeveloperAccountingUIHandler; }
@@ -127,15 +134,15 @@ public class DeveloperAccountingManager : NetworkBehaviour
 
     public void OnBeginningCashHisotryChanged(SyncList<int>.Operation op, int index, int value)
     {
-        Debug.Log("BC history changed on index " + index + " on value " + value);
+       // Debug.Log("BC history changed on index " + index + " on value " + value);
     }
     public void OnRevenueHistoryChanged(SyncList<int>.Operation op, int index, int value)
     {
-        Debug.Log("Revenue history changed on index " + index + " on value " + value);
+     //   Debug.Log("Revenue history changed on index " + index + " on value " + value);
     }
     public void OnEndCashHistoryChanged(SyncList<int>.Operation op, int index, int value)
     {
-        Debug.Log("EC history changed on index " + index + " on value " + value);
+      //  Debug.Log("EC history changed on index " + index + " on value " + value);
     }
 
 
@@ -151,14 +158,16 @@ public class DeveloperAccountingManager : NetworkBehaviour
         integrabilitySpecialistsSalariesQuarters.Insert(0, 0);
         riskSharingFeesPaidQuarters.Insert(0, 0);
         terminationFeePaidQuarters.Insert(0, 0);
+
         marketingResearchQuarters.Insert(0, 0);
 
         endCashBalanceQuarters.Insert(0, 2000000);
 
         borrowEmergencyLoanQuarters.Insert(0, 0);
         repayEmergencyLoanQuarters.Insert(0, 0);
-        emergencyLoanBaseQuarters.Insert(0, 0);
-        emergencyLoanInterestsQuarters.Insert(0, 0);
+
+        //emergencyLoanBaseQuarters.Insert(0, 0);
+        //emergencyLoanInterestsQuarters.Insert(0, 0);
 
     }
 
@@ -177,41 +186,52 @@ public class DeveloperAccountingManager : NetworkBehaviour
                 integrabilitySpecialistsSalariesQuarters.Insert(i, integrabilitySpecialistsSalariesQuarters[i - 1]);
                 riskSharingFeesPaidQuarters.Insert(i, 0);
                 terminationFeePaidQuarters.Insert(i, 0);
+
                 marketingResearchQuarters.Insert(i, 0);
+
                 repayEmergencyLoanQuarters.Insert(i, 0);
 
                 endCashBalanceQuarters.Insert(i, beginningCashBalanceQuarters[i] - salariesQuarters[i]);
 
-                emergencyLoanBaseQuarters.Insert(i, emergencyLoanBaseQuarters[i - 1] + emergencyLoanInterestsQuarters[i - 1]);
-                emergencyLoanInterestsQuarters.Insert(i, (int)System.Math.Round(((float)emergencyLoanBaseQuarters[i] * 0.1), System.MidpointRounding.AwayFromZero));
-                borrowEmergencyLoanQuarters.Insert(i, emergencyLoanBaseQuarters[i] + emergencyLoanInterestsQuarters[i]);
+
+                borrowEmergencyLoanQuarters.Insert(i, 0);
+                repayEmergencyLoanQuarters.Insert(i, 0);
+
+                // emergencyLoanBaseQuarters.Insert(i, emergencyLoanBaseQuarters[i - 1] + emergencyLoanInterestsQuarters[i - 1]);
+                // emergencyLoanInterestsQuarters.Insert(i, (int)System.Math.Round(((float)emergencyLoanBaseQuarters[i] * 0.1), System.MidpointRounding.AwayFromZero));
+
+                // borrowEmergencyLoanQuarters.Insert(i, emergencyLoanBaseQuarters[i] + emergencyLoanInterestsQuarters[i]);
+
+
             }
         }
 
         beginningCashBalance = endCashBalanceQuarters[quarter - 1];
+        marketingResearch = marketingResearchQuarters[quarter - 1];
 
-        if(repayEmergencyLoanQuarters[quarter - 1] > 0)
+        /*if(repayEmergencyLoanQuarters[quarter - 1] > 0)
         {
             emergencyLoanBase = borrowEmergencyLoanQuarters[quarter - 1] - repayEmergencyLoanQuarters[quarter - 1];
         }
         else
         {
             emergencyLoanBase = borrowEmergencyLoanQuarters[quarter - 1];
-        }
+        }*/
 
-        if (beginningCashBalance < 0)
-        {
-            emergencyLoanBase += beginningCashBalance;
-            emergencyLoanInterests = (int)System.Math.Round(((float)emergencyLoanBase * 0.1), System.MidpointRounding.AwayFromZero);
-            borrowEmergencyLoan = emergencyLoanBase + emergencyLoanInterests ;
-            beginningCashBalance = 0;
-        }
+        /* if (beginningCashBalance < 0)
+         {
+             emergencyLoanBase += beginningCashBalance;
+             emergencyLoanInterests = (int)System.Math.Round(((float)emergencyLoanBase * 0.1), System.MidpointRounding.AwayFromZero);
+             borrowEmergencyLoan = emergencyLoanBase + emergencyLoanInterests ;
+             beginningCashBalance = 0;
+         }*/
 
         repayEmergencyLoan = 0;
 
         UpdateEstimatedRevenueServer();
         UpdateSalariesServer();
-        marketingResearch = 0;
+
+
 
 
 
@@ -219,11 +239,20 @@ public class DeveloperAccountingManager : NetworkBehaviour
         historySaved = false;
     }
 
-    public (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int terminationFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance, int emergencyLoanInterests) GetCorrecpondingQuarterData(int correspondingQuarter)
+    /*public (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int terminationFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance, int emergencyLoanInterests) GetCorrecpondingQuarterData(int correspondingQuarter)
     {
         Debug.Log(currentQuarter);
         return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], salariesQuarters[correspondingQuarter], programmersSalariesQuarters[correspondingQuarter], uiSpecialistsSalariesQuarters[correspondingQuarter], integrabilitySpecialistsSalariesQuarters[correspondingQuarter], riskSharingFeesPaidQuarters[correspondingQuarter], terminationFeePaidQuarters[correspondingQuarter], marketingResearchQuarters[correspondingQuarter],borrowEmergencyLoanQuarters[correspondingQuarter],repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter], emergencyLoanInterestsQuarters[correspondingQuarter]);
+    }*/
+
+    public (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int terminationFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) GetCorrecpondingQuarterData(int correspondingQuarter)
+    {
+        Debug.Log(currentQuarter);
+        return (beginningCashBalanceQuarters[correspondingQuarter], revenueQuarters[correspondingQuarter], salariesQuarters[correspondingQuarter], programmersSalariesQuarters[correspondingQuarter], uiSpecialistsSalariesQuarters[correspondingQuarter], integrabilitySpecialistsSalariesQuarters[correspondingQuarter], riskSharingFeesPaidQuarters[correspondingQuarter], terminationFeePaidQuarters[correspondingQuarter], marketingResearchQuarters[correspondingQuarter], borrowEmergencyLoanQuarters[correspondingQuarter], repayEmergencyLoanQuarters[correspondingQuarter], endCashBalanceQuarters[correspondingQuarter]);
     }
+
+
+
 
     [Server]
     public void UpdateSalariesServer()
@@ -298,6 +327,14 @@ public class DeveloperAccountingManager : NetworkBehaviour
     public void CmdChangeEmergencyLoanRepay(int repayEmergencyLoan)
     {
         this.repayEmergencyLoan = repayEmergencyLoan;
+        ComputeEndCashBalance();
+    }
+
+
+    public void ChangeMarketingResearchServer(int price)
+    {
+        marketingResearch = price;
+
         ComputeEndCashBalance();
     }
 
@@ -404,7 +441,8 @@ public class DeveloperAccountingManager : NetworkBehaviour
             developerAccountingUIHandlerCurrent.UpdateRepayEmergencyLoan(this.repayEmergencyLoan);
         }
     }
-    public void OnChangeEmergencyLoanInterests(int emergencyLoanInterests)
+
+    /*public void OnChangeEmergencyLoanInterests(int emergencyLoanInterests)
     {
         this.emergencyLoanInterests = emergencyLoanInterests;
         if(developerAccountingUIHandlerCurrent != null)
@@ -419,7 +457,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
         {
             //not implementeed yet
         }
-    }
+    }*/
 
     public void OnChangeHistorySaved(bool historySaved)
     {
@@ -460,12 +498,13 @@ public class DeveloperAccountingManager : NetworkBehaviour
         integrabilitySpecialistsSalariesQuarters.Insert(currentQuarter, integrabilitySpecialistsSalaries);
         riskSharingFeesPaidQuarters.Insert(currentQuarter, riskSharingFeesPaid);
         terminationFeePaidQuarters.Insert(currentQuarter, terminationFeePaid);
+
         marketingResearchQuarters.Insert(currentQuarter, marketingResearch);
 
         repayEmergencyLoanQuarters.Insert(currentQuarter, repayEmergencyLoan);
         borrowEmergencyLoanQuarters.Insert(currentQuarter, borrowEmergencyLoan);
-        emergencyLoanBaseQuarters.Insert(currentQuarter, emergencyLoanBase);
-        emergencyLoanInterestsQuarters.Insert(currentQuarter, emergencyLoanInterests);
+       // emergencyLoanBaseQuarters.Insert(currentQuarter, emergencyLoanBase);
+        //emergencyLoanInterestsQuarters.Insert(currentQuarter, emergencyLoanInterests);
 
         endCashBalanceQuarters.Insert(currentQuarter, endCashBalance);
         historySaved = true;

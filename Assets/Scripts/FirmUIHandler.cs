@@ -63,7 +63,17 @@ public class FirmUIHandler : MonoBehaviour
     {
         firmManager = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject().GetComponent<FirmManager>();
         firmManager.SetFirmUIHandler(this);
-        //firmNameIF.text = firmManager.GetFirmName();
+                        
+
+        if (firmManager.GetFirmNameChanged())
+        {
+            firmNameIF.text = firmManager.GetFirmName();
+        }
+        if (firmManager.GetPlayerNameChanged())
+        {
+            playerNameIF.text = firmManager.GetPlayerName();
+        }
+
         firmDescriptionIF.text = firmManager.GetFirmDescription();
 
         if (firmManager.GetFirmNameChanged())

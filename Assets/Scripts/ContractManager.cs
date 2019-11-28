@@ -382,6 +382,8 @@ public class ContractManager : NetworkBehaviour
             }
         }
 
+        //som developer 
+
         if(providerID != playerID)
         {
             foreach (Contract contract in providerCM.GetMyContracts().Values)
@@ -389,10 +391,13 @@ public class ContractManager : NetworkBehaviour
                 if (contract.GetContractFeature().Equals(myContracts[contractID].GetContractFeature()) && contract.GetContractID() != contractID && contract.GetContractState() != ContractState.Rejected)
                 {
                     contract.SetContractState(ContractState.Rejected);
-                    message = firmManager.GetFirmName() + " rejected contract. ";
+                    message = "Provider rejected contract.";
                     contract.AddHistoryRecord(message);
-                    developerCM.RpcRejectContract(contract.GetContractID(), message);
-                    //providerCM.RpcRejectContract(contract.GetContractID(), message);
+                    //developerCM.RpcRejectContract(contract.GetContractID(), message);
+                    ContractManager developerCM2 = GameHandler.allGames[gameID].GetDeveloper(contract.GetDeveloperID()).GetComponent<ContractManager>();
+                    providerCM.RpcRejectContract(contract.GetContractID(), message);
+                    developerCM2.RpcRejectContract(contract.GetContractID(), message);
+
                     //SCHEDULE
                     if (developerCM.GetScheduleManager() != null)
                     {

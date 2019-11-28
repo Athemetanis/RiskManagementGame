@@ -205,6 +205,7 @@ public class InstructorIndividualStatsUIHandler : MonoBehaviour
             riskQ3Handler.SetUpQuarterMatrix(rm.GetRisksQ(3), rm.GetLikelihoodQ(3), rm.GetImpactQ(3), rm.GetMitigationQ(3), rm.GetColorsQ(3));
             riskQ4Handler.SetUpQuarterRisksDescriptions(rm.GetRisk1DescriptionQ(4),rm.GetRisk2DescriptionQ(4), rm.GetRisk3DescriptionQ(4));
             riskQ4Handler.SetUpQuarterMatrix(rm.GetRisksQ(4), rm.GetLikelihoodQ(4), rm.GetImpactQ(4), rm.GetMitigationQ(4), rm.GetColorsQ(4));
+            riskQ5Handler.SetUpQuarterRisksDescriptions(rm.GetRisk1DescriptionQ(5), rm.GetRisk2DescriptionQ(5), rm.GetRisk3DescriptionQ(5));
             if (playerRole == PlayerRoles.Developer)
             {
                 developerFirmContent.SetActive(true);
@@ -232,8 +233,6 @@ public class InstructorIndividualStatsUIHandler : MonoBehaviour
                 providerFirmStrategiesHandler.SetDevelopmentStrategies(fm.GetDevelopmentStrategies());
             }
         }
-
-
     }
 
 

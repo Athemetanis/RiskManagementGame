@@ -69,22 +69,23 @@ public class DeveloperResearchUIComponentHandler : MonoBehaviour
 
         if (researchManager.GetBuyCompertitorsResearchQuarter(correspondingResearchQuarter))
         {
+            competitorsResearchContainer.SetActive(true);
+        }
+        else
+        {
+            notAvialableInfo.text += "Research on competitors was not bought for this quarter.";
+        }
+        if (researchManager.GetBuyPossiblePartnersResearchQuarter(correspondingResearchQuarter))
+        {
             partnersResearchContainer.SetActive(true);
         }
         else
         {
-            notAvialableInfo.text += "Research on possible business partners was not bought for this quarter.";
-        }
-        if (researchManager.GetBuyPossiblePartnersResearchQuarter(correspondingResearchQuarter))
-        {
-            competitorsResearchContainer.SetActive(true);
-        }
-        else
-        {   if(notAvialableInfo.text.Length != 0)
+            if (notAvialableInfo.text.Length != 0)
             {
                 notAvialableInfo.text += " \n ";
             }
-            notAvialableInfo.text += "Research on competitors was not bought for this quarter.";
+            notAvialableInfo.text += "Research on possible business partners was not bought for this quarter.";
         }
 
     }

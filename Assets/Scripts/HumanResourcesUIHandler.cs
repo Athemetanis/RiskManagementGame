@@ -56,7 +56,8 @@ public class HumanResourcesUIHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
+        myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
+
         humanResourcesManager = myPlayerDataObject.GetComponent<HumanResourcesManager>();
         humanResourcesManager.SetHumanResourcesUIHandler(this);
         UpdateAllElements();
@@ -87,18 +88,42 @@ public class HumanResourcesUIHandler : MonoBehaviour
     public void SubstractUISpecialist() { humanResourcesManager.SubstractUISpecialist(); }
     public void SubstarctIntegrability() { humanResourcesManager.SubstarctIntegrabilitySpecialist(); }
 
-    public void HireProgrammersNextQuarter(TMP_InputField hireProgrammers)
-    {
-        humanResourcesManager.HireProgrammersNextQuarter(Int32.Parse(hireProgrammers.text));
-        
+    public void HireProgrammersNextQuarter()
+    {   
+        if(Int32.Parse(hireProgrammersCountIF.text) > 10)
+        {
+            humanResourcesManager.HireProgrammersNextQuarter(10);
+        }
+        else
+        {
+            humanResourcesManager.HireProgrammersNextQuarter(Int32.Parse(hireProgrammersCountIF.text));
+        }   
     }
-    public void HireUISPecialistsNextQuarter(TMP_InputField hireUISpecialists)
+
+    public void HireUISPecialistsNextQuarter()
     {
-        humanResourcesManager.HireUISPecialistsNextQuarter(Int32.Parse(hireUISpecialists.text));
+
+        if (Int32.Parse(hireUISpecialistsCountIF.text) > 10)
+        {
+            humanResourcesManager.HireUISPecialistsNextQuarter(10);
+        }
+        else
+        {
+            humanResourcesManager.HireUISPecialistsNextQuarter(Int32.Parse(hireUISpecialistsCountIF.text));
+        }
+
     }
-    public void HireIntegrabilitySpecialistsNextQuarter(TMP_InputField hireIntegrabilitySpecialists)
+    public void HireIntegrabilitySpecialistsNextQuarter()
     {
-        humanResourcesManager.HireIntegrabilitySpecialistsNextQuarter(Int32.Parse(hireIntegrabilitySpecialists.text));
+        if (Int32.Parse(hireIntegrabilitySpecialistsCountIF.text) > 10)
+        {
+            humanResourcesManager.HireIntegrabilitySpecialistsNextQuarter(10);
+        }
+        else
+        {
+
+            humanResourcesManager.HireIntegrabilitySpecialistsNextQuarter(Int32.Parse(hireIntegrabilitySpecialistsCountIF.text));
+        }
     }
 
     public void ChangeProgrammmerSalary() //triggered by UI
@@ -143,6 +168,10 @@ public class HumanResourcesUIHandler : MonoBehaviour
         UpdateProgrammerSalarySlider(humanResourcesManager.GetProgrammerSalaryPerMonth());
         UpdateUISpecialistSalarySlider(humanResourcesManager.GetUISpecialistSalaryPerMonth());
         UpdateIntegrabilitySpecialistSalarySlider(humanResourcesManager.GetIntegrabilitySpecialistSalaryPerMonth());
+
+        UpdateHireProgrammersCount(0);
+        UpdateHireUISpecialistsCount(0);
+        UpdateHireIntegrabilitySpecialistsCount(0);
         initialized = true;
     }
 
@@ -220,7 +249,7 @@ public class HumanResourcesUIHandler : MonoBehaviour
     }
 
     public void UpdateHireProgrammersCount(int hireProgrammersCount) { this.hireProgrammersCountIF.text = hireProgrammersCount.ToString(); }
-    public void UpdateHireUISpecialistsCount(int hireUISPecialistsCount) { this.hireUISpecialistsCountIF.text = hireUISpecialistsCountIF.ToString(); }
+    public void UpdateHireUISpecialistsCount(int hireUISpecialistsCount) { this.hireUISpecialistsCountIF.text = hireUISpecialistsCount.ToString(); }
     public void UpdateHireIntegrabilitySpecialistsCount(int hireIntegrabilitySpecialistsCount) { this.hireIntegrabilitySpecialistsCountIF.text = hireIntegrabilitySpecialistsCount.ToString(); }
 
     public void UpdateProgrammerSalarySlider(int programmerSalary)

@@ -14,7 +14,13 @@ public class ContractUIHandler : MonoBehaviour
     public GameObject contractContentUI;
 
     public GameObject developerListContent;
-    public GameObject developerUIComponentPrefab;
+    public GameObject providerListContent;
+    public GameObject playerFirmUIComponentPrefab;
+
+
+
+
+
 
     public GameObject contractOverviewUIComponentPrefab;
     public GameObject overviewContractListContent;
@@ -77,6 +83,9 @@ public class ContractUIHandler : MonoBehaviour
         {
             UpdateUIContractListsContents();
             UpdateResultContractListContent();
+            UpdateProviderFirmList(GameHandler.allGames[contractManager.GetGameID()].GetListProviderFirmNameDescription());
+
+
         }
     }
 
@@ -162,7 +171,7 @@ public class ContractUIHandler : MonoBehaviour
 
         foreach (KeyValuePair<string, string> developerFirm in developerFirmNameDescription)
         {
-            GameObject developerUIComponent = Instantiate(developerUIComponentPrefab);
+            GameObject developerUIComponent = Instantiate(playerFirmUIComponentPrefab);
             developerUIComponent.transform.SetParent(developerListContent.transform, false);
             DeveloperUIComponentHandler developerUIComponentHandler = developerUIComponent.GetComponent<DeveloperUIComponentHandler>();
             developerUIComponentHandler.SetFirmName(developerFirm.Key);
@@ -171,6 +180,35 @@ public class ContractUIHandler : MonoBehaviour
         }
       
     }
+
+    public void UpdateProviderFirmList(Dictionary<string, string> providerFirmNameDescription)
+    {
+        foreach (Transform child in providerListContent.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        foreach (KeyValuePair<string, string> providerFirm in providerFirmNameDescription)
+        {
+            GameObject providerUIComponent = Instantiate(playerFirmUIComponentPrefab);
+            providerUIComponent.transform.SetParent(providerListContent.transform, false);
+            DeveloperUIComponentHandler providerUIComponentHandler = providerUIComponent.GetComponent<DeveloperUIComponentHandler>();
+            providerUIComponentHandler.SetFirmName(providerFirm.Key);
+            providerUIComponentHandler.SetFirmDescription(providerFirm.Value);
+            providerUIComponent.SetActive(true);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     public void EnableContractCreation() //called from UI
     {

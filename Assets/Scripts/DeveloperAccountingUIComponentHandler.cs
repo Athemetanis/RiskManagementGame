@@ -42,7 +42,7 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
 
     public void GetHistoryData()
     { 
-        (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int terminationFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance, int emergencyLoanInterests) = developerAccountingManager.GetCorrecpondingQuarterData(correspondingAccountingQuarter);
+        (int beginningCashBalance, int revenue, int salaries, int programmersSalaries, int uiSpecialistsSalaries, int integrabilitySpecialistsSalaries, int riskSharingFeePaid, int terminationFeePaid, int marketingResearch, int borrowEmergencyLoan, int repayEmergencyLoan, int endCashBalance) = developerAccountingManager.GetCorrecpondingQuarterData(correspondingAccountingQuarter);
         beginningCashBalanceText.text = beginningCashBalance.ToString("n0");
         revenueText.text = revenue.ToString("n0");
         salariesText.text = salaries.ToString("n0");
@@ -53,7 +53,7 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
         terminationFeePaidText.text = terminationFeePaid.ToString("n0");
         marketingResearchText.text = marketingResearch.ToString("n0");
         borrowEmergencyLoanText.text = borrowEmergencyLoan.ToString("n0");
-        emergencyLoanInterestsText.text = emergencyLoanInterests.ToString("n0");
+        //emergencyLoanInterestsText.text = emergencyLoanInterests.ToString("n0");
         //repayEmergencyLoanText.text = repayEmergencyLoan.ToString("n0");
         repayEmergencyLoanIF.enabled = false;
         endCashBalanceText.text = endCashBalance.ToString("n0");
@@ -83,7 +83,7 @@ public class DeveloperAccountingUIComponentHandler : MonoBehaviour
         marketingResearchText.text = developerAccountingManager.GetMarketingResearch().ToString("n0");
         borrowEmergencyLoanText.text = developerAccountingManager.GetBorrowEmergencyLoan().ToString("n0");
         repayEmergencyLoanIF.text = developerAccountingManager.GetRepayEmergencyLoan().ToString("n0");
-        emergencyLoanInterestsText.text = developerAccountingManager.GetEmergencyLoanInterests().ToString("n0");
+        //emergencyLoanInterestsText.text = developerAccountingManager.GetEmergencyLoanInterests().ToString("n0");
         endCashBalanceText.text = developerAccountingManager.GetEndCashBalance().ToString("n0");
         initialized = true;
     }

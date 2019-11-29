@@ -89,9 +89,17 @@ public class HumanResourcesUIHandler : MonoBehaviour
     public void SubstarctIntegrability() { humanResourcesManager.SubstarctIntegrabilitySpecialist(); }
 
     public void HireProgrammersNextQuarter()
-    {   
-        if(Int32.Parse(hireProgrammersCountIF.text) > 10)
+    {
+
+        Debug.Log("I am hireing " + hireProgrammersCountIF.text);
+        if (hireProgrammersCountIF.text  == "" )
         {
+            hireProgrammersCountIF.text = ("0");
+           humanResourcesManager.HireProgrammersNextQuarter(0);
+        }
+        if (Int32.Parse(hireProgrammersCountIF.text) > 10 || Int32.Parse(hireProgrammersCountIF.text) < 0)
+        {
+            hireProgrammersCountIF.text = ("10");
             humanResourcesManager.HireProgrammersNextQuarter(10);
         }
         else
@@ -102,10 +110,16 @@ public class HumanResourcesUIHandler : MonoBehaviour
 
     public void HireUISPecialistsNextQuarter()
     {
-
-        if (Int32.Parse(hireUISpecialistsCountIF.text) > 10)
+        Debug.Log("I am hireing " + hireUISpecialistsCountIF.text);
+        if (hireUISpecialistsCountIF.text == "")
         {
-            humanResourcesManager.HireUISPecialistsNextQuarter(10);
+            hireUISpecialistsCountIF.text = ("0");
+            humanResourcesManager.HireUISPecialistsNextQuarter(0);
+        }
+        if (Int32.Parse(hireUISpecialistsCountIF.text) > 10  || Int32.Parse(hireUISpecialistsCountIF.text) < 0 )
+        {
+            hireUISpecialistsCountIF.text = ("10");
+           humanResourcesManager.HireUISPecialistsNextQuarter(10);
         }
         else
         {
@@ -115,8 +129,15 @@ public class HumanResourcesUIHandler : MonoBehaviour
     }
     public void HireIntegrabilitySpecialistsNextQuarter()
     {
-        if (Int32.Parse(hireIntegrabilitySpecialistsCountIF.text) > 10)
+        Debug.Log("I am hireing " + hireIntegrabilitySpecialistsCountIF.text);
+        if (hireIntegrabilitySpecialistsCountIF.text == "")
         {
+            hireIntegrabilitySpecialistsCountIF.text = "0";
+            humanResourcesManager.HireIntegrabilitySpecialistsNextQuarter(0);
+        }
+        if (Int32.Parse(hireIntegrabilitySpecialistsCountIF.text) > 10  || Int32.Parse(hireIntegrabilitySpecialistsCountIF.text) < 0)
+        {
+            hireIntegrabilitySpecialistsCountIF.text = "10";
             humanResourcesManager.HireIntegrabilitySpecialistsNextQuarter(10);
         }
         else

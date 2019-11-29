@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class TabUIHandler : MonoBehaviour
 {
+    public Toggle gameBasicsTab;
     public Toggle welcomeTab;
     public Toggle marketOverviewTab;
     public Toggle introQ2Tab;
@@ -15,6 +16,7 @@ public class TabUIHandler : MonoBehaviour
 
     public GameObject gameEnd;
 
+    public GameObject gameBasicsContent;
     public GameObject welcomeContent;
     public GameObject marketOverviewContent;
     public GameObject introQ2Content;
@@ -69,7 +71,12 @@ public class TabUIHandler : MonoBehaviour
 
         if (currentQuarter == 1)
         {
-            welcomeTab.isOn = true;
+            gameBasicsTab.isOn = true;
+            gameBasicsTab.gameObject.SetActive(true);
+            gameBasicsContent.SetActive(true);
+
+
+            welcomeTab.isOn = false;
             welcomeTab.gameObject.SetActive(true);
             marketOverviewTab.isOn = false;
             marketOverviewTab.gameObject.SetActive(true);
@@ -86,7 +93,7 @@ public class TabUIHandler : MonoBehaviour
             endEvaluationTab.isOn = false;
             endEvaluationTab.gameObject.SetActive(false);
 
-            welcomeContent.SetActive(true);
+            welcomeContent.SetActive(false);
             marketOverviewContent.SetActive(false);
             introQ2Content.SetActive(false);
             introQ3Content.SetActive(false);
@@ -95,7 +102,11 @@ public class TabUIHandler : MonoBehaviour
 
         }
         if (currentQuarter == 2)
-        {               
+        {
+            gameBasicsTab.isOn = false;
+           // gameBasicsTab.gameObject.SetActive(false);
+            gameBasicsContent.SetActive(false);
+
             welcomeTab.isOn = false;
             welcomeTab.gameObject.SetActive(false);
             marketOverviewTab.isOn = false;
@@ -124,6 +135,10 @@ public class TabUIHandler : MonoBehaviour
         }
         if (currentQuarter == 3)
         {
+            gameBasicsTab.isOn = false;
+           // gameBasicsTab.gameObject.SetActive(false);
+            gameBasicsContent.SetActive(false);
+
             welcomeTab.isOn = false;
             welcomeTab.gameObject.SetActive(false);
             marketOverviewTab.isOn = false;
@@ -149,6 +164,10 @@ public class TabUIHandler : MonoBehaviour
         }
         if (currentQuarter == 4)
         {
+            gameBasicsTab.isOn = false;
+           // gameBasicsTab.gameObject.SetActive(false);
+            gameBasicsContent.SetActive(false);
+
             welcomeTab.isOn = false;
             welcomeTab.gameObject.SetActive(false);
             marketOverviewTab.isOn = false;
@@ -176,6 +195,10 @@ public class TabUIHandler : MonoBehaviour
 
         if (currentQuarter == 5)
         {
+            gameBasicsTab.isOn = false;
+            //gameBasicsTab.gameObject.SetActive(false);
+            gameBasicsContent.SetActive(false);
+
             finalEvaluationUIHandler.GenerateContent();
 
             welcomeTab.isOn = false;

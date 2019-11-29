@@ -748,22 +748,20 @@ public class ContractManager : NetworkBehaviour
         Debug.Log("ContractClearance on client done");
     }
 
-    public void ContractClearance() 
-    { 
+    public void ContractClearance()
+    {
         foreach (Contract contract in myContracts.Values)
         {
-            if (contract.GetContractState() == ContractState.Terminated || contract.GetContractState() == ContractState.Completed)
-            {
-                myContractsHistory.Add(contract.GetContractID(), contract);
-            }
-
+            //if (contract.GetContractState() == ContractState.Terminated || contract.GetContractState() == ContractState.Completed)
+            { }
+            myContractsHistory.Add(contract.GetContractID(), contract);
         }
         myContracts.Clear();
         if (contractUIHandler != null)
         {
             contractUIHandler.UpdateResultContractListContent();
             contractUIHandler.UpdateUIContractListsContents();
-            if(playerRole == PlayerRoles.Provider)
+            if (playerRole == PlayerRoles.Provider)
             {
                 contractUIHandler.UpdateContractOverview();
             }
@@ -771,11 +769,11 @@ public class ContractManager : NetworkBehaviour
         if (isServer)
         {
             foreach (Contract contract in myContractsHistory.Values)
-            {   
-                if( !myContractProviderHistory.ContainsKey(contract.GetContractID()))
+            {
+                if (!myContractProviderHistory.ContainsKey(contract.GetContractID()))
                 {
                     myContractProviderHistory.Add(contract.GetContractID(), contract.GetProviderID());
-                }               
+                }
             }
         }
     }

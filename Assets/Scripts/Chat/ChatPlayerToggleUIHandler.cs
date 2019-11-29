@@ -36,6 +36,7 @@ public class ChatPlayerToggleUIHandler : MonoBehaviour
             chatUIHandler.GenerateChatContent(playerID);
             chatUIHandler.SetRecipient(playerID);
         }
+
     }
 
     public void ShowNotificationImage()

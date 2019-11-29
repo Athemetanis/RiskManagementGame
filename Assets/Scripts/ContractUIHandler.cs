@@ -199,17 +199,6 @@ public class ContractUIHandler : MonoBehaviour
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public void EnableContractCreation() //called from UI
     {
         if (selectedFeatureDropdown.options.Count != 0 && selectedDeveloperDropdown.options.Count != 0)
@@ -235,7 +224,9 @@ public class ContractUIHandler : MonoBehaviour
                 GameObject contractOverviewUIComponent = Instantiate(contractOverviewUIComponentPrefab);
                 contractOverviewUIComponent.transform.SetParent(overviewContractListContent.transform, false);
                 ContractOverviewUIComponentHandler contractOverviewUIComponentHandler = contractOverviewUIComponent.GetComponent<ContractOverviewUIComponentHandler>();
-                contractOverviewUIComponentHandler.SetUpContractOverview(contract.GetContractID(), contract.GetContractFeature().nameID, contract.GetContractDelivery(), contract.GetContractPrice(), contract.GetContractFeature().individualCustomers, contract.GetContractFeature().businessCustomers, contract.GetContractFeature().enterpriseCustomers, marketingManager.GetIndividualsPrice(), marketingManager.GetBusinessPrice(), marketingManager.GetEnterprisePrice());
+                string developerName = contractManager.GetFirmName(contract.GetDeveloperID());
+
+                contractOverviewUIComponentHandler.SetUpContractOverview(developerName, contract.GetContractState(), contract.GetContractFeature().nameID, contract.GetContractDelivery(), contract.GetContractPrice(), contract.GetContractFeature().individualCustomers, contract.GetContractFeature().businessCustomers, contract.GetContractFeature().enterpriseCustomers, marketingManager.GetIndividualsPrice(), marketingManager.GetBusinessPrice(), marketingManager.GetEnterprisePrice());
             }
         }
     }
@@ -260,6 +251,7 @@ public class ContractUIHandler : MonoBehaviour
             contractUIComponentHandler.SetContractUIHandler(this);
             contractUIComponentHandler.SetContractIDText(contract.GetContractID());
             contractUIComponentHandler.SetStatus(contract.GetContractState().ToString());
+            contractUIComponentHandler.SetFeatureID(contract.GetContractFeature().nameID);
 
             //PROVIDER
             if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
@@ -328,6 +320,7 @@ public class ContractUIHandler : MonoBehaviour
             ContractUIComponentHandler contractUIComponentHandler = contractUIComponent.GetComponent<ContractUIComponentHandler>();
             contractUIComponentHandler.SetContractUIHandler(this);
             contractUIComponentHandler.SetContractIDText(contract.GetContractID());
+            contractUIComponentHandler.SetFeatureID(contract.GetContractFeature().nameID);
             contractUIComponentHandler.SetStatus(contract.GetContractState().ToString());
             if (contractManager.GetPlayerRole() == PlayerRoles.Provider)
             {
@@ -355,6 +348,9 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.SetDeveloperFirmText(contractManager.GetFirmName(contract.GetDeveloperID()));
         contractPreviewUIHandler.SetProviderFirmText(contractManager.GetFirmName(contract.GetProviderID()));
         contractPreviewUIHandler.SetFeatureText(contract.GetContractFeature().nameID);
+        contractPreviewUIHandler.SetFunctionality(contract.GetContractFeature().functionality);
+        contractPreviewUIHandler.SetIntegrability(contract.GetContractFeature().integrability);
+        contractPreviewUIHandler.SetUserFriendliness(contract.GetContractFeature().userfriendliness);
         contractPreviewUIHandler.SetDelivery(contract.GetContractDelivery());
         contractPreviewUIHandler.SetPrice(contract.GetContractPrice());
         contractPreviewUIHandler.SetState(contract.GetContractState());
@@ -415,6 +411,9 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.SetDeveloperFirmText(contractManager.GetFirmName(contract.GetDeveloperID()));
         contractPreviewUIHandler.SetProviderFirmText(contractManager.GetFirmName(contract.GetProviderID()));
         contractPreviewUIHandler.SetFeatureText(contract.GetContractFeature().nameID);
+        contractPreviewUIHandler.SetFunctionality(contract.GetContractFeature().functionality);
+        contractPreviewUIHandler.SetIntegrability(contract.GetContractFeature().integrability);
+        contractPreviewUIHandler.SetUserFriendliness(contract.GetContractFeature().userfriendliness);
         contractPreviewUIHandler.SetDelivery(contract.GetContractDelivery());
         contractPreviewUIHandler.SetPrice(contract.GetContractPrice());
         contractPreviewUIHandler.SetState(contract.GetContractState());
@@ -476,6 +475,9 @@ public class ContractUIHandler : MonoBehaviour
         contractPreviewUIHandler.SetDeveloperFirmText(contractManager.GetFirmName(contract.GetDeveloperID()));
         contractPreviewUIHandler.SetProviderFirmText(contractManager.GetFirmName(contract.GetProviderID()));
         contractPreviewUIHandler.SetFeatureText(contract.GetContractFeature().nameID);
+        contractPreviewUIHandler.SetFunctionality(contract.GetContractFeature().functionality);
+        contractPreviewUIHandler.SetIntegrability(contract.GetContractFeature().integrability);
+        contractPreviewUIHandler.SetUserFriendliness(contract.GetContractFeature().userfriendliness);
         contractPreviewUIHandler.SetState(contract.GetContractState());
         contractPreviewUIHandler.GenerateHistoryRecord(contract.GetContractHistory());
         contractPreviewUIHandler.SetAgreedPriceText(contract.GetContractPrice());

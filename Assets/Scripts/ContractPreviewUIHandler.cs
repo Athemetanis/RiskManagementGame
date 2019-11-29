@@ -11,6 +11,11 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public TextMeshProUGUI developerFirmText;
     public TextMeshProUGUI providerFirmText;
     public TextMeshProUGUI featureText;
+
+    public TextMeshProUGUI functionalityText;
+    public TextMeshProUGUI integrabilityText;
+    public TextMeshProUGUI userfreindlinessText;
+
     public TextMeshProUGUI stateText;
     public TMP_InputField priceIF;      
     public TMP_InputField deliveryIF;
@@ -55,6 +60,11 @@ public class ContractPreviewUIHandler : MonoBehaviour
     public void SetDeveloperFirmText(string developerFirmName) { developerFirmText.text = developerFirmName; }
     public void SetProviderFirmText(string providerFirmName) { providerFirmText.text = providerFirmName; }
     public void SetFeatureText(string featureName) { featureText.text = featureName; }
+    public void SetFunctionality(int func) { functionalityText.text = func.ToString(); }
+    public void SetIntegrability(int integrab) { integrabilityText.text = integrab.ToString(); }
+    public void SetUserFriendliness(int userfriendliness) { userfreindlinessText.text = userfriendliness.ToString(); }
+
+
     public void SetPrice(int price) { this.price = price.ToString(); }
     public void SetDelivery(int delivery) { this.delivery = delivery.ToString(); }
     public void SetContractUIHandler(ContractUIHandler contractUIHandler) { this.contractUIHandler = contractUIHandler; }

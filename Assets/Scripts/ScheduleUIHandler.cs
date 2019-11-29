@@ -80,7 +80,7 @@ public class ScheduleUIHandler : MonoBehaviour
                     ScheduluedFeatureUIComponentHandler scheduledFeatureUIComponentHandler = scheduledFeatureUIComponent.GetComponent<ScheduluedFeatureUIComponentHandler>();
                     RectTransform developmentTimeVisualRepresenatation = scheduledFeatureUIComponentHandler.GetDevelopmentTimeRectangleRT();
                     scheduledFeatureUIComponentHandler.GetFeatureImage().color = Color.red;
-                    scheduledFeatureUIComponentHandler.GetFeatureLabel().text = scheduledFeature.GetContractID() + '\n' + scheduledFeature.GetFeature().nameID;
+                    scheduledFeatureUIComponentHandler.GetFeatureLabel().text = GameHandler.allGames[gameID].GetFirmName(scheduledFeature.GetProviderFirmID())+ '\n' + scheduledFeature.GetFeature().nameID;
                     developmentTimeVisualRepresenatation.anchoredPosition = new Vector2(previousFeatureEnd * 10, 0);
                     developmentTimeVisualRepresenatation.sizeDelta = new Vector2(600 - (previousFeatureEnd * 10), 0);
                     previousFeatureEnd = endDevelopmentTimeOfFeature;
@@ -93,7 +93,7 @@ public class ScheduleUIHandler : MonoBehaviour
                     ScheduluedFeatureUIComponentHandler scheduledFeatureUIComponentHandler = scheduledFeatureUIComponent.GetComponent<ScheduluedFeatureUIComponentHandler>();
                     RectTransform developmentTimeVisualRepresenatation = scheduledFeatureUIComponentHandler.GetDevelopmentTimeRectangleRT();
                     scheduledFeatureUIComponentHandler.GetFeatureImage().color = Color.green;
-                    scheduledFeatureUIComponentHandler.GetFeatureLabel().text = scheduledFeature.GetContractID() + '\n' + scheduledFeature.GetFeature().nameID;
+                    scheduledFeatureUIComponentHandler.GetFeatureLabel().text = GameHandler.allGames[gameID].GetFirmName(scheduledFeature.GetProviderFirmID()) + '\n' + scheduledFeature.GetFeature().nameID;
                     developmentTimeVisualRepresenatation.anchoredPosition = new Vector2(previousFeatureEnd * 10, 0);
                     developmentTimeVisualRepresenatation.sizeDelta = new Vector2(developmentTimeOfFeature * 10, 0);
                     previousFeatureEnd = endDevelopmentTimeOfFeature;

@@ -7,6 +7,7 @@ using TMPro;
 public class ContractOverviewUIComponentHandler : MonoBehaviour
 {
     public TextMeshProUGUI contractIDText;
+    public TextMeshProUGUI contractStateText;
     public TextMeshProUGUI featureIDText;
     public TextMeshProUGUI deliveryTimeText;
     public TextMeshProUGUI priceText;
@@ -28,8 +29,9 @@ public class ContractOverviewUIComponentHandler : MonoBehaviour
         
     }
 
-    public void SetUpContractOverview(string contractID, string featureID, int deliveryTime, int price,  int individualCustomersOverallCount, int businessCustomerOverallCount, int enterpriseCustomersOverallCount, int individualCustomersPrice, int businessCustomersPrice, int enterpriseCustomersPrice)
+    public void SetUpContractOverview(string contractID, ContractState contractState, string featureID, int deliveryTime, int price,  int individualCustomersOverallCount, int businessCustomerOverallCount, int enterpriseCustomersOverallCount, int individualCustomersPrice, int businessCustomersPrice, int enterpriseCustomersPrice)
     {
+        contractStateText.text = contractState.ToString();
         contractIDText.text = contractID;
         featureIDText.text = featureID;
         deliveryTimeText.text = deliveryTime.ToString();

@@ -139,12 +139,12 @@ public class FeatureManager : NetworkBehaviour
         allFeatures.Add("feature5", new Feature("feature5", 0, 1, 6, 70, 1));
         allFeatures.Add("feature6", new Feature("feature6", 0, 8, 2, 100, 1));
 
-        allFeatures.Add("feature7", new Feature("feature1", 8, 8, 0, 160, 1));
-        allFeatures.Add("feature8", new Feature("feature2", 0, 0, 12, 120, 1));
-        allFeatures.Add("feature9", new Feature("feature3", 14, 0, 0, 140, 1));
-        allFeatures.Add("feature10", new Feature("feature4", 0, 12, 0, 120, 1));
-        allFeatures.Add("feature11", new Feature("feature5", 0, 5, 5, 100, 1));
-        allFeatures.Add("feature12", new Feature("feature6", 0, 8, 0, 80, 1));
+        allFeatures.Add("feature7", new Feature("feature7", 8, 8, 0, 160, 1));
+        allFeatures.Add("feature8", new Feature("feature8", 0, 0, 12, 120, 1));
+        allFeatures.Add("feature9", new Feature("feature9", 14, 0, 0, 140, 1));
+        allFeatures.Add("feature10", new Feature("feature10", 0, 12, 0, 120, 1));
+        allFeatures.Add("feature11", new Feature("feature11", 0, 5, 5, 100, 1));
+        allFeatures.Add("feature12", new Feature("feature12", 0, 8, 0, 80, 1));
 
 
 

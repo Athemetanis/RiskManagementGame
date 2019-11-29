@@ -8,22 +8,35 @@ public class ContractUIComponentHandler : MonoBehaviour
 {   
     //VARIABLES
     public TextMeshProUGUI partnersNameText;
+    public TextMeshProUGUI featureIDText;
     public TextMeshProUGUI contractIDText;
     public TextMeshProUGUI playersTurnText;
     public TextMeshProUGUI statusText;
     public Button editButton;
     public Button detailButton;
     public Button resultButton;
-
+    
     
 
     private ContractUIHandler contractUIHandler;
 
     //GETTERS & SETTERS
     public void SetPartnersNameText(string partnersName) { partnersNameText.text = partnersName; }
+    public void SetFeatureID(string featureID) { featureIDText.text = featureID; }
     public void SetContractIDText(string contractID) { contractIDText.text = contractID; }
     public void SetPlayerTurnText(string playerTurn) { playersTurnText.text = playerTurn; }
-    public void SetStatus(string status) { statusText.text = status; }
+    public void SetStatus(string status)
+    {
+        if(status  == ContractState.Accepted.ToString())
+        {
+            statusText.color = Color.green;
+        }
+        if(status == ContractState.Rejected.ToString() || status == ContractState.Terminated.ToString())
+        {
+            statusText.color = Color.red;
+        }
+        statusText.text = status;
+    }
     public void SetContractUIHandler(ContractUIHandler contractUIHandler){ this.contractUIHandler = contractUIHandler; }
     
     //Methods

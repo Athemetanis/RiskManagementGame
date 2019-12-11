@@ -9,6 +9,8 @@ public class ChatPlayerToggleUIHandler : MonoBehaviour
     public TextMeshProUGUI firmName;
     public TextMeshProUGUI playerName;
 
+    //
+
     private Toggle playerToggle;
     private string playerID;
 
@@ -35,6 +37,13 @@ public class ChatPlayerToggleUIHandler : MonoBehaviour
         {
             chatUIHandler.GenerateChatContent(playerID);
             chatUIHandler.SetRecipient(playerID);
+
+            chatUIHandler.EnableSendButton();
+
+        }
+        else
+        {
+            chatUIHandler.DisablSendButton();
         }
 
     }

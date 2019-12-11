@@ -104,7 +104,7 @@ public class CustomersManager : NetworkBehaviour
     public override void OnStartServer()
     {
         Debug.Log("customersManager ON");
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         contractManager = this.gameObject.GetComponent<ContractManager>();
         providerAccountingmanager = this.gameObject.GetComponent<ProviderAccountingManager>();

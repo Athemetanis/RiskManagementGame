@@ -8,8 +8,9 @@ public class NetworkUIHandler : MonoBehaviour
 {
     public CustomNetworkManager manager;
 
-   // public GameObject networkUIgameObject;
+    // public GameObject networkUIgameObject;
 
+    public GameObject quitButton;
     public GameObject startServerUI;
     public GameObject connectingUI;
     public GameObject connectedUI;
@@ -47,7 +48,9 @@ public class NetworkUIHandler : MonoBehaviour
         {
             if (!NetworkClient.active)
             {
+                quitButton.SetActive(true);
                 startServerUI.SetActive(true);
+
                 connectedUI.SetActive(false);
                 connectingUI.SetActive(false);
                 serverActive.SetActive(false);
@@ -55,6 +58,7 @@ public class NetworkUIHandler : MonoBehaviour
             }
             else
             {
+                quitButton.SetActive(false);
                 connectingUI.SetActive(true);
                 startServerUI.SetActive(false);
                 connectedUI.SetActive(false);
@@ -66,6 +70,7 @@ public class NetworkUIHandler : MonoBehaviour
         {
             if (NetworkClient.isConnected)
             {
+                quitButton.SetActive(false);
                 connectedUI.SetActive(true);
                 connectingUI.SetActive(false);
                 startServerUI.SetActive(false);
@@ -73,6 +78,7 @@ public class NetworkUIHandler : MonoBehaviour
             }
             if (NetworkServer.active)
             {
+                quitButton.SetActive(false);
                 connectedUI.SetActive(false);
                 connectingUI.SetActive(false);
                 startServerUI.SetActive(false);
@@ -122,6 +128,12 @@ public class NetworkUIHandler : MonoBehaviour
         }
         manager.StopHost();
       //  Destroy(networkUIgameObject);
+    }
+
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 
            

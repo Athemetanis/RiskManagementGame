@@ -11,7 +11,7 @@ public class SubmitDataManager : NetworkBehaviour
     string gameID;
     //REFERENCES
     private ContractManager contractManager;
-    private PlayerData playerData;
+    private PlayerManager playerData;
     private FeatureManager featureManager;
     private SubmitDataUIHandler submitDataUIHandler;
 
@@ -26,16 +26,16 @@ public class SubmitDataManager : NetworkBehaviour
     public override void OnStartServer()
     {
         submitData = false;
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         contractManager = this.gameObject.GetComponent<ContractManager>();
-        playerData = this.gameObject.GetComponent<PlayerData>();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
         featureManager = this.gameObject.GetComponent<FeatureManager>();
     }
 
     void StartClient()
     {
         contractManager = this.gameObject.GetComponent<ContractManager>();
-        playerData = this.gameObject.GetComponent<PlayerData>();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
         featureManager = this.gameObject.GetComponent<FeatureManager>();
     }
 

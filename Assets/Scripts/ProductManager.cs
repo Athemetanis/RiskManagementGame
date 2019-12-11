@@ -37,7 +37,7 @@ public class ProductManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         contractManager = this.gameObject.GetComponent<ContractManager>();
         featureManager = this.gameObject.GetComponent<FeatureManager>();

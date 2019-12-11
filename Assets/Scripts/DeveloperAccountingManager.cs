@@ -75,7 +75,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
 
     private HumanResourcesManager humanResourcesManager;
     private ContractManager contractManager;
-    private PlayerData playerData;
+    private PlayerManager playerData;
 
     private DeveloperAccountingUIHandler developerAccountingUIHandler;
     private DeveloperAccountingUIComponentHandler developerAccountingUIHandlerCurrent;
@@ -104,8 +104,8 @@ public class DeveloperAccountingManager : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnStartServer()
     {
-        playerData = this.gameObject.GetComponent<PlayerData>();
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         humanResourcesManager = this.gameObject.GetComponent<HumanResourcesManager>();
         contractManager = this.gameObject.GetComponent<ContractManager>();
@@ -123,7 +123,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        playerData = this.gameObject.GetComponent<PlayerData>();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
         humanResourcesManager = this.gameObject.GetComponent<HumanResourcesManager>();
         contractManager = this.gameObject.GetComponent<ContractManager>();
 
@@ -520,7 +520,7 @@ public class DeveloperAccountingManager : NetworkBehaviour
     [ClientRpc]
     public void RpcSetNewReferences()
     {
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         Debug.Log("current quarter for reference" + currentQuarter);
         if (developerAccountingUIHandler != null)

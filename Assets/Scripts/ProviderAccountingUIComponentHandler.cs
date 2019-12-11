@@ -31,7 +31,7 @@ public class ProviderAccountingUIComponentHandler : MonoBehaviour
     public void Init()
     {
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         providerAccountingManager = myPlayerDataObject.GetComponent<ProviderAccountingManager>();
     }

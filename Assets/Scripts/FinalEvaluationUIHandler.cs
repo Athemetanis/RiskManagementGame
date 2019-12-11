@@ -27,7 +27,7 @@ public class FinalEvaluationUIHandler : MonoBehaviour
     void Start()
     {
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
 
     }
 
@@ -57,7 +57,7 @@ public class FinalEvaluationUIHandler : MonoBehaviour
             string moneyQ3 = "-";
             string moneyQ4 = "-";
 
-            PlayerData playerData = player.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = player.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
             if (playerRole == PlayerRoles.Developer)
@@ -110,7 +110,7 @@ public class FinalEvaluationUIHandler : MonoBehaviour
             string moneyQ3 = "-";
             string moneyQ4 = "-";
 
-            PlayerData playerData = developer.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = developer.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
             DeveloperAccountingManager devAccMan = developer.Value.GetComponent<DeveloperAccountingManager>();
@@ -148,7 +148,7 @@ public class FinalEvaluationUIHandler : MonoBehaviour
             string reliabilityQ3 = "-";
             string reliabilityQ4 = "-";
 
-            PlayerData playerData = developer.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = developer.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
 
@@ -179,7 +179,7 @@ public class FinalEvaluationUIHandler : MonoBehaviour
         foreach (KeyValuePair<string, GameObject> developer in developers)
         {
 
-            PlayerData playerData = developer.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = developer.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
             HumanResourcesManager humanResourcesManager = developer.Value.GetComponent<HumanResourcesManager>();
@@ -224,7 +224,7 @@ public class FinalEvaluationUIHandler : MonoBehaviour
             string moneyQ3 = "-";
             string moneyQ4 = "-";
 
-            PlayerData playerData = provider.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = provider.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
 
@@ -263,7 +263,7 @@ public class FinalEvaluationUIHandler : MonoBehaviour
             string advQ3 = "-";
             string advQ4 = "-";
 
-            PlayerData playerData = provider.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = provider.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
 

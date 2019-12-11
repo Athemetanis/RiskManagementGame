@@ -66,7 +66,7 @@ public class InstructorDeveloperStatsUIHandler : MonoBehaviour
             string moneyQ3 = "-";
             string moneyQ4 = "-";
 
-            PlayerData playerData = developer.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = developer.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
             DeveloperAccountingManager devAccMan = developer.Value.GetComponent<DeveloperAccountingManager>();
@@ -117,7 +117,7 @@ public class InstructorDeveloperStatsUIHandler : MonoBehaviour
             string reliabilityQ3 = "-";
             string reliabilityQ4 = "-";
 
-            PlayerData playerData = developer.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = developer.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
 

@@ -31,7 +31,7 @@ public class DeveloperResearchUIHandler : MonoBehaviour
     void Start()
     {
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         researchManager = myPlayerDataObject.GetComponent<ResearchManager>();
         researchManager.SetDeveloperResearchUIHandler(this);
@@ -50,6 +50,12 @@ public class DeveloperResearchUIHandler : MonoBehaviour
     public void EnableCorrespondingQuarterUI(int quarter)
     {
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
+
+        researchQ4Container.SetActive(false);
+        researchQ3Container.SetActive(false);
+        researchQ2Container.SetActive(false);
+        researchQ1Container.SetActive(false);
+
         switch (quarter)
         {
             case 1:

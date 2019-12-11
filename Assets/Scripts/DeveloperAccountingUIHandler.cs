@@ -26,7 +26,7 @@ public class DeveloperAccountingUIHandler : MonoBehaviour
     private void Start()
     {
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         developerAccountingManager = myPlayerDataObject.GetComponent<DeveloperAccountingManager>();
         developerAccountingManager.SetDeveloperAccountingUIHandler(this);

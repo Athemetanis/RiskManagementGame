@@ -76,7 +76,7 @@ public class ChatManager : NetworkBehaviour
     private SyncListString messageOrder = new SyncListString();
 
     private string gameID;
-    private PlayerData playerData;
+    private PlayerManager playerData;
     private FirmManager firmManager;
 
     private ChatUIHandler chatUIHandler;
@@ -88,14 +88,14 @@ public class ChatManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        playerData = this.gameObject.GetComponent<PlayerData>();
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         firmManager = this.gameObject.GetComponent<FirmManager>();
     }
     public override void OnStartClient()
     {
-        playerData = this.gameObject.GetComponent<PlayerData>();
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         firmManager = this.gameObject.GetComponent<FirmManager>();
 
         myMessages.Callback += OnChangeMyMessages;
@@ -167,6 +167,7 @@ public class ChatManager : NetworkBehaviour
         if (chatUIHandler != null)
         {
             chatUIHandler.ShowMessageNotification(sender);
+            chatUIHandler.GenerateChatContent(chatUIHandler.GetRecipient());
         }
     }
 

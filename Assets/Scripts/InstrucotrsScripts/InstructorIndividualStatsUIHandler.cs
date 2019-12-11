@@ -65,7 +65,7 @@ public class InstructorIndividualStatsUIHandler : MonoBehaviour
 
         foreach (KeyValuePair<string, GameObject> player in players)
         {
-            PlayerData playerData = player.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = player.Value.GetComponent<PlayerManager>();
             FirmManager firmManager = player.Value.GetComponent<FirmManager>();
             string playerID = playerData.GetPlayerID();
 
@@ -97,7 +97,7 @@ public class InstructorIndividualStatsUIHandler : MonoBehaviour
 
         RiskManager rm = player.GetComponent<RiskManager>();
         FirmManager fm = player.GetComponent<FirmManager>();
-        PlayerData pd = player.GetComponent<PlayerData>();
+        PlayerManager pd = player.GetComponent<PlayerManager>();
 
         PlayerRoles playerRole = pd.GetPlayerRole();
 

@@ -23,7 +23,7 @@ public class RisksSpecifikationsUIComponentHandler : MonoBehaviour
     {
         initialized = false;
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
-        string gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        string gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
         int currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         riskManager = myPlayerDataObject.GetComponent<RiskManager>();
 

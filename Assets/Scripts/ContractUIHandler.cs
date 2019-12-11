@@ -57,7 +57,7 @@ public class ContractUIHandler : MonoBehaviour
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         contractManager = myPlayerDataObject.GetComponent<ContractManager>();
         contractManager.SetContractUIHandler(this);
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
 
         firmManager = myPlayerDataObject.GetComponent<FirmManager>();
         scheduleManager = myPlayerDataObject.GetComponent<ScheduleManager>();

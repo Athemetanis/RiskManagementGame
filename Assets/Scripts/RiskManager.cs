@@ -135,7 +135,7 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
 
     public override void OnStartServer()
     {
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         if(risk1DescriptionQuarters.Count == 0)
         {
@@ -146,7 +146,7 @@ public class RiskManager : NetworkBehaviour    ///max 32 sync variables....
 
     public override void OnStartClient()
     {
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
        // currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         // syncDict is already populated with anything the server set up
         // but we can subscribe to the callback in case it is updated later on

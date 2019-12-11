@@ -31,7 +31,7 @@ public class ProviderResearchUIHandler : MonoBehaviour
     void Start()
     {
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         researchManager = myPlayerDataObject.GetComponent<ResearchManager>();
         researchManager.SetProviderResearchUIHandler(this);

@@ -24,10 +24,11 @@ public class ScheduleUIHandler : MonoBehaviour
     {
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
         scheduleManager = myPlayerDataObject.GetComponent<ScheduleManager>();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
+        gameData = GameHandler.allGames[gameID].GetComponent<GameData>();
         scheduleManager.SetScheduleUIHandler(this);
         UpdateFeatureListContent();
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
-        gameData = GameHandler.allGames[gameID].GetComponent<GameData>();
+
     }
 
 

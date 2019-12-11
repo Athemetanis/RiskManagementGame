@@ -51,7 +51,7 @@ public class DeveloperResearchUIComponentHandler : MonoBehaviour
     public void Initialization()
     {
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         researchManager = myPlayerDataObject.GetComponent<ResearchManager>();
         humanResourcesManager = myPlayerDataObject.GetComponent<HumanResourcesManager>();

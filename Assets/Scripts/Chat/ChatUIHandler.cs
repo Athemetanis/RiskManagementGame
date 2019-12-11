@@ -10,6 +10,8 @@ public class ChatUIHandler : MonoBehaviour
 
     public TMP_InputField messageIF;
 
+    public Button sendButton;
+
     public TextMeshProUGUI infoText;
     public GameObject notificationImage;
     public Toggle chatTab;
@@ -22,7 +24,7 @@ public class ChatUIHandler : MonoBehaviour
     public GameObject chatMessagePrefab;
 
     private GameObject myPlayerDataObject;
-    private PlayerData playerData;
+    private PlayerManager playerData;
     private ChatManager chatManager;
 
     private string gameID;
@@ -40,8 +42,8 @@ public class ChatUIHandler : MonoBehaviour
     private void Start()
     {   
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
-        playerData = myPlayerDataObject.GetComponent<PlayerData>();
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        playerData = myPlayerDataObject.GetComponent<PlayerManager>();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
         gameData = GameHandler.allGames[gameID];
 
         chatManager = myPlayerDataObject.GetComponent<ChatManager>();
@@ -73,7 +75,7 @@ public class ChatUIHandler : MonoBehaviour
 
         foreach (KeyValuePair<string, GameObject> developer in developers)
         {
-            PlayerData playerData = developer.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = developer.Value.GetComponent<PlayerManager>();
 
             string playerID = playerData.GetPlayerID();
 
@@ -98,7 +100,7 @@ public class ChatUIHandler : MonoBehaviour
 
         foreach (KeyValuePair<string, GameObject> provider in providers)
         {
-            PlayerData playerData = provider.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = provider.Value.GetComponent<PlayerManager>();
             string playerID = playerData.GetPlayerID();
 
             if (myPlayerID == playerID)
@@ -238,4 +240,20 @@ public class ChatUIHandler : MonoBehaviour
         yield return new WaitForSeconds(5);
         ChatNotificationOFF();
     }
+
+
+    public void EnableSendButton()
+    {
+
+        sendButton.interactable = true;
+
+    }
+
+    public void DisablSendButton()
+    {
+
+        sendButton.interactable = false;
+
+    }
+
 }

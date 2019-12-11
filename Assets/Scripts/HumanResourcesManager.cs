@@ -96,7 +96,7 @@ public class HumanResourcesManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
         scheduleManager = this.gameObject.GetComponent<ScheduleManager>();

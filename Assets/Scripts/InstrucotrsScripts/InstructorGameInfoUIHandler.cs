@@ -33,6 +33,8 @@ public class InstructorGameInfoUIHandler : MonoBehaviour
     private void Start()
     {
         game = GameHandler.allGames[gameID].GetComponent<GameData>();
+        instructorManager = null;
+
         instructorAllPlayersStatsUIHandler = this.gameObject.GetComponent<InstructorAllPlayersStatsUIHandler>();
         instructorAllPlayersStatsUIHandler.SetInstructorGameInfoUIHandler(this);
         instructorIndividualStatsUIHandler = this.gameObject.GetComponent<InstructorIndividualStatsUIHandler>();
@@ -76,6 +78,7 @@ public class InstructorGameInfoUIHandler : MonoBehaviour
 
     public void ForceGameToNextRound()
     {
+        instructorManager = GameHandler.singleton.GetInstructor();
         instructorManager.ForceGameNextQuarter(gameID);
     }
 

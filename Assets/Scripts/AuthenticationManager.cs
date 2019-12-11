@@ -15,7 +15,7 @@ public class AuthenticationManager : MonoBehaviour {
 
     //VARIABLES
     private AuthenticationUIHandler authForm;
-    private PlayerManager playerManager;
+    private ConnectionManager playerManager;
 
     Firebase.Auth.FirebaseAuth auth;
     Firebase.Auth.FirebaseUser user;
@@ -31,7 +31,7 @@ public class AuthenticationManager : MonoBehaviour {
     public string GetConfirmPassword() { return confirmPassword; }
     public string GetUserID() { return user.UserId; }
 
-    public void SetPlayerManager(PlayerManager playerManager) { this.playerManager = playerManager; }
+    public void SetPlayerManager(ConnectionManager playerManager) { this.playerManager = playerManager; }
     public void SetEmail(InputField inputEmail) { email = inputEmail.text; }
     public void SetPassword(InputField inputPassword) { password = inputPassword.text; }
     public void SetConfirmPassword(InputField inputConfirmPassword){ confirmPassword = inputConfirmPassword.text; }
@@ -200,7 +200,7 @@ public class AuthenticationManager : MonoBehaviour {
 
     public void SentPasswordRessetEmail()
     {
-        if (user != null)
+        if(email != "")
         {
             auth.SendPasswordResetEmailAsync(email).ContinueWith(task => {
                 if (task.IsCanceled)
@@ -228,7 +228,8 @@ public class AuthenticationManager : MonoBehaviour {
                 authForm.EnableWarningTextChange("Password reset email sent successfully.");
                 Debug.Log("Password reset email sent successfully.");
             });
-        }
+        }            
+       
     }
     
 

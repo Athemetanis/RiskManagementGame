@@ -1,426 +1,233 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using Mirror;
 
+public enum PlayerRoles { Developer, Provider }
 
 public class PlayerManager : NetworkBehaviour {
 
-    //This class manages player objects after player is conncted/disconnected
-    //creates objects for player, saves/deletes references of players objects, 
-    //creates/destroys local gui for player
+    /// This class contains general information about player - variables are set during creation and do not change during game!
 
+    //VARIABLES 
+    [SyncVar]
+    private string gameID;
+    [SyncVar]
+    private string playerID;
+    [SyncVar]
+    private PlayerRoles playerRole;
 
-    //VARIABLES
-    [SyncVar(hook = "OnChangePlayerID")]
-    private string playerFirebaseID = "";
-    [SyncVar]      //<-remove this, this variable contains playerDataID  == (playerFirebaseID + playerGameID) 
-    private string playerID = "";
-    [SyncVar(hook = "OnChangeGameID")]
-    private string playerGameID;
+    //LOCAL VARIABLES
+    private GameObject playerUI;
 
-    public GameObject authenticationPrefab;
-    private GameObject authentication;
-
-    //--INSTRUCTOR
-    public GameObject instructorPrefab;
-    public GameObject instructorUIPrefab;       
-
-    //---PLAYER
-    public GameObject playerDeveloperPrefab;
-    public GameObject playerDeveloperUIPrefab;
-    public GameObject playerProviderPrefab;
-    public GameObject playerProviderUIprefab;
-
-    private GameObject myPlayerObject;
-    private GameObject myPlayerUIObject;
-    private PlayerData myPlayerData;
-
+    //REFERENCES - MANAGERS
+    private ChatManager chatManager;
+    private FirmManager firmManager;
+    private EventManager eventManager;
+    private ContractManager contractMamanger;
+    private RiskManager riskManager;
+    private SubmitDataManager submitDataManager;
+    private ResearchManager researchManager;
+    private FeatureManager featureManager;      //provider only
+    private ProductManager productManager;      //provider only
+    private CustomersManager customerManager;   //provider only
+    private MarketingManager marketingManager;  //provider only
+    private ProviderAccountingManager providerAccountingManager;    //provider only
+    private ScheduleManager scheduleManager;    //developer only
+    private HumanResourcesManager humanResourcesManager; //developer only
+    private DeveloperAccountingManager developerAccountingManager; //developer only
+    
     //GETTERS & SETTERS
-    public PlayerData GetMyPlayerData() { return myPlayerData; }
-    public GameObject GetMyPlayerObject() { return myPlayerObject; }
-    public GameObject GetMyPlayerUIObject() { return myPlayerUIObject; }
+    public void SetGameID(string gameID) { this.gameID = gameID; }
+    public string GetGameID() { return gameID; }
 
+    public void SetPlayerID(string playerID) { this.playerID = playerID; }
+    public string GetPlayerID() { return playerID; }
 
+    public void SetPlayerRole(PlayerRoles playerRole) { this.playerRole = playerRole; }
+    public PlayerRoles GetPlayerRole() { return playerRole; }
 
+    public void SetPlayerUI(GameObject playerUI) { this.playerUI = playerUI; }
+    public GameObject GetPlayerUI() { return playerUI; }
 
-    // Use this for initialization
     void Start()
     {
-        if (isLocalPlayer)
+        if (GameHandler.allPlayers[gameID].ContainsKey(playerID) == false)
         {
-            GameHandler.singleton.SetLocalPlayer(this);
-            Debug.Log("Local player was set in PlayerManager");
+            Debug.Log("player registered to all players: " + playerID);
+            GameHandler.allPlayers[gameID].Add(playerID, this.gameObject);
         }
-
-        //Debug.Log("Reseting player connection default variables");
-        //playerID = "";
-        //this.SetPlayerGameID("3");
-
-        if (isLocalPlayer == false)
+        if (GameHandler.allGames[gameID] == true)
         {
-            return;
+            Debug.Log("player tries to be added into game " + gameID);
+            GameHandler.allGames[gameID].AddPlayerToGame(this.gameObject);
         }
+        chatManager = this.gameObject.GetComponent<ChatManager>();
+        firmManager = this.gameObject.GetComponent<FirmManager>();
+        eventManager = this.gameObject.GetComponent<EventManager>();
+        contractMamanger = this.gameObject.GetComponent<ContractManager>();
+        riskManager = this.gameObject.GetComponent<RiskManager>();
+        submitDataManager = this.gameObject.GetComponent<SubmitDataManager>();
+        researchManager = this.gameObject.GetComponent<ResearchManager>();
+        featureManager = this.gameObject.GetComponent<FeatureManager>();
+        productManager = this.gameObject.GetComponent<ProductManager>();
+        customerManager = this.gameObject.GetComponent<CustomersManager>();
+        marketingManager = this.gameObject.GetComponent<MarketingManager>();
+        providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
+        scheduleManager = this.gameObject.GetComponent<ScheduleManager>();
+        humanResourcesManager = this.gameObject.GetComponent<HumanResourcesManager>();
+        developerAccountingManager = this.gameObject.GetComponent<DeveloperAccountingManager>();
 
-        authentication = Instantiate(authenticationPrefab);
-        authentication.GetComponent<AuthenticationManager>().SetPlayerManager(this);
-        authentication.SetActive(true);
-    }
+       
 
-    // Update is called once per frame
-    void Update() {
-
-    }
-
-    //HOOKS
-    public void OnChangeGameID(string gameID)
-    {
-        playerID = playerFirebaseID + gameID;
-        playerGameID = gameID;
-        if (isLocalPlayer == false)
+        if (playerRole == PlayerRoles.Provider)
         {
-            return;
-        }
-        if (playerGameID == "" || playerGameID.Equals(""))
-        {
-            CmdRemoveAuthority();
-            return;
-        }
-        if(this.playerFirebaseID == "rojDP7X6ujdmd9jeUKIqGwyLNmG2" && playerGameID != "")
-        {
+            firmManager.enabled = true;
+            featureManager.enabled = true;
+            productManager.enabled = true;
+            marketingManager.enabled = true;
+            customerManager.enabled = true;
+            contractMamanger.enabled = true;
+            providerAccountingManager.enabled = true;
+            riskManager.enabled = true;
+            researchManager.enabled = true;
+            submitDataManager.enabled = true;
+            eventManager.enabled = true;
             
-            CreateInstructorUI();
-            return;
+
         }
-        if (this.playerFirebaseID == "rojDP7X6ujdmd9jeUKIqGwyLNmG2" && playerGameID == "")
+        else //developer
         {
-            GameHandler.singleton.GenerateGamesListUIForInstructor();
-            return;
+            featureManager.enabled = true;
+            humanResourcesManager.enabled = true;
+            contractMamanger.enabled = true;
+            scheduleManager.enabled = true;
+            developerAccountingManager.enabled = true;
+            riskManager.enabled = true;
+            researchManager.enabled = true;
+            submitDataManager.enabled = true;
+            eventManager.enabled = true;
         }
-        GetPlayerObject();
     }
 
-    
-
-    public void OnChangePlayerID(string playerFirebaseID)  ///This function is called only on client after playerID was changed on server. 
+    [Server]
+    public void InvokeEventsBetweenQurters()
     {
-
-        this.playerFirebaseID = playerFirebaseID;
-        if (isLocalPlayer == false)  ///if I am not local client I dont care about assigning or removing player object which contains data for player  
-        {
-            return;
-        }
-        if (playerFirebaseID == null || playerFirebaseID.Equals(""))   /// true if I signed out
-        {   
-            if(myPlayerData != null)
-            {   
-                if(myPlayerData.GetPlayerUI() != null)
-                {
-                    Destroy(myPlayerData.GetPlayerUI());
-                }                
-            }
-            GameHandler.singleton.DestroyGameListUI();
-            //CmdRemoveAuthority();
-            myPlayerObject = null;
-            myPlayerData = null;
-
-            InstructorManager instructor = GameHandler.singleton.GetInstructor();
-            if ( instructor != null)
-            {
-              if(instructor.GetMyInstructorUIObject() != null)
-              {
-                    Destroy(instructor.GetMyInstructorUIObject());
-              }
-                Destroy(instructor.gameObject);
-            }
-            
-            return;
-
-        }
-        if (this.playerFirebaseID == "rojDP7X6ujdmd9jeUKIqGwyLNmG2")
-        {
-            
-            CmdCreateInstructorObject();
-            return;
-        }
-
-        Debug.Log("onChnagePlayerId " + this.playerFirebaseID);
-        //CmdGetPlayerObject();
-        GameHandler.singleton.GenerateGamesListUI();
+        eventManager.InvokeGameEvent();
     }
 
-    //METHODS
-
-    public void SetPlayerFirebaseID(string playerFirebaseID)
+    [Server]
+    public void EvaluateQuarter()
     {
-        if (!isServer)
+        //1. akutalizuj realne data na zaklade kontrakt managera
+        //2.posun sa do noveho kvartalu v gameData????
+        //2. prirad nove reference na objekty nadchadzajuceho Q a aktualizuj ich?
+        EvaluateContracts();
+        //UpdateCurrentQuarterDataDeveloper();
+       // UpdateCurrentQuarterDataProvider();
+        //SaveCurretnQuarterData();
+
+        // SaveCurretnQuarterData();
+        // MoveOtherManagerToNextQuarter();
+
+    }
+
+    [Server]
+    public void EvaluateContracts()
+    {
+        if (playerRole == PlayerRoles.Developer)
         {
-            this.playerFirebaseID = playerFirebaseID;
-            CmdSetPlayerFirebaseID(playerFirebaseID);
-            return;
+            contractMamanger.EvaluateContractsServer();
         }
-        CmdSetPlayerFirebaseID(playerFirebaseID);
     }
 
-    [Command]
-    public void CmdSetPlayerFirebaseID(string playerFirebaseID)
-    {
-        Debug.Log("playerFireBaseID " + playerFirebaseID);
-        this.playerFirebaseID = playerFirebaseID;
-    }
 
-    public void SetPlayerGameID(string gameID)
+
+    [Server]
+    public void UpdateCurrentQuarterDataProvider()
     {
-        GameHandler.singleton.DestroyGameListUI();
-        if (!isServer)
+        if (playerRole == PlayerRoles.Provider)
         {
-            playerID = playerFirebaseID + gameID;
-            Debug.Log("playerID " + playerID);
-            this.playerGameID = gameID;
-            CmdSetPlayerGameID(gameID);
-            Debug.Log("gameID " + playerGameID);
-            return;
+            featureManager.UpdateCurrentQuarterData();
+            productManager.UpdateCurrentQuarterData();
+            customerManager.UpdateCurrentQuarterData();
+            providerAccountingManager.UpdateCurrentQuarterData();
         }
-        CmdSetPlayerGameID(gameID);
+        SaveCurretnQuarterDataProvider();
+
+    }
+    [Server]
+    public void UpdateCurrentQuarterDataDeveloper()
+    {
+        if (playerRole == PlayerRoles.Developer)
+        {
+            developerAccountingManager.UpdateCurrentQuarterDataServer();
+        }
+        SaveCurretnQuarterDataDeveloper();
     }
 
-    [Command]
-    public void CmdSetPlayerGameID(string gameID)
-    {
-        playerID = playerFirebaseID + gameID;
-        //Debug.Log("playerID " + playerID);
-        this.playerGameID = gameID;
-        //Debug.Log("CmdgameID " + playerGameID);
 
+
+    [Server]
+    public void SaveCurretnQuarterDataDeveloper()
+    {
+        if (playerRole == PlayerRoles.Developer)
+        {
+            humanResourcesManager.SaveCurrentQuarterData();
+            developerAccountingManager.SaveCurrentQuarterDataServer();
+            riskManager.SaveCurrentQuarterData();
+            researchManager.SaveCurrentQuaterData();
+        }
+    }
+    [Server]
+    public void SaveCurretnQuarterDataProvider()
+    {
+        if (playerRole == PlayerRoles.Provider)
+        {
+            productManager.SaveCurrentQuarterData();
+            marketingManager.SaveCurrentQuarterData();
+            customerManager.SaveCurrentQuarterData();
+            providerAccountingManager.SaveCurrentQuarterData();
+            riskManager.SaveCurrentQuarterData();
+            researchManager.SaveCurrentQuaterData();
+        }
     }
 
     [Command]
-    public void CmdCreateInstructorObject()
+    public void CmdMoveToNextQuarter()
     {
-        GameObject myInstructorObject = Instantiate(instructorPrefab);
-
-        NetworkServer.SpawnWithClientAuthority(myInstructorObject, this.gameObject);
+        MoveOtherManagerToNextQuarterProvider();
+        MoveOtherManagerToNextQuarterDeveloper();
     }
 
-
-    public void GetPlayerObject()
+    [Server]
+    public void MoveOtherManagerToNextQuarterDeveloper()
     {
-        Debug.Log("trying to find my playerdata object" + playerID);
-
-        if (GameHandler.allPlayers.ContainsKey(playerGameID) && GameHandler.allPlayers[playerGameID].ContainsKey(playerID))
+        if (playerRole == PlayerRoles.Developer)
         {
-            PlayerData playerData = GameHandler.allPlayers[playerGameID][playerID].GetComponent<PlayerData>();
-            //playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
-            CmdAssignClientAuthority();
-            myPlayerObject = GameHandler.allPlayers[playerGameID][playerID];
-            myPlayerData = playerData;
-            Debug.Log("myPlayerDataObject was found");
-            CreatePlayerUI();
-            return;
-        }
-        else
-        {
-            Debug.Log("my object was not found, it must be created");
-            CmdCreatePlayerData();
+            contractMamanger.MoveToNextQuarter();
+            scheduleManager.MoveToNextQuarter();
+            humanResourcesManager.MoveToNextQuarter();
+            developerAccountingManager.MoveToNextQuarter();
+            researchManager.MoveToNextQuarter();
+            riskManager.MoveToTheNextQuarter();
+            submitDataManager.MoveToNextQuarter();
+           
         }
     }
-
-    [ClientRpc]
-    public void RpcGetPlayerObject()
+    [Server]
+    public void MoveOtherManagerToNextQuarterProvider()
     {
-        if (isLocalPlayer == false)
+        if (playerRole == PlayerRoles.Provider)
         {
-            return;
-        }
-        Debug.Log("trying to find my playerdata object" + playerID);
-        //Debug.Log(GameHandler.allPlayers.ContainsKey(playerGameID));
-        //Debug.Log(GameHandler.allPlayers[playerGameID].ContainsKey(playerID));
-
-        if (GameHandler.allPlayers.ContainsKey(playerGameID) && GameHandler.allPlayers[playerGameID].ContainsKey(playerID))
-        {
-            PlayerData playerData = GameHandler.allPlayers[playerGameID][playerID].GetComponent<PlayerData>();
-            //playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
-            CmdAssignClientAuthority();
-            myPlayerData = playerData;
-            myPlayerObject = GameHandler.allPlayers[playerGameID][playerID];
-            Debug.Log("myPlayerDataObject was found");
-            CreatePlayerUI();
-            return;
+            contractMamanger.MoveToNextQuarter();
+            productManager.MoveToNextQuarter();
+            marketingManager.MoveToNextQuarter();
+            customerManager.MoveToNextQuarter();
+            providerAccountingManager.MoveToNextQuarter();
+            researchManager.MoveToNextQuarter();
+            riskManager.MoveToTheNextQuarter();
+            submitDataManager.MoveToNextQuarter();
         }
     }
-
-
-    [Command]
-    public void CmdAssignClientAuthority()
-    {
-        Debug.Log("assigning client authority on my player data object");
-        PlayerData playerData = GameHandler.allPlayers[playerGameID][playerID].GetComponent<PlayerData>();
-        playerData.gameObject.GetComponent<NetworkIdentity>().AssignClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
-
-    }
-
-
-    [Command]
-    public void CmdRemoveAuthority()
-    {
-        if (myPlayerData != null)
-        {
-            myPlayerObject.GetComponent<NetworkIdentity>().RemoveClientAuthority(this.gameObject.GetComponent<NetworkIdentity>().connectionToClient);
-        }
-    }
-
-
-    [Command]
-    public void CmdCreatePlayerData()
-    {
-        GameData myGame = GameHandler.allGames[playerGameID];
-        if (myGame.GetDevelopersCount() > myGame.GetProvidersCount() || myGame.GetProvidersCount() == myGame.GetDevelopersCount())
-        {
-            myPlayerObject = Instantiate(playerProviderPrefab);
-
-            myPlayerData = myPlayerObject.GetComponent<PlayerData>();
-            myPlayerData.SetPlayerRole(PlayerRoles.Provider);
-        }
-        else
-        {
-            myPlayerObject = Instantiate(playerDeveloperPrefab);
-            myPlayerData = myPlayerObject.GetComponent<PlayerData>();
-            myPlayerData.SetPlayerRole(PlayerRoles.Developer);
-        }
-
-        //myPlayerObject = Instantiate(playerPrefab);
-        //myPlayerData = myPlayerObject.GetComponent<PlayerData>();
-        myPlayerData.SetGameID(playerGameID);
-        Debug.Log("SERVER: gameID for my new playerdata set to: " + playerGameID);
-        myPlayerData.SetPlayerID(playerID);
-        Debug.Log("SERVER: playerID for my new playerdata set to: " + playerID);
-        myPlayerObject.SetActive(true);
-        NetworkServer.Spawn(myPlayerObject);
-        //NetworkServer.SpawnWithClientAuthority(myPlayerObject, gameObject);
-        Debug.Log("new playerdataobject spawned with gameID:" + myPlayerData.GetGameID() + " & playerID: " + myPlayerData.GetPlayerID());
-
-        StartCoroutine(Function1());
-    }
-   
-    private IEnumerator Function1 ()
-    {
-        yield return new WaitForSeconds(1);
-        RpcGetPlayerObject();
-    }
-
-    public void CreatePlayerUI()
-    {
-        Debug.Log("Creating UI");
-        if (myPlayerData.GetPlayerRole() == PlayerRoles.Developer)
-        {
-            myPlayerUIObject = Instantiate(playerDeveloperUIPrefab);
-            myPlayerData.SetPlayerUI(myPlayerUIObject);
-        }
-        else
-        {
-            myPlayerUIObject = Instantiate(playerProviderUIprefab);
-            myPlayerData.SetPlayerUI(myPlayerUIObject);
-        }
-    }
-
-    /*public void DestroyPlayerUI()
-    {   
-        if(myPlayerData.GetPlayerUI() != null)
-        {
-            Destroy(myPlayerData.GetPlayerUI());
-        }
-  
-        
-    }*/
-     
-
-
-    [Client]
-    public void CreateInstructorUI()
-    {
-        GameObject myInstructorUIObject = Instantiate(instructorUIPrefab);
-        GameHandler.singleton.GetInstructor().SetMyInstructorUIObject(myInstructorUIObject);
-        GameHandler.singleton.GetInstructor().SetGameID(playerGameID);
-        myInstructorUIObject.GetComponent<InstructorGameInfoUIHandler>().SetGameID(playerGameID);
-        myInstructorUIObject.gameObject.SetActive(true);
-    }
-
-
-
-    /// <summary>
-    /// ----------------------------------------------OLD------------------------------------
-    /// </summary>
-    /// <param name="name"></param>
-    /*
-
-     public void SetPlayerDataFirmName(string name)
-     {
-         GameHandler.allPlayers[playerGameID][playerID].SetFirmName(name);
-         CmdSetPlayerDataFirmName(name);
-     }
-
-     [Command]
-     private void CmdSetPlayerDataFirmName(string name)
-     {
-         GameHandler.allPlayers[playerGameID][playerID].SetFirmName(name);
-     }
-     */
-
-
-    /*public void CreatePlayerObject(string playerID)
-   {
-       playerObject = Instantiate(playerPrefab);
-       player = playerObject.GetComponent<PlayerData>();
-       playerData.SetPlayerID(playerID);
-       path = Application.persistentDataPath + "/" + player.GetPlayerID() + ".player";
-       Debug.Log(path);
-
-   }*/
-
-    /* void SerializePlayerData()
-    {
-        BinaryFormatter formatter = new BinaryFormatter();
-        FileStream stream = new FileStream(path, FileMode.Create);
-
-        PlayerData data = new PlayerData(player);
-        formatter.Serialize(stream, data);
-        stream.Close();
-               
-    }*/
-
-    /*public void DeserializeplayerData()
-    {
-        if (File.Exists(path))
-        {
-            PlayerData data;
-            FileStream stream = new FileStream(path, FileMode.Open);
-
-            try
-            {
-                BinaryFormatter formatter = new BinaryFormatter();
-                
-                
-
-                data = formatter.Deserialize(stream) as PlayerData;
-                player.LoadPlayer(data);
-
-            }
-            finally
-            {
-                stream.Close();
-                
-            }
-
-        }
-        Debug.Log("file fo deserialization not found");
-        return;
-        
-
-    }*/
-
-
-
-
 }

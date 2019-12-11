@@ -69,7 +69,7 @@ public class InstructorProviderStatsUIHandler : MonoBehaviour
             string moneyQ3 = "-";
             string moneyQ4 = "-";
 
-            PlayerData playerData = provider.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = provider.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
 
@@ -120,7 +120,7 @@ public class InstructorProviderStatsUIHandler : MonoBehaviour
             string advQ3 = "-";
             string advQ4 = "-";
 
-            PlayerData playerData = provider.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = provider.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
 

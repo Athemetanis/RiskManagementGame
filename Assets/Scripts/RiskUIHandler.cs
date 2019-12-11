@@ -37,7 +37,7 @@ public class RiskUIHandler : MonoBehaviour
     {        
         
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         riskManager = myPlayerDataObject.GetComponent<RiskManager>();
         riskManager.SetRiskUIHandler(this);

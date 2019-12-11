@@ -7,7 +7,7 @@ public class EventManager : NetworkBehaviour
 {
 
     private string gameID;
-    private PlayerData playerData;
+    private PlayerManager playerData;
     private int currentQuarter;
 
     private HumanResourcesManager humanResourcesManager;
@@ -18,8 +18,8 @@ public class EventManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        playerData = this.gameObject.GetComponent<PlayerData>();
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         if(playerData.GetPlayerRole() == PlayerRoles.Developer)
         {
@@ -34,8 +34,8 @@ public class EventManager : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        playerData = this.gameObject.GetComponent<PlayerData>();
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         //currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         if (playerData.GetPlayerRole() == PlayerRoles.Developer)
         {

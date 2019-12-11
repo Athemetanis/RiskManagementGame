@@ -60,6 +60,7 @@ public class InstructorManager : NetworkBehaviour
         CmdForceGameNextQuarter(gameID);
     }
 
+    [Command]
     public void CmdForceGameNextQuarter(string gameID)
     {
         GameHandler.allGames[gameID].ForceNextQuarter();
@@ -75,8 +76,7 @@ public class InstructorManager : NetworkBehaviour
             GameHandler.allGames[gameID].SetInstructor(this.gameObject);
         }    
     }
-
-
+    
     public void RefreshInstructorUI()
     {
         if(myInstructorUIObject != null)

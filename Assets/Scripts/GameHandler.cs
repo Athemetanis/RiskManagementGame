@@ -9,7 +9,7 @@ public class GameHandler : NetworkBehaviour {
 
     /// <summary>
     /// This class creates/deletes games, shows list of games
-    /// loads/saves data on server
+    /// loads/saves data on server <<NOT_YET
     /// </summary>
     public GameObject gamePrefab;
     public GameObject gameUIPrefab;
@@ -21,7 +21,7 @@ public class GameHandler : NetworkBehaviour {
     //private string gameName;
     //private string gamePassword;
     
-    private PlayerManager localPlayer;
+    private ConnectionManager localPlayer;
     private InstructorManager instructor;
 
     private GameObject gameListUIGameObject;
@@ -44,8 +44,8 @@ public class GameHandler : NetworkBehaviour {
 
 
     //GETTERS & SETTERS
-    public void SetLocalPlayer(PlayerManager localPlayer){ this.localPlayer = localPlayer; }
-    public PlayerManager GetLocalPlayer() { return localPlayer; }
+    public void SetLocalPlayer(ConnectionManager localPlayer){ this.localPlayer = localPlayer; }
+    public ConnectionManager GetLocalPlayer() { return localPlayer; }
     //public void SetGameName(InputField gameName) { this.gameName = gameName.text; }
     //public void SetGamePassword(InputField gamePassword) { this.gamePassword = gamePassword.text; }
     public bool GetGeneratedGameList() { return generatedGameList; }
@@ -82,7 +82,7 @@ public class GameHandler : NetworkBehaviour {
     //This method generates visual representation of list of games
     public void GenerateGamesListUI()
     {
-        Debug.Log("generating game list for player");
+        // Debug.Log("generating game list for player");
         //created list of game UI
         gameListUIGameObject = Instantiate(gameListUIPrefab);
         gameListUIContent = gameListUIGameObject.transform.Find("GameScrolList/GameListViewport/GameListContent").gameObject;

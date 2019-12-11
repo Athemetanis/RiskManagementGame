@@ -114,8 +114,8 @@ public class FirmManager : NetworkBehaviour
     {
         if (isServer)
         {
-            gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
-            playerID = this.gameObject.GetComponent<PlayerData>().GetPlayerID();
+            gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
+            playerID = this.gameObject.GetComponent<PlayerManager>().GetPlayerID();
             firmName = playerID;
             playerName = "unknown player";
             firmDescription = "default_description";
@@ -124,8 +124,8 @@ public class FirmManager : NetworkBehaviour
         }
         else
         {
-            gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
-            playerID = this.gameObject.GetComponent<PlayerData>().GetPlayerID();
+            gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
+            playerID = this.gameObject.GetComponent<PlayerManager>().GetPlayerID();
         }
     
     }

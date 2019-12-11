@@ -121,7 +121,7 @@ public class GameData : NetworkBehaviour
     //GAME METHODS
     public void AddPlayerToGame(GameObject player)
     {
-        PlayerData playerData = player.GetComponent<PlayerData>();
+        PlayerManager playerData = player.GetComponent<PlayerManager>();
         if (playerList.ContainsKey(playerData.GetPlayerID()) == false)
         {
             playerList.Add(playerData.GetPlayerID(), player);
@@ -140,7 +140,7 @@ public class GameData : NetworkBehaviour
     }
     public void RemovePlayerFromGame(GameObject player)
     {
-        PlayerData playerData = player.GetComponent<PlayerData>();
+        PlayerManager playerData = player.GetComponent<PlayerManager>();
         if (playerList.ContainsKey(playerData.GetPlayerID()) == true)
         {
             playerList.Remove(playerData.GetPlayerID());
@@ -486,7 +486,7 @@ public class GameData : NetworkBehaviour
     {
         foreach(GameObject developerGO in developerList.Values)
         {
-            developerGO.GetComponent<PlayerData>().EvaluateContracts();
+            developerGO.GetComponent<PlayerManager>().EvaluateContracts();
         }
     }
 
@@ -498,11 +498,11 @@ public class GameData : NetworkBehaviour
         {   
             foreach(GameObject developerGo in developerList.Values)
             {
-                developerGo.GetComponent<PlayerData>().UpdateCurrentQuarterDataDeveloper();
+                developerGo.GetComponent<PlayerManager>().UpdateCurrentQuarterDataDeveloper();
             }
             foreach (GameObject providerGo in providerList.Values)
             {
-                providerGo.GetComponent<PlayerData>().UpdateCurrentQuarterDataProvider();
+                providerGo.GetComponent<PlayerManager>().UpdateCurrentQuarterDataProvider();
             }
 
         }

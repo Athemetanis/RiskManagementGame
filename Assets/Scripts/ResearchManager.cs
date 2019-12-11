@@ -59,7 +59,7 @@ public class ResearchManager : NetworkBehaviour
 
 
     private string gameID;
-    private PlayerData playerData;
+    private PlayerManager playerData;
     private int currentQuarter;
 
     private DeveloperAccountingManager developerAccountingManager;
@@ -80,7 +80,7 @@ public class ResearchManager : NetworkBehaviour
     void Start() { }
     public override void OnStartServer()
     {  
-        playerData = this.gameObject.GetComponent<PlayerData>();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
         gameID = playerData.GetGameID();
 
 
@@ -102,7 +102,7 @@ public class ResearchManager : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        playerData = this.gameObject.GetComponent<PlayerData>();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
         gameID = playerData.GetGameID();
 
         if(playerData.GetPlayerRole() == PlayerRoles.Developer)

@@ -67,7 +67,7 @@ public class InstructorAllPlayersStatsUIHandler : MonoBehaviour
             string moneyQ3 = "-";
             string moneyQ4 = "-";
 
-            PlayerData playerData = player.Value.GetComponent<PlayerData>();
+            PlayerManager playerData = player.Value.GetComponent<PlayerManager>();
             PlayerRoles playerRole = playerData.GetPlayerRole();
 
             if(playerRole == PlayerRoles.Developer)
@@ -140,7 +140,7 @@ public class InstructorAllPlayersStatsUIHandler : MonoBehaviour
 
         foreach (string provider in providers.Keys)
         {
-            providerContracts.Add(provider, 10);
+            providerContracts.Add(provider, 0);
 
             string providerFirmName = GameHandler.allGames[gameID].GetFirmName(provider);
 

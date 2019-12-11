@@ -36,7 +36,7 @@ public class TabUIHandler : MonoBehaviour
 
 
     private GameObject myPlayerDataObject;
-    private PlayerData playerData;
+    private PlayerManager playerData;
     private string gameID;
     private GameData gameData;
 
@@ -46,8 +46,8 @@ public class TabUIHandler : MonoBehaviour
     private void Start()
     {
         myPlayerDataObject = GameHandler.singleton.GetLocalPlayer().GetMyPlayerObject();
-        playerData = myPlayerDataObject.GetComponent<PlayerData>();
-        gameID = myPlayerDataObject.GetComponent<PlayerData>().GetGameID();
+        playerData = myPlayerDataObject.GetComponent<PlayerManager>();
+        gameID = myPlayerDataObject.GetComponent<PlayerManager>().GetGameID();
         gameData = GameHandler.allGames[gameID];
 
         currentQuarter = gameData.GetGameRound();

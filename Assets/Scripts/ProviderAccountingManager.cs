@@ -73,7 +73,7 @@ public class ProviderAccountingManager : NetworkBehaviour
     private ContractManager contractManager;
     private CustomersManager customersManager;
     private MarketingManager marketingManager;
-    private PlayerData playerData;
+    private PlayerManager playerData;
 
     private ProviderAccountingUIHandler providerAccountingUIHandler;
     private ProviderAccountingUIComponentHandler providerAccountingUIComponentHandlerCurrent;
@@ -102,8 +102,8 @@ public class ProviderAccountingManager : NetworkBehaviour
     // Start is called before the first frame update
     public override void OnStartServer()
     {
-        playerData = this.gameObject.GetComponent<PlayerData>();
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         productManager = this.gameObject.GetComponent<ProductManager>();
         contractManager = this.gameObject.GetComponent<ContractManager>();
@@ -119,7 +119,7 @@ public class ProviderAccountingManager : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        playerData = this.gameObject.GetComponent<PlayerData>();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
         productManager = this.gameObject.GetComponent<ProductManager>();
         contractManager = this.gameObject.GetComponent<ContractManager>();
         customersManager = this.gameObject.GetComponent<CustomersManager>();
@@ -561,7 +561,7 @@ public class ProviderAccountingManager : NetworkBehaviour
     [ClientRpc]
     public void RpcSetNewReferences()
     {
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         //Debug.Log("current quarter for reference" + currentQuarter);
         if (providerAccountingUIHandler != null)

@@ -46,6 +46,11 @@ public class GamePasswordVerification : MonoBehaviour
 
     }
 
+    public void CloseWindow()
+    {
+        Destroy(this.gameObject);
+    }
+
 
 
 

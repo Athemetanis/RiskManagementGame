@@ -56,7 +56,7 @@ public class MarketingManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
         currentQuarter = GameHandler.allGames[gameID].GetGameRound();
         providerAccountingManager = this.gameObject.GetComponent<ProviderAccountingManager>();
         customerManager = this.gameObject.GetComponent<CustomersManager>();

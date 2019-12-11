@@ -23,7 +23,7 @@ public class ContractManager : NetworkBehaviour
     private ScheduleManager scheduleManager;
     private CustomersManager customersManager;
     private FeatureManager featureManager;
-    private PlayerData playerData;
+    private PlayerManager playerData;
 
 
     //GETTERS & SETTERS
@@ -49,10 +49,10 @@ public class ContractManager : NetworkBehaviour
     }
     void Start() //both server & client
     {
-        playerData = this.gameObject.GetComponent<PlayerData>();
-        playerRole = this.gameObject.GetComponent<PlayerData>().GetPlayerRole();
-        gameID = this.gameObject.GetComponent<PlayerData>().GetGameID();
-        playerID = this.gameObject.GetComponent<PlayerData>().GetPlayerID();
+        playerData = this.gameObject.GetComponent<PlayerManager>();
+        playerRole = this.gameObject.GetComponent<PlayerManager>().GetPlayerRole();
+        gameID = this.gameObject.GetComponent<PlayerManager>().GetGameID();
+        playerID = this.gameObject.GetComponent<PlayerManager>().GetPlayerID();
         firmManager = this.gameObject.GetComponent<FirmManager>();
         scheduleManager = this.gameObject.GetComponent<ScheduleManager>();
         customersManager = this.gameObject.GetComponent<CustomersManager>();

@@ -38,11 +38,11 @@ public class MarketingUIHandler : MonoBehaviour
         marketingManager = myPlayerDataObject.GetComponent<MarketingManager>();
         marketingManager.SetMarketingUIHandler(this);
         UpdateAllUIElements();
-        advertisement0Price.text = marketingManager.GetAdvertisement0Price().ToString();
-        advertisement25Price.text = marketingManager.GetAdvertisement25Price().ToString();
-        advertisement50Price.text = marketingManager.GetAdvertisement50Price().ToString();
-        advertisement75Price.text = marketingManager.GetAdvertisement100Price().ToString();
-        advertisement100Price.text = marketingManager.GetAdvertisement100Price().ToString();
+        advertisement0Price.text = marketingManager.GetAdvertisement0Price().ToString("n0");
+        advertisement25Price.text = marketingManager.GetAdvertisement25Price().ToString("n0");
+        advertisement50Price.text = marketingManager.GetAdvertisement50Price().ToString("n0");
+        advertisement75Price.text = marketingManager.GetAdvertisement75Price().ToString("n0");
+        advertisement100Price.text = marketingManager.GetAdvertisement100Price().ToString("n0");
         initialized = true;
     }
 

@@ -119,6 +119,11 @@ public class GameData : NetworkBehaviour
     }
 
     //GAME METHODS
+    /// <summary>
+    /// Adds new player to the game when he joins the game for the first time.
+    /// Called on the start of the script PlayerManager.
+    /// </summary>
+    /// <param name="player"> player's object </param>
     public void AddPlayerToGame(GameObject player)
     {
         PlayerManager playerData = player.GetComponent<PlayerManager>();
@@ -138,6 +143,11 @@ public class GameData : NetworkBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// This methos is not used yet. Intention of this method was removing unactive player from the game but it causes more problems than solves. 
+    /// </summary>
+    /// <param name="player">player's object </param>
     public void RemovePlayerFromGame(GameObject player)
     {
         PlayerManager playerData = player.GetComponent<PlayerManager>();
@@ -156,24 +166,37 @@ public class GameData : NetworkBehaviour
                 providersCount--;
             }
         }
-
     }
 
+    /// <summary>
+    /// According ID it returns developer's object if developer joined this game.
+    /// </summary>
+    /// <param name="developerID"> ID of the developer which object i want to get. </param>
+    /// <returns> Developer's game object</returns>
     public GameObject GetDeveloper(string developerID)
     {
         return developerList[developerID];
     }
+    /// <summary>
+    /// According ID it returns provider's object if provider joined this game.
+    /// </summary>
+    /// <param name="providerID"> ID of the provider which object i want to get.</param>
+    /// <returns> Provider's game object</returns>
     public GameObject GetProvider(string providerID)
     {
         return providerList[providerID];
     }
-
+    /// <summary>
+    /// According ID it returns player's object if provider joined this game.
+    /// </summary>
+    /// <param name="playerID"> ID of the player which object i want to get.</param>
+    /// <returns>player's game object</returns>
     public GameObject GetPlayer(string playerID)
     {
         return playerList[playerID];
     }
     
-    //GAME HOOKS
+    //GAME HOOKS  - updates values on client when the values was changed on server
     public void OnChangeGameID(string gameID)
     {
         this.gameID = gameID;
@@ -232,6 +255,10 @@ public class GameData : NetworkBehaviour
     }
 
     //METHODS FOR UPDATING UI ELEMENTS
+
+    /// <summary>
+    /// Updates all vlaues of UI element which represents this game.
+    /// </summary>
     public void GameUIUpdateAll()
     {
         if (gameUIHandler != null)
@@ -245,6 +272,12 @@ public class GameData : NetworkBehaviour
     }
 
     //FIRM METHODS 
+
+    /// <summary>
+    /// Adds new firm to the game
+    /// </summary>
+    /// <param name="playerID"> ID of the player which owns the firm </param>
+    /// <param name="firmName"> Name of the firm</param>
     public void AddFirmName(string playerID, string firmName)
     {
         allFirms.Add(playerID, firmName);
@@ -264,6 +297,12 @@ public class GameData : NetworkBehaviour
         }
 
     }
+    /// <summary>
+    /// Updates developer's firm's name of this game
+    /// </summary>
+    /// <param name="playerID"> ID of the player which owns the firm</param>
+    /// <param name="newFirmName"> new name of the firm</param>
+    /// <param name="oldFirmName">old name of the firm </param>
     public void AddDevevelopersFirm(string playerID, string newFirmName, string oldFirmName)
     {
         Debug.Log("Developerova firma pridana do dev zoznamu");
@@ -271,6 +310,12 @@ public class GameData : NetworkBehaviour
         developersFirms.Add(newFirmName, playerID);
         
     }
+    /// <summary>
+    /// Updates providerds's firm's name of this game
+    /// </summary>
+    /// <param name="playerID"> ID of the player which owns the firm</param>
+    /// <param name="newFirmName"> new name of the firm</param>
+    /// <param name="oldFirmName">old name of the firm </param>
     public void AddProvidersFirm(string playersID, string newFirmName, string oldFirmName)
     {
         Debug.Log("Providerova firma pridana do providerovho zoznamu");
@@ -278,11 +323,22 @@ public class GameData : NetworkBehaviour
         providersFirms.Add(newFirmName, playersID);
         
     }
+    /// <summary>
+    /// Get all development firms. 
+    /// </summary>
+    /// <returns> List of all development firms </returns>
     public List<string> GetDevelopersFirms()
     {
         return new List<string>(developersFirms.Keys);
     }
 
+    /// <summary>
+    /// This methods enables changing the firm name 
+    /// </summary>
+    /// <param name="playerID"> player's ID which owns the firm</param>
+    /// <param name="newFirmName">new firm name</param>
+    /// <param name="oldFirmName">old firm name </param>
+    /// <returns></returns>
     public bool TryToChangeFirmName(string playerID, string newFirmName, string oldFirmName)
     {
         if (allFirms.ContainsKey(newFirmName))
@@ -309,6 +365,12 @@ public class GameData : NetworkBehaviour
             return true;
         }
     }
+
+    /// <summary>
+    /// Updates description of the firm 
+    /// </summary>
+    /// <param name="firmName">name of the firm which description will be changed </param>
+    /// <param name="firmDescription"> new description of the firm </param>
     public void UpdateFirmDescription(string firmName, string firmDescription)
     {
         if (allFirmDescriptions.ContainsKey(firmName))
@@ -321,10 +383,20 @@ public class GameData : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Get ID of the owner of development firm
+    /// </summary>
+    /// <param name="firmsName"> development firm name </param>
+    /// <returns> ID of the player which owns the firm </returns>
     public string GetDevelopersFirmPlayerID(string firmsName)
     {
         return developersFirms[firmsName];
     }
+    /// <summary>
+    /// Get ID of the owner of provider firm
+    /// </summary>
+    /// <param name="firmsName">provider firm name </param>
+    /// <returns>ID of the player which owns the firm</returns>
     public string GetProvidersFirmPlayerID(string firmsName)
     {
         return providersFirms[firmsName];
@@ -334,6 +406,9 @@ public class GameData : NetworkBehaviour
         return allFirms[firmName];
     }
 
+    /// <summary>
+    /// Recereated list of playerID + firmName  in reverse order
+    /// </summary>
     public void RecreateAllFirmsReverse()
     {
         allFirmsRevers.Clear();
@@ -343,7 +418,10 @@ public class GameData : NetworkBehaviour
         }
     }
 
-
+    /// <summary>
+    /// get description of all developers firms
+    /// </summary>
+    /// <returns>dictionary of developers firm names + descriptions</returns>
     public Dictionary<string, string> GetListDeveloperFirmNameDescription()
     {
         Dictionary<string, string> developerFirmNameDescritpion = new Dictionary<string, string>();
@@ -358,6 +436,10 @@ public class GameData : NetworkBehaviour
         return developerFirmNameDescritpion;
     }
 
+    /// <summary>
+    /// get description of all providres firms
+    /// </summary>
+    /// <returns>dictionary of providers firm names + descriptions</returns>
     public Dictionary<string, string> GetListProviderFirmNameDescription()
     {
         Dictionary<string, string> providerFirmNameDescrition = new Dictionary<string, string>();
@@ -373,15 +455,17 @@ public class GameData : NetworkBehaviour
     }
 
 
-
-
-
+    /// <summary>
+    /// Get name of the firm from playerID
+    /// </summary>
+    /// <param name="playerID"> ID of the player </param>
+    /// <returns> firm owned by this player </returns>
     public string GetFirmName(string playerID)
     {
         return allFirmsRevers[playerID];
     }
     
-    //FIRMS HOOKS
+    //FIRMS HOOKS 
     public void OnDevelopersFirmsChange(SyncDictionaryStringString.Operation op, string firmName, string playerID)
     {
         if (GameHandler.singleton.GetLocalPlayer().GetMyPlayerData() != null)

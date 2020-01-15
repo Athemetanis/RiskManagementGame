@@ -110,11 +110,16 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
+    /// <summary>
+    /// Invokes evenents occuring between quarters - such as additional expenses due hw update
+    /// probably not used from here
+    /// </summary>
     [Server]
     public void InvokeEventsBetweenQurters()
     {
         eventManager.InvokeGameEvent();
     }
+
 
     [Server]
     public void EvaluateQuarter()
@@ -142,7 +147,9 @@ public class PlayerManager : NetworkBehaviour {
     }
 
 
-
+    /// <summary>
+    /// Updating data of provider after evaluation of contracts - such as money, number of customers etc.
+    /// </summary>
     [Server]
     public void UpdateCurrentQuarterDataProvider()
     {
@@ -156,6 +163,9 @@ public class PlayerManager : NetworkBehaviour {
         SaveCurretnQuarterDataProvider();
 
     }
+    /// <summary>
+    /// Updating data of developer after evaluation of contracts - such as money, number of customers etc.
+    /// </summary>
     [Server]
     public void UpdateCurrentQuarterDataDeveloper()
     {
@@ -193,6 +203,10 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
+    /// <summary>
+    /// Called from local player, invoked on server by accouting manager
+    /// After accounting manager being evaluated others manager can updates their values. 
+    /// </summary>
     [Command]
     public void CmdMoveToNextQuarter()
     {
@@ -200,6 +214,9 @@ public class PlayerManager : NetworkBehaviour {
         MoveOtherManagerToNextQuarterDeveloper();
     }
 
+    /// <summary>
+    /// Updating values of other developer's managers when new quarter is about to start
+    /// </summary>
     [Server]
     public void MoveOtherManagerToNextQuarterDeveloper()
     {
@@ -215,6 +232,9 @@ public class PlayerManager : NetworkBehaviour {
            
         }
     }
+    /// <summary>
+    /// Updating values of other providers's managers when new quarter is about to start
+    /// </summary>
     [Server]
     public void MoveOtherManagerToNextQuarterProvider()
     {

@@ -5,12 +5,12 @@ using UnityEngine.UI;
 using Mirror;
 using TMPro;
 
+/// <summary>
+/// This class creates/deletes games, shows list of games
+/// loads/saves data on server <<NOT_YET
+/// </summary>
 public class GameHandler : NetworkBehaviour {
-
-    /// <summary>
-    /// This class creates/deletes games, shows list of games
-    /// loads/saves data on server <<NOT_YET
-    /// </summary>
+    
     public GameObject gamePrefab;
     public GameObject gameUIPrefab;
     public GameObject gameUIPrefabInstructor;
@@ -29,12 +29,11 @@ public class GameHandler : NetworkBehaviour {
     private bool generatedGameList;
 
     public static GameHandler singleton;
+    
 
-
-
-    // This List contains all Game objects
+    // This List contains all Game objects - References on all existing GameData scripts. This variables is same for server and all players. New games is added to the list in the Start of the GameData script
     public static Dictionary<string, GameData> allGames;
-    // This List contains all GameUI objects
+    // This List contains all GameUI objects - UI elements which represent existing game in the UI list. 
     public static Dictionary<string, GameObject> allGamesUI;
 
     // This list holds data about all games and all their players
@@ -53,6 +52,9 @@ public class GameHandler : NetworkBehaviour {
     public void SetInstructor(InstructorManager instructor) { this.instructor = instructor; }
     public InstructorManager GetInstructor() { return instructor; }
 
+    /// <summary>
+    /// Called before Start and Start of other scripts in the game. 
+    /// </summary>
     private void Awake()
     {
         singleton = this;
@@ -72,14 +74,18 @@ public class GameHandler : NetworkBehaviour {
         //Debug.Log(count);
     }
 
-    //creates DEMO game when server starts;
+
+    /// <summary>
+    ///Creates DEMO game when server starts;
+     /// </summary>
     public override void OnStartServer()
     {              //name, password
         CreateGame("DEMO2", "666");
     }
 
-
-    //This method generates visual representation of list of games
+    /// <summary>
+    ///  Generates UI list of games for player. This list is visualy different from list generated for instructor.
+    /// </summary>
     public void GenerateGamesListUI()
     {
         // Debug.Log("generating game list for player");
@@ -91,6 +97,9 @@ public class GameHandler : NetworkBehaviour {
 
     }
 
+    /// <summary>
+    /// Generates UI list of games for instructor. This list is visualy different from list generated for player which do not provide ability to create new game. 
+    /// </summary>
     public void GenerateGamesListUIForInstructor()
     {   if(instructor == null)
         {
@@ -104,7 +113,10 @@ public class GameHandler : NetworkBehaviour {
         generatedGameList = true;
     }
     
-
+    /// <summary>
+    /// Generates UI element for every existing game.
+    /// These will be content of the list containing all games for player.
+    /// </summary>
     public void GeneratingGamesUIForPlayer()
     {
         //adding exising games into UI representation
@@ -118,6 +130,10 @@ public class GameHandler : NetworkBehaviour {
         }
     }
 
+    /// <summary>
+    /// Generates UI element for every existing game.
+    /// These will be content of the list containing all games for instructor.
+    /// </summary>
     public void GeneratingGamesUIForInstructor()
     {
         //adding exising games into UI representation
@@ -131,11 +147,14 @@ public class GameHandler : NetworkBehaviour {
         }
     }
 
+    /// <summary>
+    /// Refreshes any list of games if exists. This methods is used for both instructor and also the player.
+    /// </summary>
     public void RefreshGamesList()
     {
         if (GameHandler.singleton.instructor != null)
         {
-            Debug.Log("refreshing game list");
+            Debug.Log("refreshing game list for instructor");
             foreach (Transform child in gameListUIContent.transform)
             {
                 GameObject.Destroy(child.gameObject);
@@ -147,7 +166,7 @@ public class GameHandler : NetworkBehaviour {
 
         if (generatedGameList)
         {
-            Debug.Log("refreshing game list");
+            Debug.Log("refreshing game list for player");
             foreach (Transform child in gameListUIContent.transform)
             {
                 GameObject.Destroy(child.gameObject);
@@ -159,6 +178,9 @@ public class GameHandler : NetworkBehaviour {
         }
     }
 
+    /// <summary>
+    /// This method destroys any visual representation of list of games. Same for instructor and player.
+    /// </summary>
     public void DestroyGameListUI()
     {   if(gameListUIGameObject != null)
         {
@@ -167,17 +189,31 @@ public class GameHandler : NetworkBehaviour {
         }       
     }
 
+    /// <summary>
+    /// This method generates UI windows for password verification.
+    /// This method is invoked when UI button is clicked.
+    /// </summary>
+    /// <param name="gameID"> ID of the game player wants to join and for which is required password </param>
     public void GenerateGamePasswordVerificator(GameObject gameID)
     {
         GameObject GamePasswordVerificator = Instantiate(gamePasswordVerificatorPrefab);
         GamePasswordVerificator.GetComponent<GamePasswordVerification>().SetGameData(GameHandler.allGames[gameID.GetComponent<TextMeshProUGUI>().text].GetComponent<GameData>());
     }
 
+    /// <summary>
+    /// This methods stores ID of the game selected by instructor for detail viewing 
+    /// </summary>
+    /// <param name="gameID">ID of the game instructor want to view </param>
     public void SetInstructorGameID(GameObject gameID)
     {
         GameHandler.singleton.GetLocalPlayer().SetPlayerGameID(gameID.GetComponent<TextMeshProUGUI>().text);
     }
 
+    /// <summary>
+    /// Creates new game. Called by the UI button click - "Create new game". Avaible only for instructor. 
+    /// </summary>
+    /// <param name="name">Name of the game instructor wants to create. Obtained from UI Inputfield. </param>
+    /// <param name="password">Password for the game instructor wants to create. Obtained UI from Inputfield. </param>
     [Server]
     public void CreateGame(string name, string password)
     {
@@ -200,11 +236,16 @@ public class GameHandler : NetworkBehaviour {
         
     }
 
+    //NOT IMPLEMENTED
     public void DeleteGame(string name)  ///DO I want this? 
     {
         Debug.LogError("Deleting game not implemented");
     }
-        
+    
+    /// <summary>
+    /// Generates unique ID. Used for creation of ID of Games, Contracts, etc.
+    /// </summary>
+    /// <returns> New generated unique ID </returns>
     public string GenerateUniqueID()
     {
         System.DateTime epochStart = new System.DateTime(1970, 1, 1, 0, 0, 0, System.DateTimeKind.Utc);

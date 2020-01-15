@@ -304,7 +304,11 @@ public class ContractManager : NetworkBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="playerID"></param>
+    /// <returns></returns>
     public string GetFirmName(string playerID)
     {
         return GameHandler.allGames[gameID].GetFirmName(playerID);
